@@ -12,6 +12,17 @@
       "timeline": "data/Cf8BweyPJ8s.json",
       "audioParts": 7,
       "status": "review"
+    },
+    {
+      "youtubeId": "kNLRRzND5xA",
+      "slug": "nadin-amizah-bertaut",
+      "title": "Bertaut",
+      "artist": "Nadin Amizah",
+      "originalKey": "F#",
+      "bpm": 85.7,
+      "timeline": "data/kNLRRzND5xA.json",
+      "audioParts": 8,
+      "status": "review"
     }
   ]
 }
