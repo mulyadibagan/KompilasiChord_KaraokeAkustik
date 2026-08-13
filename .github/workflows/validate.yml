@@ -1,0 +1,24 @@
+name: Validate karaoke data
+on:
+  push:
+    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json']
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate JSON and timeline order
+        run: |
+          python - <<'PY'
+          import json,glob
+          catalog=json.load(open('catalog.json'))
+          assert catalog['schemaVersion']==1
+          for path in glob.glob('data/*.json'):
+              data=json.load(open(path)); times=[x['time'] for x in data['timeline']]
+              assert times==sorted(times), path
+              assert all(x['chord'] for x in data['timeline']), path
+          print('Validated',len(glob.glob('data/*.json')),'karaoke timeline(s)')
+          PY
