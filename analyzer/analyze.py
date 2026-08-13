@@ -46,43 +46,60 @@ def tempo(onset,sr,hop):
     while bpm<70:bpm*=2
     return round(float(bpm),1)
 
-def align(chroma,chords,seconds_per_frame):
+def align(chroma,chords,seconds_per_frame,bpm):
     templates=np.stack([chord_template(c) for c in chords])
-    emit=chroma@templates.T
+    # Aggregate chroma into half-beat cells. Chord changes can then occur only
+    # on a musically meaningful grid rather than arbitrary 100 ms frames.
+    cell_seconds=30.0/bpm
+    frames_per_cell=cell_seconds/seconds_per_frame
+    cells=max(1,int(round(len(chroma)/frames_per_cell)))
+    beat_chroma=[]
+    for cell in range(cells):
+        lo=int(round(cell*frames_per_cell));hi=int(round((cell+1)*frames_per_cell))
+        beat_chroma.append(chroma[lo:max(lo+1,min(len(chroma),hi))].mean(axis=0))
+    emit=np.asarray(beat_chroma)@templates.T
     n,m=emit.shape; neg=-1e15
-    # Semi-Markov forced alignment: every written chord gets a real segment.
-    # This prevents implausible 100 ms transitions and makes the full sequence
-    # cover the whole recording.
-    target=n/m; min_len=max(5,int(target*.28)); max_len=max(min_len+1,int(target*3.2))
+    # Allowed lengths: 2,3,4,5,6,8,10,12,16 beats (in half-beat cells).
+    lengths=np.array([4,6,8,10,12,16,20,24,32],dtype=int)
+    target=n/m
     prefix=np.vstack([np.zeros(m),np.cumsum(emit,axis=0)])
     dp=np.full((m+1,n+1),neg); back=np.full((m+1,n+1),-1,np.int32);dp[0,0]=0
     for j in range(1,m+1):
-        earliest=j*min_len; latest=min(n,j*max_len)
+        earliest=j*int(lengths.min()); latest=min(n,j*int(lengths.max()))
         for end in range(earliest,latest+1):
-            lmin=max(min_len,end-(j-1)*max_len);lmax=min(max_len,end-(j-1)*min_len)
-            if lmin>lmax:continue
-            lens=np.arange(lmin,lmax+1);starts=end-lens
+            valid=lengths[(end-lengths>=0)&(dp[j-1,end-lengths]>neg/2)]
+            if not len(valid):continue
+            starts=end-valid
             seg=prefix[end,j-1]-prefix[starts,j-1]
-            duration_penalty=.018*np.abs(lens-target)
+            # Mild prior: prefer four/eight beats while allowing real variation.
+            duration_penalty=.035*np.abs(valid-target)+np.where(np.isin(valid,[8,16]),-.08,0)
             values=dp[j-1,starts]+seg-duration_penalty
             k=int(np.argmax(values));dp[j,end]=values[k];back[j,end]=starts[k]
-    end=n
-    if back[m,end]<0: end=int(np.argmax(dp[m]))
+    # Permit a short unscored tail after the last written chord.
+    candidates=np.where(dp[m]>neg/2)[0]
+    end=int(candidates[np.argmax(dp[m,candidates]-.15*np.abs(candidates-n))])
     starts=np.zeros(m,dtype=int);cursor=end
     for j in range(m,0,-1):
         starts[j-1]=back[j,cursor];cursor=starts[j-1]
     timeline=[]
     for s,i in enumerate(starts):
-        timeline.append({'time':round(float(i)*seconds_per_frame,3),'chord':chords[s],'sequenceIndex':s})
+        timeline.append({'time':round(float(i)*cell_seconds,3),'chord':chords[s],'sequenceIndex':s})
     return timeline
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('wav');ap.add_argument('song_json');ap.add_argument('output')
     a=ap.parse_args(); meta=json.loads(Path(a.song_json).read_text())
     sr,hop,chroma,onset=features(a.wav); bpm=tempo(onset,sr,hop)
-    timeline=align(chroma,meta['chords'],hop/sr)
+    timeline=align(chroma,meta['chords'],hop/sr,bpm)
     out={k:v for k,v in meta.items() if k!='chords'}
+    output_path=Path(a.output)
+    if output_path.exists():
+        try:
+            previous=json.loads(output_path.read_text())
+            if previous.get('sheet'): out['sheet']=previous['sheet']
+        except (OSError,ValueError):
+            pass
     out.update({'schemaVersion':1,'analysis':{'engine':'kc-numpy-chroma-v1','bpm':bpm,'timelineEntries':len(timeline)},'timeline':timeline})
-    Path(a.output).parent.mkdir(parents=True,exist_ok=True);Path(a.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+    output_path.parent.mkdir(parents=True,exist_ok=True);output_path.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
 
 if __name__=='__main__':main()
