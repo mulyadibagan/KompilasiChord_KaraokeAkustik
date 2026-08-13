@@ -1,0 +1,411 @@
+{
+  "id": "nadin-amizah-bertaut-kNLRRzND5xA",
+  "title": "Nadin Amizah - Bertaut",
+  "artist": "Nadin Amizah",
+  "youtubeId": "kNLRRzND5xA",
+  "youtubeUrl": "https://youtu.be/kNLRRzND5xA",
+  "chordUrl": "https://www.kompilasichord.com/2020/12/nadin-amizah-bertaut.html",
+  "sourceCredit": "Karaoke akustik: sumber YouTube",
+  "originalKey": "F#",
+  "durationSeconds": 321.666,
+  "audioParts": ["audio/kNLRRzND5xA-00.part", "audio/kNLRRzND5xA-01.part", "audio/kNLRRzND5xA-02.part", "audio/kNLRRzND5xA-03.part", "audio/kNLRRzND5xA-04.part", "audio/kNLRRzND5xA-05.part", "audio/kNLRRzND5xA-06.part", "audio/kNLRRzND5xA-07.part"],
+  "sheet": "[Intro:]\nF#  A#m  D#m\nB   Bm   F#\n\n[Verse I:]\nF#             A#m          D#m\nBun hidup berjalan seperti bajingan..\nB                  Bm          F#\nseperti landak yang tak punya teman..\nF#                  A#m     D#m\nia menggonggong bak suara hujan..\nB             Bm        F#\ndan kau pangeranku.. mengambil peran..\nF#             A#m            D#m\nBun kalau saat hancur ku disayang..\nB         Bm         F#\napalagi saat ku jadi juara..\nF#           A#m        D#m\nsaat tak tahu arah kau di sana..\nB               Bm          F#\nmenjadi gagah.. saat ku tak bisa..\n\nB\nsedikit kujelaskan\nB\ntentangku dan kamu\nB                Bm\nagar seisi dunia tahu..\n\n[Reff:]\nF#\nkeras kepalaku sama denganmu\nB\ncaraku marah, caraku tersenyum\nD#m\nseperti detak jantung yang bertaut\nB\nnyawaku nyala karena denganmu\nF#\naku masih ada sampai di sini\nB\nmelihatmu kuat setengah mati\nD#m\nseperti detak jantung yang bertaut\nB\nnyawaku nyala karena denganmu\n\n[Intro:]\nF#  B\n\n[Verse II:]\nF#            A#m          D#m\nBun aku masih tak mengerti banyak hal\nB           Bm          F#\nsemuanya berenang di kepala..\nF#\ndan kau dan semua yang\nA#m          D#m     Fm  F#\nkau tahu tentangnya..\nB             Bm         F#\nmenjadi jawab saat ku bertanya..\n\nB\nsedikit kujelaskan\nB\ntentangku dan kamu\nB                Bm\nagar seisi dunia tahu..\n\n[Reff:]\nF#\nkeras kepalaku sama denganmu\nB\ncaraku marah, caraku tersenyum\nD#m\nseperti detak jantung yang bertaut\nB\nnyawaku nyala karena denganmu\nF#\naku masih ada sampai di sini\nB\nmelihatmu kuat setengah mati\nD#m\nseperti detak jantung yang bertaut\nB\nnyawaku nyala karena denganmu\n\n[Ending:]\nF#\nsemoga lama hidupmu di sini\nB\nmelihatku berjuang sampai akhir\nD#m\nseperti detak jantung yang bertaut\nB\nnyawaku nyala karena denganmu..\n\n[Outro:]\nF#  B  F#  B",
+  "schemaVersion": 1,
+  "analysis": {
+    "engine": "kc-numpy-chroma-v1",
+    "bpm": 85.7,
+    "timelineEntries": 78
+  },
+  "timeline": [
+    {
+      "time": 0.0,
+      "chord": "F#",
+      "sequenceIndex": 0
+    },
+    {
+      "time": 8.401,
+      "chord": "A#m",
+      "sequenceIndex": 1
+    },
+    {
+      "time": 14.002,
+      "chord": "D#m",
+      "sequenceIndex": 2
+    },
+    {
+      "time": 17.503,
+      "chord": "B",
+      "sequenceIndex": 3
+    },
+    {
+      "time": 20.303,
+      "chord": "Bm",
+      "sequenceIndex": 4
+    },
+    {
+      "time": 23.104,
+      "chord": "F#",
+      "sequenceIndex": 5
+    },
+    {
+      "time": 27.305,
+      "chord": "F#",
+      "sequenceIndex": 6
+    },
+    {
+      "time": 30.805,
+      "chord": "A#m",
+      "sequenceIndex": 7
+    },
+    {
+      "time": 36.406,
+      "chord": "D#m",
+      "sequenceIndex": 8
+    },
+    {
+      "time": 39.207,
+      "chord": "B",
+      "sequenceIndex": 9
+    },
+    {
+      "time": 42.007,
+      "chord": "Bm",
+      "sequenceIndex": 10
+    },
+    {
+      "time": 44.807,
+      "chord": "F#",
+      "sequenceIndex": 11
+    },
+    {
+      "time": 49.008,
+      "chord": "F#",
+      "sequenceIndex": 12
+    },
+    {
+      "time": 53.209,
+      "chord": "A#m",
+      "sequenceIndex": 13
+    },
+    {
+      "time": 57.41,
+      "chord": "D#m",
+      "sequenceIndex": 14
+    },
+    {
+      "time": 60.21,
+      "chord": "B",
+      "sequenceIndex": 15
+    },
+    {
+      "time": 63.011,
+      "chord": "Bm",
+      "sequenceIndex": 16
+    },
+    {
+      "time": 65.811,
+      "chord": "F#",
+      "sequenceIndex": 17
+    },
+    {
+      "time": 70.012,
+      "chord": "F#",
+      "sequenceIndex": 18
+    },
+    {
+      "time": 73.512,
+      "chord": "A#m",
+      "sequenceIndex": 19
+    },
+    {
+      "time": 77.713,
+      "chord": "D#m",
+      "sequenceIndex": 20
+    },
+    {
+      "time": 81.914,
+      "chord": "B",
+      "sequenceIndex": 21
+    },
+    {
+      "time": 84.714,
+      "chord": "Bm",
+      "sequenceIndex": 22
+    },
+    {
+      "time": 87.515,
+      "chord": "F#",
+      "sequenceIndex": 23
+    },
+    {
+      "time": 91.715,
+      "chord": "F#",
+      "sequenceIndex": 24
+    },
+    {
+      "time": 95.916,
+      "chord": "A#m",
+      "sequenceIndex": 25
+    },
+    {
+      "time": 100.117,
+      "chord": "D#m",
+      "sequenceIndex": 26
+    },
+    {
+      "time": 102.917,
+      "chord": "B",
+      "sequenceIndex": 27
+    },
+    {
+      "time": 105.718,
+      "chord": "Bm",
+      "sequenceIndex": 28
+    },
+    {
+      "time": 108.518,
+      "chord": "F#",
+      "sequenceIndex": 29
+    },
+    {
+      "time": 114.119,
+      "chord": "B",
+      "sequenceIndex": 30
+    },
+    {
+      "time": 117.62,
+      "chord": "B",
+      "sequenceIndex": 31
+    },
+    {
+      "time": 120.42,
+      "chord": "B",
+      "sequenceIndex": 32
+    },
+    {
+      "time": 123.221,
+      "chord": "Bm",
+      "sequenceIndex": 33
+    },
+    {
+      "time": 124.621,
+      "chord": "F#",
+      "sequenceIndex": 34
+    },
+    {
+      "time": 130.222,
+      "chord": "B",
+      "sequenceIndex": 35
+    },
+    {
+      "time": 135.823,
+      "chord": "D#m",
+      "sequenceIndex": 36
+    },
+    {
+      "time": 141.424,
+      "chord": "B",
+      "sequenceIndex": 37
+    },
+    {
+      "time": 145.624,
+      "chord": "F#",
+      "sequenceIndex": 38
+    },
+    {
+      "time": 151.225,
+      "chord": "B",
+      "sequenceIndex": 39
+    },
+    {
+      "time": 156.826,
+      "chord": "D#m",
+      "sequenceIndex": 40
+    },
+    {
+      "time": 162.427,
+      "chord": "B",
+      "sequenceIndex": 41
+    },
+    {
+      "time": 166.628,
+      "chord": "F#",
+      "sequenceIndex": 42
+    },
+    {
+      "time": 172.229,
+      "chord": "B",
+      "sequenceIndex": 43
+    },
+    {
+      "time": 175.729,
+      "chord": "F#",
+      "sequenceIndex": 44
+    },
+    {
+      "time": 179.93,
+      "chord": "A#m",
+      "sequenceIndex": 45
+    },
+    {
+      "time": 185.531,
+      "chord": "D#m",
+      "sequenceIndex": 46
+    },
+    {
+      "time": 188.331,
+      "chord": "B",
+      "sequenceIndex": 47
+    },
+    {
+      "time": 191.132,
+      "chord": "Bm",
+      "sequenceIndex": 48
+    },
+    {
+      "time": 193.932,
+      "chord": "F#",
+      "sequenceIndex": 49
+    },
+    {
+      "time": 199.533,
+      "chord": "F#",
+      "sequenceIndex": 50
+    },
+    {
+      "time": 203.734,
+      "chord": "A#m",
+      "sequenceIndex": 51
+    },
+    {
+      "time": 209.335,
+      "chord": "D#m",
+      "sequenceIndex": 52
+    },
+    {
+      "time": 214.936,
+      "chord": "Fm",
+      "sequenceIndex": 53
+    },
+    {
+      "time": 219.137,
+      "chord": "F#",
+      "sequenceIndex": 54
+    },
+    {
+      "time": 224.737,
+      "chord": "B",
+      "sequenceIndex": 55
+    },
+    {
+      "time": 228.238,
+      "chord": "Bm",
+      "sequenceIndex": 56
+    },
+    {
+      "time": 231.039,
+      "chord": "F#",
+      "sequenceIndex": 57
+    },
+    {
+      "time": 236.639,
+      "chord": "B",
+      "sequenceIndex": 58
+    },
+    {
+      "time": 240.84,
+      "chord": "B",
+      "sequenceIndex": 59
+    },
+    {
+      "time": 245.041,
+      "chord": "B",
+      "sequenceIndex": 60
+    },
+    {
+      "time": 249.242,
+      "chord": "Bm",
+      "sequenceIndex": 61
+    },
+    {
+      "time": 252.742,
+      "chord": "F#",
+      "sequenceIndex": 62
+    },
+    {
+      "time": 258.343,
+      "chord": "B",
+      "sequenceIndex": 63
+    },
+    {
+      "time": 262.544,
+      "chord": "D#m",
+      "sequenceIndex": 64
+    },
+    {
+      "time": 268.145,
+      "chord": "B",
+      "sequenceIndex": 65
+    },
+    {
+      "time": 273.746,
+      "chord": "F#",
+      "sequenceIndex": 66
+    },
+    {
+      "time": 279.347,
+      "chord": "B",
+      "sequenceIndex": 67
+    },
+    {
+      "time": 284.947,
+      "chord": "D#m",
+      "sequenceIndex": 68
+    },
+    {
+      "time": 290.548,
+      "chord": "B",
+      "sequenceIndex": 69
+    },
+    {
+      "time": 294.749,
+      "chord": "F#",
+      "sequenceIndex": 70
+    },
+    {
+      "time": 300.35,
+      "chord": "B",
+      "sequenceIndex": 71
+    },
+    {
+      "time": 301.75,
+      "chord": "D#m",
+      "sequenceIndex": 72
+    },
+    {
+      "time": 303.151,
+      "chord": "B",
+      "sequenceIndex": 73
+    },
+    {
+      "time": 305.951,
+      "chord": "F#",
+      "sequenceIndex": 74
+    },
+    {
+      "time": 311.552,
+      "chord": "B",
+      "sequenceIndex": 75
+    },
+    {
+      "time": 314.352,
+      "chord": "F#",
+      "sequenceIndex": 76
+    },
+    {
+      "time": 317.153,
+      "chord": "B",
+      "sequenceIndex": 77
+    }
+  ]
+}
