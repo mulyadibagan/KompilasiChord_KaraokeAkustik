@@ -1,0 +1,412 @@
+{
+  "id": "fourtwnty-mangu-JENpTmMQBQY",
+  "title": "Fourtwnty - Mangu (ft. Charita Utami)",
+  "artist": "Fourtwnty feat. Charita Utami",
+  "youtubeId": "JENpTmMQBQY",
+  "chordUrl": "https://www.kompilasichord.com/2025/05/fourtwnty-mangu-ft-charita-utami.html",
+  "originalKey": "G",
+  "durationSeconds": 271.859,
+  "schemaVersion": 1,
+  "analysis": {
+    "engine": "kc-numpy-chroma-v1",
+    "bpm": 100.0,
+    "timelineEntries": 79
+  },
+  "timeline": [
+    {
+      "time": 0.0,
+      "chord": "G",
+      "sequenceIndex": 0
+    },
+    {
+      "time": 7.3,
+      "chord": "C",
+      "sequenceIndex": 1
+    },
+    {
+      "time": 10.7,
+      "chord": "Bm",
+      "sequenceIndex": 2
+    },
+    {
+      "time": 19.7,
+      "chord": "Am",
+      "sequenceIndex": 3
+    },
+    {
+      "time": 23.1,
+      "chord": "Em",
+      "sequenceIndex": 4
+    },
+    {
+      "time": 26.5,
+      "chord": "D",
+      "sequenceIndex": 5
+    },
+    {
+      "time": 31.8,
+      "chord": "G",
+      "sequenceIndex": 6
+    },
+    {
+      "time": 35.2,
+      "chord": "C",
+      "sequenceIndex": 7
+    },
+    {
+      "time": 36.1,
+      "chord": "G",
+      "sequenceIndex": 8
+    },
+    {
+      "time": 39.9,
+      "chord": "G",
+      "sequenceIndex": 9
+    },
+    {
+      "time": 45.8,
+      "chord": "C",
+      "sequenceIndex": 10
+    },
+    {
+      "time": 46.9,
+      "chord": "D",
+      "sequenceIndex": 11
+    },
+    {
+      "time": 51.9,
+      "chord": "Am",
+      "sequenceIndex": 12
+    },
+    {
+      "time": 54.9,
+      "chord": "Em",
+      "sequenceIndex": 13
+    },
+    {
+      "time": 58.3,
+      "chord": "G",
+      "sequenceIndex": 14
+    },
+    {
+      "time": 62.2,
+      "chord": "Am",
+      "sequenceIndex": 15
+    },
+    {
+      "time": 64.4,
+      "chord": "Em",
+      "sequenceIndex": 16
+    },
+    {
+      "time": 67.8,
+      "chord": "D",
+      "sequenceIndex": 17
+    },
+    {
+      "time": 74.1,
+      "chord": "G",
+      "sequenceIndex": 18
+    },
+    {
+      "time": 77.5,
+      "chord": "Dm",
+      "sequenceIndex": 19
+    },
+    {
+      "time": 78.7,
+      "chord": "Am",
+      "sequenceIndex": 20
+    },
+    {
+      "time": 81.8,
+      "chord": "Em",
+      "sequenceIndex": 21
+    },
+    {
+      "time": 90.2,
+      "chord": "D",
+      "sequenceIndex": 22
+    },
+    {
+      "time": 93.6,
+      "chord": "G",
+      "sequenceIndex": 23
+    },
+    {
+      "time": 97.9,
+      "chord": "G",
+      "sequenceIndex": 24
+    },
+    {
+      "time": 101.4,
+      "chord": "C",
+      "sequenceIndex": 25
+    },
+    {
+      "time": 103.1,
+      "chord": "G",
+      "sequenceIndex": 26
+    },
+    {
+      "time": 108.8,
+      "chord": "G",
+      "sequenceIndex": 27
+    },
+    {
+      "time": 112.3,
+      "chord": "C",
+      "sequenceIndex": 28
+    },
+    {
+      "time": 113.2,
+      "chord": "D",
+      "sequenceIndex": 29
+    },
+    {
+      "time": 118.1,
+      "chord": "Am",
+      "sequenceIndex": 30
+    },
+    {
+      "time": 121.0,
+      "chord": "Em",
+      "sequenceIndex": 31
+    },
+    {
+      "time": 125.3,
+      "chord": "G",
+      "sequenceIndex": 32
+    },
+    {
+      "time": 128.8,
+      "chord": "Am",
+      "sequenceIndex": 33
+    },
+    {
+      "time": 130.8,
+      "chord": "Em",
+      "sequenceIndex": 34
+    },
+    {
+      "time": 133.7,
+      "chord": "D",
+      "sequenceIndex": 35
+    },
+    {
+      "time": 139.9,
+      "chord": "G",
+      "sequenceIndex": 36
+    },
+    {
+      "time": 143.4,
+      "chord": "Dm",
+      "sequenceIndex": 37
+    },
+    {
+      "time": 146.8,
+      "chord": "Am",
+      "sequenceIndex": 38
+    },
+    {
+      "time": 148.8,
+      "chord": "Em",
+      "sequenceIndex": 39
+    },
+    {
+      "time": 156.7,
+      "chord": "D",
+      "sequenceIndex": 40
+    },
+    {
+      "time": 160.4,
+      "chord": "G",
+      "sequenceIndex": 41
+    },
+    {
+      "time": 164.4,
+      "chord": "Dm",
+      "sequenceIndex": 42
+    },
+    {
+      "time": 168.0,
+      "chord": "Am",
+      "sequenceIndex": 43
+    },
+    {
+      "time": 168.9,
+      "chord": "Em",
+      "sequenceIndex": 44
+    },
+    {
+      "time": 177.0,
+      "chord": "D",
+      "sequenceIndex": 45
+    },
+    {
+      "time": 180.2,
+      "chord": "Am",
+      "sequenceIndex": 46
+    },
+    {
+      "time": 181.5,
+      "chord": "Am",
+      "sequenceIndex": 47
+    },
+    {
+      "time": 182.5,
+      "chord": "Em",
+      "sequenceIndex": 48
+    },
+    {
+      "time": 185.9,
+      "chord": "G",
+      "sequenceIndex": 49
+    },
+    {
+      "time": 186.8,
+      "chord": "D",
+      "sequenceIndex": 50
+    },
+    {
+      "time": 189.7,
+      "chord": "Am",
+      "sequenceIndex": 51
+    },
+    {
+      "time": 190.7,
+      "chord": "Em",
+      "sequenceIndex": 52
+    },
+    {
+      "time": 194.2,
+      "chord": "G",
+      "sequenceIndex": 53
+    },
+    {
+      "time": 197.2,
+      "chord": "D",
+      "sequenceIndex": 54
+    },
+    {
+      "time": 200.2,
+      "chord": "Am",
+      "sequenceIndex": 55
+    },
+    {
+      "time": 201.1,
+      "chord": "Em",
+      "sequenceIndex": 56
+    },
+    {
+      "time": 204.5,
+      "chord": "G",
+      "sequenceIndex": 57
+    },
+    {
+      "time": 207.2,
+      "chord": "D",
+      "sequenceIndex": 58
+    },
+    {
+      "time": 210.4,
+      "chord": "Am",
+      "sequenceIndex": 59
+    },
+    {
+      "time": 211.9,
+      "chord": "Em",
+      "sequenceIndex": 60
+    },
+    {
+      "time": 215.2,
+      "chord": "G",
+      "sequenceIndex": 61
+    },
+    {
+      "time": 218.1,
+      "chord": "D",
+      "sequenceIndex": 62
+    },
+    {
+      "time": 220.5,
+      "chord": "Am",
+      "sequenceIndex": 63
+    },
+    {
+      "time": 222.1,
+      "chord": "Em",
+      "sequenceIndex": 64
+    },
+    {
+      "time": 225.5,
+      "chord": "G",
+      "sequenceIndex": 65
+    },
+    {
+      "time": 228.0,
+      "chord": "D",
+      "sequenceIndex": 66
+    },
+    {
+      "time": 230.4,
+      "chord": "Am",
+      "sequenceIndex": 67
+    },
+    {
+      "time": 231.3,
+      "chord": "Em",
+      "sequenceIndex": 68
+    },
+    {
+      "time": 234.9,
+      "chord": "G",
+      "sequenceIndex": 69
+    },
+    {
+      "time": 238.3,
+      "chord": "D",
+      "sequenceIndex": 70
+    },
+    {
+      "time": 240.9,
+      "chord": "Am",
+      "sequenceIndex": 71
+    },
+    {
+      "time": 241.8,
+      "chord": "Em",
+      "sequenceIndex": 72
+    },
+    {
+      "time": 245.2,
+      "chord": "G",
+      "sequenceIndex": 73
+    },
+    {
+      "time": 248.5,
+      "chord": "D",
+      "sequenceIndex": 74
+    },
+    {
+      "time": 251.6,
+      "chord": "Am",
+      "sequenceIndex": 75
+    },
+    {
+      "time": 253.1,
+      "chord": "Em",
+      "sequenceIndex": 76
+    },
+    {
+      "time": 256.8,
+      "chord": "G",
+      "sequenceIndex": 77
+    },
+    {
+      "time": 260.6,
+      "chord": "D",
+      "sequenceIndex": 78
+    }
+  ]
+}
