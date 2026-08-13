@@ -13,7 +13,7 @@
       "originalKey": "G",
       "bpm": 100,
       "timeline": "data/Cf8BweyPJ8s.json",
-      "storage": "google-drive",
+      "storage": "github-temporary",
       "status": "review"
     },
     {
@@ -27,7 +27,7 @@
       "originalKey": "F#",
       "bpm": 85.7,
       "timeline": "data/kNLRRzND5xA.json",
-      "storage": "google-drive",
+      "storage": "github-temporary",
       "status": "review"
     },
     {
@@ -41,7 +41,7 @@
       "originalKey": "C",
       "bpm": 109.1,
       "timeline": "data/_BApmry8mQ4.json",
-      "storage": "google-drive",
+      "storage": "github-temporary",
       "status": "review"
     }
   ]
