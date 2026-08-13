@@ -1,0 +1,581 @@
+{
+  "id": "enau-ari-lesmana-sesi-potret-_BApmry8mQ4",
+  "title": "eńau feat. Ari Lesmana - Sesi Potret",
+  "artist": "eńau feat. Ari Lesmana",
+  "youtubeId": "_BApmry8mQ4",
+  "youtubeUrl": "https://youtu.be/_BApmry8mQ4",
+  "chordUrl": "https://www.kompilasichord.com/2026/07/enau-feat-ari-lesmana-sesi-potret.html",
+  "sourceCredit": "Karaoke akustik: sumber YouTube",
+  "originalKey": "C",
+  "durationSeconds": 243.136,
+  "driveFileId": "1X4kNSVFjSDEJbfc_JiIjviZBNcLsmyU8",
+  "sheet": "[Intro:]\nC  F  Fm\nC  F  Fm\n\n[Verse I:]\nF        G           C\ntahun lalu berjuta alasanku..\nF         G          C\nmaaf tak bisa pulang, penghasilanku pas-pasan\nF      G          C\nkali ini sudah lumayan..\nF         G        C\nberkat doamu diijabah Sang Maha Kaya\n\nDm         G  Em         Am\ndan tahun ini.. ku bisa pulang..\nDm     G            C\noleh-oleh sudah di tangan..\nDm     G            E/G#           Am  G\ntapi anehnya bukan kau yang menyambutku..\nDm         Em  F                     G\noh ternyata.. kau yang lebih dulu pulang...\n\n[Reff:]\nC                    F\nku bertamu ke rumah barumu\nEm        Am\ntak ada kamu\nDm          G\nhanya papan dan namamu..\nC                  F\nmana ocehan wewangian khasmu\nEm       Am\njarak ini terlalu jauh\nDm        G\nkalau rindu aku tak mampu..\nF            G         E/G#     Am\nsoal ikhlas ternyata aku masih amatir\nDm          Em\ngengsi menyelimutiku..\nF         Fm      C\nmanusia ini kehilanganmu..\n\n[Musik:]\nC  D/F#  F  Em\nG  D  Dm  Fm  C\n\n[Verse II:]\nF       G                C\nsesi potret yang selalu ku benci..\nF       G             C\naneh rasanya kau tak di sini..\nF          G            C\nsusunan barisannya tak sama lagi..\nDm      Em  Fm\nooh.. satu.. dua.. tiga..\nG\nini nyata, kau telah pergi..\n\n[Reff:]\nC                    F\nku bertamu ke rumah barumu\nEm        Am\ntak ada kamu\nDm          G\nhanya papan dan namamu..\nC                  F\nmana ocehan wewangian khasmu\nEm       Am\njarak ini terlalu jauh\nDm        G\nkalau rindu aku tak mampu..\nF         G             E/G#     Am\nsesal hatiku tak sempat temani kamu..\nDm         G            C\nharusnya kubisikkan kata ajaib ke telingamu..\nF            G         E/G#     Am\nsoal ikhlas ternyata aku masih amatir\nDm\nmasih sangat amatir..\nAm\ngengsi menyelimutiku..\nF       G     C  Fm  C  Fm\nmanusia ini kehilanganmu..\nC  Fm  C  Fm\nkehilanganmu..",
+  "schemaVersion": 1,
+  "analysis": {
+    "engine": "kc-numpy-chroma-v1",
+    "bpm": 109.1,
+    "timelineEntries": 112
+  },
+  "timeline": [
+    {
+      "time": 0.0,
+      "chord": "C",
+      "sequenceIndex": 0
+    },
+    {
+      "time": 2.2,
+      "chord": "F",
+      "sequenceIndex": 1
+    },
+    {
+      "time": 3.3,
+      "chord": "Fm",
+      "sequenceIndex": 2
+    },
+    {
+      "time": 4.4,
+      "chord": "C",
+      "sequenceIndex": 3
+    },
+    {
+      "time": 6.599,
+      "chord": "F",
+      "sequenceIndex": 4
+    },
+    {
+      "time": 8.799,
+      "chord": "Fm",
+      "sequenceIndex": 5
+    },
+    {
+      "time": 9.899,
+      "chord": "F",
+      "sequenceIndex": 6
+    },
+    {
+      "time": 10.999,
+      "chord": "G",
+      "sequenceIndex": 7
+    },
+    {
+      "time": 13.199,
+      "chord": "C",
+      "sequenceIndex": 8
+    },
+    {
+      "time": 15.399,
+      "chord": "F",
+      "sequenceIndex": 9
+    },
+    {
+      "time": 17.599,
+      "chord": "G",
+      "sequenceIndex": 10
+    },
+    {
+      "time": 19.798,
+      "chord": "C",
+      "sequenceIndex": 11
+    },
+    {
+      "time": 21.998,
+      "chord": "F",
+      "sequenceIndex": 12
+    },
+    {
+      "time": 24.198,
+      "chord": "G",
+      "sequenceIndex": 13
+    },
+    {
+      "time": 26.398,
+      "chord": "C",
+      "sequenceIndex": 14
+    },
+    {
+      "time": 28.598,
+      "chord": "F",
+      "sequenceIndex": 15
+    },
+    {
+      "time": 29.698,
+      "chord": "G",
+      "sequenceIndex": 16
+    },
+    {
+      "time": 31.897,
+      "chord": "C",
+      "sequenceIndex": 17
+    },
+    {
+      "time": 34.097,
+      "chord": "Dm",
+      "sequenceIndex": 18
+    },
+    {
+      "time": 35.747,
+      "chord": "G",
+      "sequenceIndex": 19
+    },
+    {
+      "time": 37.947,
+      "chord": "Em",
+      "sequenceIndex": 20
+    },
+    {
+      "time": 40.147,
+      "chord": "Am",
+      "sequenceIndex": 21
+    },
+    {
+      "time": 41.247,
+      "chord": "Dm",
+      "sequenceIndex": 22
+    },
+    {
+      "time": 42.346,
+      "chord": "G",
+      "sequenceIndex": 23
+    },
+    {
+      "time": 44.546,
+      "chord": "C",
+      "sequenceIndex": 24
+    },
+    {
+      "time": 46.196,
+      "chord": "Dm",
+      "sequenceIndex": 25
+    },
+    {
+      "time": 48.396,
+      "chord": "G",
+      "sequenceIndex": 26
+    },
+    {
+      "time": 50.596,
+      "chord": "E/G#",
+      "sequenceIndex": 27
+    },
+    {
+      "time": 51.696,
+      "chord": "Am",
+      "sequenceIndex": 28
+    },
+    {
+      "time": 53.896,
+      "chord": "G",
+      "sequenceIndex": 29
+    },
+    {
+      "time": 58.295,
+      "chord": "Dm",
+      "sequenceIndex": 30
+    },
+    {
+      "time": 60.495,
+      "chord": "Em",
+      "sequenceIndex": 31
+    },
+    {
+      "time": 62.695,
+      "chord": "F",
+      "sequenceIndex": 32
+    },
+    {
+      "time": 64.895,
+      "chord": "G",
+      "sequenceIndex": 33
+    },
+    {
+      "time": 68.194,
+      "chord": "C",
+      "sequenceIndex": 34
+    },
+    {
+      "time": 70.394,
+      "chord": "F",
+      "sequenceIndex": 35
+    },
+    {
+      "time": 72.594,
+      "chord": "Em",
+      "sequenceIndex": 36
+    },
+    {
+      "time": 74.794,
+      "chord": "Am",
+      "sequenceIndex": 37
+    },
+    {
+      "time": 76.994,
+      "chord": "Dm",
+      "sequenceIndex": 38
+    },
+    {
+      "time": 78.093,
+      "chord": "G",
+      "sequenceIndex": 39
+    },
+    {
+      "time": 80.293,
+      "chord": "C",
+      "sequenceIndex": 40
+    },
+    {
+      "time": 82.493,
+      "chord": "F",
+      "sequenceIndex": 41
+    },
+    {
+      "time": 84.693,
+      "chord": "Em",
+      "sequenceIndex": 42
+    },
+    {
+      "time": 86.893,
+      "chord": "Am",
+      "sequenceIndex": 43
+    },
+    {
+      "time": 89.093,
+      "chord": "Dm",
+      "sequenceIndex": 44
+    },
+    {
+      "time": 90.192,
+      "chord": "G",
+      "sequenceIndex": 45
+    },
+    {
+      "time": 91.292,
+      "chord": "F",
+      "sequenceIndex": 46
+    },
+    {
+      "time": 92.392,
+      "chord": "G",
+      "sequenceIndex": 47
+    },
+    {
+      "time": 94.042,
+      "chord": "E/G#",
+      "sequenceIndex": 48
+    },
+    {
+      "time": 96.242,
+      "chord": "Am",
+      "sequenceIndex": 49
+    },
+    {
+      "time": 98.442,
+      "chord": "Dm",
+      "sequenceIndex": 50
+    },
+    {
+      "time": 99.542,
+      "chord": "Em",
+      "sequenceIndex": 51
+    },
+    {
+      "time": 101.742,
+      "chord": "F",
+      "sequenceIndex": 52
+    },
+    {
+      "time": 102.841,
+      "chord": "Fm",
+      "sequenceIndex": 53
+    },
+    {
+      "time": 105.041,
+      "chord": "C",
+      "sequenceIndex": 54
+    },
+    {
+      "time": 107.241,
+      "chord": "C",
+      "sequenceIndex": 55
+    },
+    {
+      "time": 109.441,
+      "chord": "D/F#",
+      "sequenceIndex": 56
+    },
+    {
+      "time": 112.741,
+      "chord": "F",
+      "sequenceIndex": 57
+    },
+    {
+      "time": 114.94,
+      "chord": "Em",
+      "sequenceIndex": 58
+    },
+    {
+      "time": 119.34,
+      "chord": "G",
+      "sequenceIndex": 59
+    },
+    {
+      "time": 121.54,
+      "chord": "D",
+      "sequenceIndex": 60
+    },
+    {
+      "time": 123.74,
+      "chord": "Dm",
+      "sequenceIndex": 61
+    },
+    {
+      "time": 125.39,
+      "chord": "Fm",
+      "sequenceIndex": 62
+    },
+    {
+      "time": 127.589,
+      "chord": "C",
+      "sequenceIndex": 63
+    },
+    {
+      "time": 129.789,
+      "chord": "F",
+      "sequenceIndex": 64
+    },
+    {
+      "time": 131.989,
+      "chord": "G",
+      "sequenceIndex": 65
+    },
+    {
+      "time": 134.189,
+      "chord": "C",
+      "sequenceIndex": 66
+    },
+    {
+      "time": 136.389,
+      "chord": "F",
+      "sequenceIndex": 67
+    },
+    {
+      "time": 138.038,
+      "chord": "G",
+      "sequenceIndex": 68
+    },
+    {
+      "time": 140.238,
+      "chord": "C",
+      "sequenceIndex": 69
+    },
+    {
+      "time": 142.438,
+      "chord": "F",
+      "sequenceIndex": 70
+    },
+    {
+      "time": 143.538,
+      "chord": "G",
+      "sequenceIndex": 71
+    },
+    {
+      "time": 145.738,
+      "chord": "C",
+      "sequenceIndex": 72
+    },
+    {
+      "time": 147.938,
+      "chord": "Dm",
+      "sequenceIndex": 73
+    },
+    {
+      "time": 150.137,
+      "chord": "Em",
+      "sequenceIndex": 74
+    },
+    {
+      "time": 152.337,
+      "chord": "Fm",
+      "sequenceIndex": 75
+    },
+    {
+      "time": 154.537,
+      "chord": "G",
+      "sequenceIndex": 76
+    },
+    {
+      "time": 161.137,
+      "chord": "C",
+      "sequenceIndex": 77
+    },
+    {
+      "time": 163.336,
+      "chord": "F",
+      "sequenceIndex": 78
+    },
+    {
+      "time": 165.536,
+      "chord": "Em",
+      "sequenceIndex": 79
+    },
+    {
+      "time": 167.736,
+      "chord": "Am",
+      "sequenceIndex": 80
+    },
+    {
+      "time": 169.936,
+      "chord": "Dm",
+      "sequenceIndex": 81
+    },
+    {
+      "time": 171.036,
+      "chord": "G",
+      "sequenceIndex": 82
+    },
+    {
+      "time": 173.236,
+      "chord": "C",
+      "sequenceIndex": 83
+    },
+    {
+      "time": 175.435,
+      "chord": "F",
+      "sequenceIndex": 84
+    },
+    {
+      "time": 177.635,
+      "chord": "Em",
+      "sequenceIndex": 85
+    },
+    {
+      "time": 179.835,
+      "chord": "Am",
+      "sequenceIndex": 86
+    },
+    {
+      "time": 182.035,
+      "chord": "Dm",
+      "sequenceIndex": 87
+    },
+    {
+      "time": 183.135,
+      "chord": "G",
+      "sequenceIndex": 88
+    },
+    {
+      "time": 184.235,
+      "chord": "F",
+      "sequenceIndex": 89
+    },
+    {
+      "time": 185.335,
+      "chord": "G",
+      "sequenceIndex": 90
+    },
+    {
+      "time": 186.984,
+      "chord": "E/G#",
+      "sequenceIndex": 91
+    },
+    {
+      "time": 189.184,
+      "chord": "Am",
+      "sequenceIndex": 92
+    },
+    {
+      "time": 191.384,
+      "chord": "Dm",
+      "sequenceIndex": 93
+    },
+    {
+      "time": 192.484,
+      "chord": "G",
+      "sequenceIndex": 94
+    },
+    {
+      "time": 194.684,
+      "chord": "C",
+      "sequenceIndex": 95
+    },
+    {
+      "time": 196.334,
+      "chord": "F",
+      "sequenceIndex": 96
+    },
+    {
+      "time": 197.434,
+      "chord": "G",
+      "sequenceIndex": 97
+    },
+    {
+      "time": 199.633,
+      "chord": "E/G#",
+      "sequenceIndex": 98
+    },
+    {
+      "time": 201.833,
+      "chord": "Am",
+      "sequenceIndex": 99
+    },
+    {
+      "time": 204.033,
+      "chord": "Dm",
+      "sequenceIndex": 100
+    },
+    {
+      "time": 206.233,
+      "chord": "Am",
+      "sequenceIndex": 101
+    },
+    {
+      "time": 208.433,
+      "chord": "F",
+      "sequenceIndex": 102
+    },
+    {
+      "time": 210.082,
+      "chord": "G",
+      "sequenceIndex": 103
+    },
+    {
+      "time": 218.882,
+      "chord": "C",
+      "sequenceIndex": 104
+    },
+    {
+      "time": 223.281,
+      "chord": "Fm",
+      "sequenceIndex": 105
+    },
+    {
+      "time": 225.481,
+      "chord": "C",
+      "sequenceIndex": 106
+    },
+    {
+      "time": 229.881,
+      "chord": "Fm",
+      "sequenceIndex": 107
+    },
+    {
+      "time": 232.081,
+      "chord": "C",
+      "sequenceIndex": 108
+    },
+    {
+      "time": 235.38,
+      "chord": "Fm",
+      "sequenceIndex": 109
+    },
+    {
+      "time": 237.58,
+      "chord": "C",
+      "sequenceIndex": 110
+    },
+    {
+      "time": 241.98,
+      "chord": "Fm",
+      "sequenceIndex": 111
+    }
+  ]
+}
