@@ -10,7 +10,7 @@
       "originalKey": "G",
       "bpm": 100,
       "timeline": "data/Cf8BweyPJ8s.json",
-      "audio": "audio/Cf8BweyPJ8s.mp3",
+      "audioParts": 7,
       "status": "review"
     }
   ]
