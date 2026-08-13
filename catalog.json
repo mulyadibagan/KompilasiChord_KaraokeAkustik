@@ -13,7 +13,7 @@
       "originalKey": "G",
       "bpm": 100,
       "timeline": "data/Cf8BweyPJ8s.json",
-      "audioParts": 7,
+      "storage": "google-drive",
       "status": "review"
     },
     {
@@ -27,7 +27,21 @@
       "originalKey": "F#",
       "bpm": 85.7,
       "timeline": "data/kNLRRzND5xA.json",
-      "audioParts": 8,
+      "storage": "google-drive",
+      "status": "review"
+    },
+    {
+      "youtubeId": "_BApmry8mQ4",
+      "slug": "enau-ari-lesmana-sesi-potret",
+      "title": "Sesi Potret",
+      "artist": "eńau feat. Ari Lesmana",
+      "album": "Sesi Potret - Single",
+      "year": 2026,
+      "cover": "https://img.youtube.com/vi/_BApmry8mQ4/hqdefault.jpg",
+      "originalKey": "C",
+      "bpm": 109.1,
+      "timeline": "data/_BApmry8mQ4.json",
+      "storage": "google-drive",
       "status": "review"
     }
   ]
