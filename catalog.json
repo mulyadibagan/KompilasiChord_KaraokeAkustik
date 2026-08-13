@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-13T00:00:00+07:00",
+  "songs": [
+    {
+      "youtubeId": "JENpTmMQBQY",
+      "slug": "fourtwnty-mangu",
+      "title": "Mangu",
+      "artist": "Fourtwnty feat. Charita Utami",
+      "originalKey": "G",
+      "bpm": 100,
+      "timeline": "data/JENpTmMQBQY.json",
+      "status": "experimental"
+    }
+  ]
+}
