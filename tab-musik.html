@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Prototipe Tab Musik KompilasiChord: latihan gitar, bass, dan drum langsung di browser.">
+  <title>Tab Musik — Exist · Dirantai Digelangi Rindu</title>
+  <style>
+    :root{--red:#d20d1b;--red-dark:#9d0913;--ink:#172033;--muted:#667085;--line:#e4e7ec;--soft:#f7f8fa;--paper:#fff;--active:#fff1f2}
+    *{box-sizing:border-box}body{margin:0;background:#f2f4f7;color:var(--ink);font:15px/1.5 Arial,sans-serif}
+    button,input{font:inherit}.wrap{max-width:980px;margin:auto;padding:24px 14px 50px}.hero{text-align:center;margin-bottom:18px}
+    .brand{color:var(--red);font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero h1{margin:4px 0 2px;font-size:30px}
+    .hero p{margin:0;color:var(--muted)}.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 12px 40px #10182812}
+    .songline{display:flex;align-items:start;justify-content:space-between;gap:14px}.songline h2{margin:0;font-size:24px}.songline p{margin:2px 0 0;color:var(--muted)}
+    .badge{white-space:nowrap;background:#fff4e5;color:#9a5b00;border-radius:99px;padding:7px 10px;font-size:12px;font-weight:800}
+    .instrument-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 14px}.instrument-tabs button,.section-tabs button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:800;cursor:pointer}
+    .instrument-tabs button[aria-selected="true"],.section-tabs button[aria-pressed="true"]{border-color:var(--red);background:var(--active);color:var(--red)}
+    .toolbar{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px}
+    .transport{display:flex;gap:8px}.transport button{min-width:112px;border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}.play{color:#fff;background:linear-gradient(135deg,var(--red),var(--red-dark))}.stop{background:#fff;border:1px solid var(--line)!important}
+    .tempo{display:flex;align-items:center;justify-content:center;gap:10px}.tempo input{width:min(280px,32vw);accent-color:var(--red)}.tempo strong{min-width:68px;color:var(--red)}
+    .options{display:flex;align-items:center;gap:11px}.switch{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}.switch input{accent-color:var(--red)}
+    .beat-dots{display:flex;justify-content:center;gap:8px;margin:15px 0 6px}.beat-dots span{width:12px;height:12px;border-radius:50%;background:#d0d5dd;transition:.1s}.beat-dots span.active{background:var(--red);transform:scale(1.22)}
+    .section-tabs{display:flex;gap:8px;margin:14px 0}.section-tabs button{min-width:92px}.score{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#101828;color:#eef2f6}
+    .score-head{display:flex;justify-content:space-between;gap:10px;padding:13px 16px;border-bottom:1px solid #344054;color:#cbd5e1}.score-head strong{color:#fff}
+    .bars{display:grid;grid-template-columns:repeat(4,minmax(210px,1fr));overflow-x:auto;scroll-snap-type:x mandatory}.bar-card{min-height:215px;padding:16px;border-right:1px solid #344054;scroll-snap-align:start;transition:.15s}.bar-card:last-child{border-right:0}.bar-card.active{background:#4a1218;box-shadow:inset 0 4px var(--red)}
+    .bar-label{display:flex;justify-content:space-between;margin-bottom:12px;color:#98a2b3;font-size:12px}.bar-label strong{font-size:22px;color:#ff7b86}
+    pre{margin:0;white-space:pre;font:700 15px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.legend{margin:12px 2px 0;color:var(--muted);font-size:13px}.source{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.source a{color:var(--red);font-weight:700}.status{min-height:22px;margin:10px 0 0;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:720px){.wrap{padding:10px 7px 30px}.card{padding:14px}.hero h1{font-size:24px}.songline{display:block}.badge{display:inline-block;margin-top:9px}.toolbar{grid-template-columns:1fr}.transport button{flex:1}.tempo input{width:55vw}.options{justify-content:center}.bars{grid-template-columns:repeat(4,86vw)}.bar-card{min-width:86vw}.score-head{display:block}.score-head span{display:block;margin-top:3px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero"><div class="brand">KompilasiChord</div><h1>Tab Musik</h1><p>Latihan instrumen interaktif tanpa audio tersimpan</p></header>
+  <section class="card">
+    <div class="songline"><div><h2>Dirantai Digelangi Rindu</h2><p>Exist · Nada dasar Am · 4/4</p></div><span class="badge">Aransemen latihan</span></div>
+    <div class="instrument-tabs" role="tablist" aria-label="Pilih instrumen">
+      <button type="button" role="tab" aria-selected="true" data-instrument="guitar">🎸 Gitar</button>
+      <button type="button" role="tab" aria-selected="false" data-instrument="bass">🎵 Bass</button>
+      <button type="button" role="tab" aria-selected="false" data-instrument="drums">🥁 Drum</button>
+    </div>
+    <div class="toolbar">
+      <div class="transport"><button class="play" id="play" type="button">▶ Mulai</button><button class="stop" id="stop" type="button">■ Stop</button></div>
+      <label class="tempo">Tempo <input id="tempo" type="range" min="50" max="130" value="76"><strong><span id="bpm">76</span> BPM</strong></label>
+      <div class="options"><label class="switch"><input id="metro" type="checkbox" checked> Metronom</label><label class="switch"><input id="loop" type="checkbox" checked> Ulang</label></div>
+    </div>
+    <div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div>
+    <div class="section-tabs" aria-label="Bagian lagu"><button type="button" aria-pressed="true" data-section="intro">Intro</button><button type="button" aria-pressed="false" data-section="reff">Reff</button></div>
+    <div class="score">
+      <div class="score-head"><strong id="score-title">Tab Gitar · Intro</strong><span id="tuning">Tuning E A D G B e · pola petikan dasar</span></div>
+      <div class="bars" id="bars"></div>
+    </div>
+    <p class="legend" id="legend">Angka menunjukkan fret. Tanda “-” menunjukkan senar tidak dipetik pada langkah tersebut.</p>
+    <p class="status" id="status">Tekan Mulai untuk mendengar pola latihan.</p>
+    <p class="source">Progresi chord mengacu pada <a href="https://www.kompilasichord.com/2018/12/chord-exist-dirantai-digelangi-rindu.html" target="_blank" rel="noopener">halaman chord KompilasiChord</a>. Pola instrumen dibuat sebagai latihan sederhana dan bukan transkripsi rekaman resmi.</p>
+  </section>
+</main>
+<script>
+(function(){
+  'use strict';
+  var DATA={
+    intro:['Am','E','C','E'],
+    reff:['Dm','G','C','Am']
+  };
+  var SHAPES={
+    guitar:{Am:['0','1','2','2','0','x'],E:['0','0','1','2','2','0'],C:['0','1','0','2','3','x'],Dm:['1','3','2','0','x','x'],G:['3','0','0','0','2','3']},
+    bass:{Am:9,E:4,C:3,Dm:5,G:10}
+  };
+  var state={instrument:'guitar',section:'intro',running:false,timer:0,step:0,context:null};
+  var bars=document.getElementById('bars'),play=document.getElementById('play'),stop=document.getElementById('stop'),tempo=document.getElementById('tempo');
+  function track(name,params){if(typeof window.gtag==='function')window.gtag('event',name,params||{});}
+  function guitarTab(chord){var f=SHAPES.guitar[chord]||SHAPES.guitar.Am,order=[5,3,2,1,0,1,2,3],names=['e','B','G','D','A','E'];return names.map(function(name,string){var cells=order.map(function(s){return s===string?String(f[string]).padEnd(2,'-'):'--';}).join('');return name+'|'+cells+'|';}).join('\n');}
+  function bassTab(chord){var pitch=SHAPES.bass[chord]||0,strings=['G','D','A','E'],string=chord==='G'?3:(chord==='C'?2:(chord==='E'?3:(chord==='Am'?2:1))),fret=chord==='G'?3:(chord==='C'?3:(chord==='E'?0:(chord==='Am'?0:0)));return strings.map(function(name,i){return name+'|'+(i===string?(fret+'---'+fret+'---').padEnd(16,'-'):'----------------')+'|';}).join('\n');}
+  function drumTab(){return 'HH|x-x-x-x-x-x-x-x-|\nSN|----o-------o---|\nBD|o-------o-o-----|';}
+  function tabFor(chord){return state.instrument==='guitar'?guitarTab(chord):(state.instrument==='bass'?bassTab(chord):drumTab());}
+  function render(){var chords=DATA[state.section];bars.innerHTML=chords.map(function(chord,i){return '<article class="bar-card" data-bar="'+i+'"><div class="bar-label"><strong>'+chord+'</strong><span>Birama '+(i+1)+'</span></div><pre>'+tabFor(chord)+'</pre></article>';}).join('');document.getElementById('score-title').textContent=(state.instrument==='guitar'?'Tab Gitar':state.instrument==='bass'?'Tab Bass':'Tab Drum')+' · '+(state.section==='intro'?'Intro':'Reff');document.getElementById('tuning').textContent=state.instrument==='guitar'?'Tuning E A D G B e · pola petikan dasar':state.instrument==='bass'?'Tuning E A D G · nada dasar dan oktaf':'HH = hi-hat · SN = snare · BD = bass drum';document.getElementById('legend').textContent=state.instrument==='drums'?'x = hi-hat, o = pukulan drum. Pola berjalan dalam ketukan 4/4.':'Angka menunjukkan fret. Tanda “-” menunjukkan senar tidak dipetik pada langkah tersebut.';highlight();}
+  function audio(){if(!state.context)state.context=new (window.AudioContext||window.webkitAudioContext)();if(state.context.state==='suspended')state.context.resume();return state.context;}
+  function tone(freq,duration,volume,type,offset){var c=audio(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(offset||0);o.type=type||'sine';o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration);}
+  function noise(duration,volume,offset){var c=audio(),len=Math.floor(c.sampleRate*duration),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<len;i++)d[i]=Math.random()*2-1;var s=c.createBufferSource(),g=c.createGain(),t=c.currentTime+(offset||0);s.buffer=buf;g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);s.connect(g);g.connect(c.destination);s.start(t);}
+  function sound(beat){var chord=DATA[state.section][Math.floor(state.step/4)%4],roots={Am:220,E:164.81,C:261.63,Dm:146.83,G:196},root=roots[chord]||220;if(document.getElementById('metro').checked)tone(beat===0?1100:760,.04,beat===0?.08:.045,'square',0);if(state.instrument==='guitar'){tone(root*(beat%2?1.5:1),.32,.055,'triangle',.02);tone(root*2,.22,.025,'sine',.06);}else if(state.instrument==='bass'){tone(root/2,.38,.1,'triangle',.02);}else{if(beat===0||beat===2)tone(70,.13,.16,'sine',.01);if(beat===1||beat===3)noise(.09,.09,.01);noise(.025,.025,0);}}
+  function highlight(){Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){el.classList.toggle('active',Number(el.dataset.bar)===Math.floor(state.step/4)%4);});Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===state.step%4);});}
+  function schedule(){if(!state.running)return;var beat=state.step%4;sound(beat);highlight();state.step++;if(state.step>=16){if(document.getElementById('loop').checked)state.step=0;else{return stopPlayback();}}var ms=60000/Number(tempo.value);state.timer=window.setTimeout(schedule,ms);}
+  function startPlayback(){if(state.running)return;state.running=true;audio();play.textContent='⏸ Jeda';document.getElementById('status').textContent='Memainkan '+state.instrument+' · '+state.section;track('tab_play_start',{instrument:state.instrument,section:state.section,bpm:Number(tempo.value)});schedule();}
+  function pausePlayback(){state.running=false;window.clearTimeout(state.timer);play.textContent='▶ Lanjut';document.getElementById('status').textContent='Dijeda pada birama '+(Math.floor(state.step/4)%4+1)+'.';}
+  function stopPlayback(){state.running=false;window.clearTimeout(state.timer);state.step=0;play.textContent='▶ Mulai';document.getElementById('status').textContent='Berhenti · siap diputar dari awal.';highlight();}
+  play.addEventListener('click',function(){state.running?pausePlayback():startPlayback();});stop.addEventListener('click',stopPlayback);tempo.addEventListener('input',function(){document.getElementById('bpm').textContent=this.value;track('tab_tempo_change',{bpm:Number(this.value)});});
+  document.querySelector('.instrument-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-instrument]');if(!b)return;stopPlayback();state.instrument=b.dataset.instrument;Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-selected',String(x===b));});render();track(state.instrument+'_tab_open',{song:'exist-dirantai-digelangi-rindu'});});
+  document.querySelector('.section-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-section]');if(!b)return;stopPlayback();state.section=b.dataset.section;Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',String(x===b));});render();track('tab_section_open',{section:state.section,instrument:state.instrument});});
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&state.running)pausePlayback();});render();track('music_tab_open',{song:'exist-dirantai-digelangi-rindu'});
+})();
+</script>
+</body>
+</html>
