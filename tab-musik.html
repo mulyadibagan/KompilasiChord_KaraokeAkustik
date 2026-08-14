@@ -13,6 +13,8 @@
     .hero p{margin:0;color:var(--muted)}.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 12px 40px #10182812}
     .songline{display:flex;align-items:start;justify-content:space-between;gap:14px}.songline h2{margin:0;font-size:24px}.songline p{margin:2px 0 0;color:var(--muted)}
     .badge{white-space:nowrap;background:#fff4e5;color:#9a5b00;border-radius:99px;padding:7px 10px;font-size:12px;font-weight:800}
+    .video-shell{margin-top:18px;overflow:hidden;border-radius:16px;background:#000;aspect-ratio:16/9}.video-shell iframe{width:100%;height:100%;border:0}
+    .original-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 0;padding:10px;background:#111827;border-radius:13px;color:#fff}.original-controls button,.original-controls select{border:1px solid #475467;border-radius:9px;background:#fff;color:#172033;padding:9px 11px;font-weight:800;cursor:pointer}.original-controls .original-play{border:0;background:var(--red);color:#fff}.original-controls .clock{margin-left:auto;font-variant-numeric:tabular-nums}.sync-note{margin:7px 2px 0;color:var(--muted);font-size:12px}.sync-note strong{color:var(--red)}
     .instrument-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0 14px}.instrument-tabs button,.section-tabs button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:800;cursor:pointer}
     .instrument-tabs button[aria-selected="true"],.section-tabs button[aria-pressed="true"]{border-color:var(--red);background:var(--active);color:var(--red)}
     .toolbar{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px}
@@ -25,7 +27,7 @@
     .bars{display:grid;grid-template-columns:repeat(4,minmax(210px,1fr));overflow-x:auto;scroll-snap-type:x mandatory}.bar-card{min-height:215px;padding:16px;border-right:1px solid #344054;scroll-snap-align:start;transition:.15s}.bar-card:last-child{border-right:0}.bar-card.active{background:#4a1218;box-shadow:inset 0 4px var(--red)}
     .bar-label{display:flex;justify-content:space-between;margin-bottom:12px;color:#98a2b3;font-size:12px}.bar-label strong{font-size:22px;color:#ff7b86}
     pre{margin:0;white-space:pre;font:700 15px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.legend{margin:12px 2px 0;color:var(--muted);font-size:13px}.source{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.source a{color:var(--red);font-weight:700}.status{min-height:22px;margin:10px 0 0;text-align:center;color:var(--muted);font-size:13px}
-    @media(max-width:720px){.wrap{padding:10px 7px 30px}.card{padding:14px}.hero h1{font-size:24px}.songline{display:block}.badge{display:inline-block;margin-top:9px}.instrument-tabs{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.transport button{flex:1}.tempo input{width:55vw}.options{justify-content:center}.bars{grid-template-columns:repeat(4,86vw)}.bar-card{min-width:86vw}.score-head{display:block}.score-head span{display:block;margin-top:3px}}
+    @media(max-width:720px){.wrap{padding:10px 7px 30px}.card{padding:14px}.hero h1{font-size:24px}.songline{display:block}.badge{display:inline-block;margin-top:9px}.original-controls .clock{width:100%;margin-left:0}.instrument-tabs{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.transport button{flex:1}.tempo input{width:55vw}.options{justify-content:center}.bars{grid-template-columns:repeat(4,86vw)}.bar-card{min-width:86vw}.score-head{display:block}.score-head span{display:block;margin-top:3px}}
   </style>
 </head>
 <body>
@@ -33,6 +35,14 @@
   <header class="hero"><div class="brand">KompilasiChord</div><h1>Tab Musik</h1><p>Latihan instrumen interaktif tanpa audio tersimpan</p></header>
   <section class="card">
     <div class="songline"><div><h2>Dirantai Digelangi Rindu</h2><p>Exist · Nada dasar Am · 4/4</p></div><span class="badge">Aransemen latihan</span></div>
+    <div class="video-shell"><div id="youtube-player" aria-label="Video resmi Exists"></div></div>
+    <div class="original-controls" aria-label="Kontrol lagu asli">
+      <button class="original-play" id="original-play" type="button">▶ Lagu Asli</button><button id="original-pause" type="button">⏸ Jeda</button>
+      <label>Kecepatan <select id="original-speed"><option value="0.75">75%</option><option value="1">100%</option></select></label>
+      <label class="switch"><input id="original-loop" type="checkbox"> Ulang bagian</label>
+      <span class="clock"><b id="video-clock">00:00</b> / 04:27</span>
+    </div>
+    <p class="sync-note">Sinkron awal: 91 BPM · koreksi <button id="sync-minus" type="button">−0,5 dtk</button> <strong id="sync-offset">0,0 dtk</strong> <button id="sync-plus" type="button">+0,5 dtk</button></p>
     <div class="instrument-tabs" role="tablist" aria-label="Pilih instrumen">
       <button type="button" role="tab" aria-selected="true" data-instrument="melody">🎼 Melodi</button>
       <button type="button" role="tab" aria-selected="false" data-instrument="guitar">🎸 Gitar</button>
@@ -40,12 +50,12 @@
       <button type="button" role="tab" aria-selected="false" data-instrument="drums">🥁 Drum</button>
     </div>
     <div class="toolbar">
-      <div class="transport"><button class="play" id="play" type="button">▶ Mulai</button><button class="stop" id="stop" type="button">■ Stop</button></div>
-      <label class="tempo">Tempo <input id="tempo" type="range" min="50" max="130" value="76"><strong><span id="bpm">76</span> BPM</strong></label>
+      <div class="transport"><button class="play" id="play" type="button">▶ Dengar Part</button><button class="stop" id="stop" type="button">■ Stop Part</button></div>
+      <label class="tempo">Tempo Part <input id="tempo" type="range" min="50" max="130" value="91"><strong><span id="bpm">91</span> BPM</strong></label>
       <div class="options"><label class="switch"><input id="metro" type="checkbox" checked> Metronom</label><label class="switch"><input id="loop" type="checkbox" checked> Ulang</label></div>
     </div>
     <div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div>
-    <div class="section-tabs" aria-label="Bagian lagu"><button type="button" aria-pressed="true" data-section="intro">Intro</button><button type="button" aria-pressed="false" data-section="verse1">Verse 1</button><button type="button" aria-pressed="false" data-section="pre">Pra-Reff</button><button type="button" aria-pressed="false" data-section="reff">Reff</button><button type="button" aria-pressed="false" data-section="verse2">Verse 2</button><button type="button" aria-pressed="false" data-section="interlude">Interlude</button><button type="button" aria-pressed="false" data-section="outro">Outro</button></div>
+    <div class="section-tabs" aria-label="Bagian lagu"><button type="button" aria-pressed="true" data-section="intro">Intro</button><button type="button" aria-pressed="false" data-section="verse1">Verse 1</button><button type="button" aria-pressed="false" data-section="pre">Pra-Reff</button><button type="button" aria-pressed="false" data-section="reff">Reff</button><button type="button" aria-pressed="false" data-section="verse2">Reff Lanjutan</button><button type="button" aria-pressed="false" data-section="interlude">Interlude</button><button type="button" aria-pressed="false" data-section="outro">Outro</button></div>
     <div class="score">
       <div class="score-head"><strong id="score-title">Melodi Latihan · Intro</strong><span id="tuning">Nada panduan pada senar e tinggi</span></div>
       <div class="bars" id="bars"></div>
@@ -55,6 +65,7 @@
     <p class="source">Progresi chord mengacu pada <a href="https://www.kompilasichord.com/2018/12/chord-exist-dirantai-digelangi-rindu.html" target="_blank" rel="noopener">halaman chord KompilasiChord</a>. Pola instrumen dibuat sebagai latihan sederhana dan bukan transkripsi rekaman resmi.</p>
   </section>
 </main>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
 (function(){
   'use strict';
@@ -63,10 +74,16 @@
     verse1:{label:'Verse 1',bars:['Am','Dm','G','Am','Am','Dm','G','E']},
     pre:{label:'Pra-Reff',bars:['Bm','C','Dm','G','F','C','Dm','G','E']},
     reff:{label:'Reff',bars:['Dm','G','C','Am','Dm','G','F','C','Dm','G','E']},
-    verse2:{label:'Verse 2',bars:['Am','Dm','G','Am','Am','Dm','G','E','F','Dm','G','F','C','Dm','G','E']},
+    verse2:{label:'Reff Lanjutan',bars:['Am','Dm','G','Am','Am','Dm','G','E','F','Dm','G','F','C','Dm','G','E']},
     interlude:{label:'Interlude',bars:['Am','G','C','E','Am','G','C','E']},
     outro:{label:'Outro',bars:['Am','E','C','E','Am','E','C','E']}
   };
+  var TIMELINE=[
+    {start:0,key:'intro'},{start:21.1,key:'verse1'},{start:42.2,key:'pre'},
+    {start:66,key:'reff'},{start:95,key:'verse2'},{start:137.2,key:'interlude'},
+    {start:158.3,key:'reff'},{start:187.3,key:'verse2'},{start:229.5,key:'outro'},
+    {start:266.8,key:'end'}
+  ];
   var GUITAR={Am:['0','1','2','2','0','x'],E:['0','0','1','2','2','0'],C:['0','1','0','2','3','x'],Dm:['1','3','2','0','x','x'],G:['3','0','0','0','2','3'],F:['1','1','2','3','3','1'],Bm:['2','3','4','4','2','x']};
   var MELODY={Am:['A4','C5','E5','C5'],E:['G#4','B4','E5','B4'],C:['G4','E4','C5','G4'],Dm:['A4','F4','D5','F4'],G:['G4','B4','D5','B4'],F:['A4','C5','F5','C5'],Bm:['B4','D5','F#5','D5']};
   var FRET={E4:0,F4:1,'F#4':2,G4:3,'G#4':4,A4:5,'A#4':6,B4:7,C5:8,'C#5':9,D5:10,'D#5':11,E5:12,F5:13,'F#5':14,G5:15};
@@ -81,7 +98,7 @@
     F:['G|----------------|','D|------3---------|','A|----3-------3---|','E|1-------1-------|'],
     Bm:['G|----------------|','D|------4---------|','A|2---2-----2---2---|','E|----------------|']
   };
-  var state={instrument:'melody',section:'intro',running:false,timer:0,step:0,context:null,lastBar:-1};
+  var state={instrument:'melody',section:'intro',running:false,timer:0,step:0,context:null,lastBar:-1,player:null,videoTimer:0,syncOffset:Number(localStorage.getItem('kcTabSyncOffset')||0)};
   var bars=document.getElementById('bars'),play=document.getElementById('play'),stop=document.getElementById('stop'),tempo=document.getElementById('tempo');
   function track(name,params){if(typeof window.gtag==='function')window.gtag('event',name,params||{});}
   function melodyTab(chord){var notes=MELODY[chord]||MELODY.Am,frets=notes.map(function(n){return String(FRET[n]).padEnd(4,'-');}).join('');return 'Not|'+notes.map(function(n){return n.padEnd(4,'-');}).join('')+'|\n'+'e  |'+frets+'|\nB  |----------------|\nG  |----------------|';}
@@ -91,20 +108,30 @@
   function tabFor(chord){if(state.instrument==='melody')return melodyTab(chord);if(state.instrument==='guitar')return guitarTab(chord);if(state.instrument==='bass')return bassTab(chord);return drumTab();}
   function instrumentName(){return state.instrument==='melody'?'Melodi Latihan':state.instrument==='guitar'?'Tab Gitar':state.instrument==='bass'?'Tab Bass':'Tab Drum';}
   function render(){var section=SECTIONS[state.section];bars.innerHTML=section.bars.map(function(chord,i){return '<article class="bar-card" data-bar="'+i+'"><div class="bar-label"><strong>'+chord+'</strong><span>Birama '+(i+1)+'</span></div><pre>'+tabFor(chord)+'</pre></article>';}).join('');document.getElementById('score-title').textContent=instrumentName()+' · '+section.label;document.getElementById('tuning').textContent=state.instrument==='melody'?'Nada panduan pada senar e tinggi':state.instrument==='guitar'?'Tuning E A D G B e · pola petikan dasar':state.instrument==='bass'?'Tuning E A D G · root, fifth, dan oktaf':'CR = crash · HH = hi-hat · SN = snare · BD = bass drum';document.getElementById('legend').textContent=state.instrument==='melody'?'Melodi latihan memakai nada chord agar arah nada mudah dipelajari; ini bukan melodi vokal rekaman asli.':state.instrument==='drums'?'x = cymbal/hi-hat dan o = pukulan drum dalam ketukan 4/4.':'Angka menunjukkan fret. Tanda “-” menunjukkan senar tidak dipetik pada langkah tersebut.';state.lastBar=-1;highlight();}
+  function fmt(sec){sec=Math.max(0,Math.floor(sec||0));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+  function setSection(key){if(!SECTIONS[key]||state.section===key)return;state.section=key;Array.prototype.forEach.call(document.querySelectorAll('.section-tabs button'),function(x){x.setAttribute('aria-pressed',String(x.dataset.section===key));});render();}
+  function timelineIndex(time){var adjusted=time+state.syncOffset,index=0;for(var i=0;i<TIMELINE.length-1;i++){if(adjusted>=TIMELINE[i].start)index=i;else break;}return index;}
+  function syncOriginal(){if(!state.player||typeof state.player.getCurrentTime!=='function')return;var time=state.player.getCurrentTime()||0,playerState=state.player.getPlayerState(),idx=timelineIndex(time),entry=TIMELINE[idx],next=TIMELINE[idx+1];state.videoPlaying=playerState===1;document.getElementById('video-clock').textContent=fmt(time);if(entry&&entry.key!=='end'){setSection(entry.key);var local=Math.max(0,time+state.syncOffset-entry.start),barSeconds=240/91,bar=Math.min(SECTIONS[entry.key].bars.length-1,Math.floor(local/barSeconds)),beat=Math.min(3,Math.floor((local-bar*barSeconds)/(barSeconds/4)));state.step=bar*4+beat;highlight();if(state.videoPlaying&&document.getElementById('original-loop').checked&&next&&time+state.syncOffset>=next.start-.08)state.player.seekTo(Math.max(0,entry.start-state.syncOffset),true);}}
+  function updateOffset(value){state.syncOffset=Math.max(-12,Math.min(12,Math.round(value*2)/2));localStorage.setItem('kcTabSyncOffset',String(state.syncOffset));document.getElementById('sync-offset').textContent=(state.syncOffset>0?'+':'')+state.syncOffset.toFixed(1).replace('.',',')+' dtk';syncOriginal();}
+  window.onYouTubeIframeAPIReady=function(){state.player=new YT.Player('youtube-player',{videoId:'dcEyID3okrM',playerVars:{playsinline:1,rel:0},events:{onReady:function(){state.videoTimer=window.setInterval(syncOriginal,200);syncOriginal();},onStateChange:function(e){state.videoPlaying=e.data===YT.PlayerState.PLAYING;if(state.videoPlaying)stopPlayback();}}});};
   function audio(){if(!state.context)state.context=new (window.AudioContext||window.webkitAudioContext)();if(state.context.state==='suspended')state.context.resume();return state.context;}
   function tone(freq,duration,volume,type,offset){var c=audio(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(offset||0);o.type=type||'sine';o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration);}
   function noise(duration,volume,offset){var c=audio(),len=Math.floor(c.sampleRate*duration),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<len;i++)d[i]=Math.random()*2-1;var s=c.createBufferSource(),g=c.createGain(),t=c.currentTime+(offset||0);s.buffer=buf;g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);s.connect(g);g.connect(c.destination);s.start(t);}
   function currentChord(){var list=SECTIONS[state.section].bars;return list[Math.floor(state.step/4)%list.length];}
   function sound(beat){var chord=currentChord(),root=ROOT[chord]||220,note=(MELODY[chord]||MELODY.Am)[beat];if(document.getElementById('metro').checked)tone(beat===0?1100:760,.04,beat===0?.07:.035,'square',0);if(state.instrument==='melody'){tone(FREQ[note]||440,.35,.075,'sine',.02);}else if(state.instrument==='guitar'){tone(root*(beat%2?1.5:1),.32,.055,'triangle',.02);tone(root*2,.22,.025,'sine',.06);}else if(state.instrument==='bass'){tone(root/2,.42,.11,'triangle',.02);}else{if(beat===0||beat===2)tone(70,.13,.16,'sine',.01);if(beat===1||beat===3)noise(.09,.09,.01);noise(.025,.025,0);}}
-  function highlight(){var current=Math.floor(state.step/4)%SECTIONS[state.section].bars.length;Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){var active=Number(el.dataset.bar)===current;el.classList.toggle('active',active);if(active&&state.lastBar!==current&&state.running)el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});});state.lastBar=current;Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===state.step%4);});}
+  function highlight(){var current=Math.floor(state.step/4)%SECTIONS[state.section].bars.length;Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){var active=Number(el.dataset.bar)===current;el.classList.toggle('active',active);if(active&&state.lastBar!==current&&(state.running||state.videoPlaying))el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});});state.lastBar=current;Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===state.step%4);});}
   function schedule(){if(!state.running)return;var beat=state.step%4;sound(beat);highlight();state.step++;var limit=SECTIONS[state.section].bars.length*4;if(state.step>=limit){if(document.getElementById('loop').checked)state.step=0;else{return stopPlayback();}}state.timer=window.setTimeout(schedule,60000/Number(tempo.value));}
   function startPlayback(){if(state.running)return;state.running=true;audio();play.textContent='⏸ Jeda';document.getElementById('status').textContent='Memainkan '+instrumentName()+' · '+SECTIONS[state.section].label;track('tab_play_start',{instrument:state.instrument,section:state.section,bpm:Number(tempo.value)});schedule();}
   function pausePlayback(){state.running=false;window.clearTimeout(state.timer);play.textContent='▶ Lanjut';document.getElementById('status').textContent='Dijeda pada birama '+(Math.floor(state.step/4)%SECTIONS[state.section].bars.length+1)+'.';}
-  function stopPlayback(){state.running=false;window.clearTimeout(state.timer);state.step=0;state.lastBar=-1;play.textContent='▶ Mulai';document.getElementById('status').textContent='Berhenti · siap diputar dari awal.';highlight();}
+  function stopPlayback(){state.running=false;window.clearTimeout(state.timer);if(!state.videoPlaying)state.step=0;state.lastBar=-1;play.textContent='▶ Dengar Part';document.getElementById('status').textContent='Berhenti · siap diputar dari awal.';highlight();}
   play.addEventListener('click',function(){state.running?pausePlayback():startPlayback();});stop.addEventListener('click',stopPlayback);tempo.addEventListener('input',function(){document.getElementById('bpm').textContent=this.value;track('tab_tempo_change',{bpm:Number(this.value)});});
   document.querySelector('.instrument-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-instrument]');if(!b)return;stopPlayback();state.instrument=b.dataset.instrument;Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-selected',String(x===b));});render();track(state.instrument+'_tab_open',{song:'exist-dirantai-digelangi-rindu'});});
-  document.querySelector('.section-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-section]');if(!b)return;stopPlayback();state.section=b.dataset.section;Array.prototype.forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',String(x===b));});render();track('tab_section_open',{section:state.section,instrument:state.instrument});});
-  document.addEventListener('visibilitychange',function(){if(document.hidden&&state.running)pausePlayback();});render();track('music_tab_open',{song:'exist-dirantai-digelangi-rindu'});
+  document.querySelector('.section-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-section]');if(!b)return;stopPlayback();setSection(b.dataset.section);var entry=TIMELINE.find(function(x){return x.key===b.dataset.section;});if(entry&&state.player&&typeof state.player.seekTo==='function')state.player.seekTo(Math.max(0,entry.start-state.syncOffset),true);track('tab_section_open',{section:state.section,instrument:state.instrument});});
+  document.getElementById('original-play').addEventListener('click',function(){if(state.player){stopPlayback();state.player.playVideo();track('original_play_start',{song:'exist-dirantai-digelangi-rindu'});}});
+  document.getElementById('original-pause').addEventListener('click',function(){if(state.player)state.player.pauseVideo();});
+  document.getElementById('original-speed').addEventListener('change',function(){if(state.player)state.player.setPlaybackRate(Number(this.value));track('original_speed_change',{speed:Number(this.value)});});
+  document.getElementById('sync-minus').addEventListener('click',function(){updateOffset(state.syncOffset-.5);});document.getElementById('sync-plus').addEventListener('click',function(){updateOffset(state.syncOffset+.5);});
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&state.running)pausePlayback();});updateOffset(state.syncOffset);render();track('music_tab_open',{song:'exist-dirantai-digelangi-rindu'});
 })();
 </script>
 </body>
