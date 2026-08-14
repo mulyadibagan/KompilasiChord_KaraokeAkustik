@@ -5,6 +5,8 @@ small subset of each library is included so the page stays reasonably light.
 
 - `emilyguitar/`: Karoryfer Samples Emilyguitar, CC0 1.0.
   Source: https://github.com/sfzinstruments/karoryfer.emilyguitar
+  The selected notes include three round-robin pick variations. The player
+  rotates them and builds full six-string chord voicings for natural strums.
 - `big-little-bass/`: Karoryfer Samples Big Little Bass, CC0 1.0.
   Source: https://github.com/sfzinstruments/karoryfer.big-little-bass
 - `virtuosity-drums/`: Virtuosity Drums by Versilian Studios and Karoryfer
