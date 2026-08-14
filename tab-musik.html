@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Prototipe Tab Musik KompilasiChord: latihan gitar, bass, dan drum langsung di browser.">
-  <title>Tab Musik — Exist · Dirantai Digelangi Rindu</title>
+  <title>Tab Musik — Exists · Dirantai Digelangi Rindu</title>
   <style>
     :root{--red:#d20d1b;--red-dark:#9d0913;--ink:#172033;--muted:#667085;--line:#e4e7ec;--soft:#f7f8fa;--paper:#fff;--active:#fff1f2}
     *{box-sizing:border-box}body{margin:0;background:#f2f4f7;color:var(--ink);font:15px/1.5 Arial,sans-serif}
@@ -34,7 +34,7 @@
 <main class="wrap">
   <header class="hero"><div class="brand">KompilasiChord</div><h1>Tab Musik</h1><p>Latihan instrumen interaktif tanpa audio tersimpan</p></header>
   <section class="card">
-    <div class="songline"><div><h2>Dirantai Digelangi Rindu</h2><p>Exist · Nada dasar Am · 4/4</p></div><span class="badge">Aransemen latihan</span></div>
+    <div class="songline"><div><h2>Dirantai Digelangi Rindu</h2><p>Exists · Nada dasar Am · 4/4</p></div><span class="badge">Intro ditranskripsi · bagian lain latihan</span></div>
     <div class="video-shell"><div id="youtube-player" aria-label="Video resmi Exists"></div></div>
     <div class="original-controls" aria-label="Kontrol lagu asli">
       <button class="original-play" id="original-play" type="button">▶ Lagu Asli</button><button id="original-pause" type="button">⏸ Jeda</button>
@@ -42,27 +42,27 @@
       <label class="switch"><input id="original-loop" type="checkbox"> Ulang bagian</label>
       <span class="clock"><b id="video-clock">00:00</b> / 04:27</span>
     </div>
-    <p class="sync-note">Sinkron awal: 91 BPM · koreksi <button id="sync-minus" type="button">−0,5 dtk</button> <strong id="sync-offset">0,0 dtk</strong> <button id="sync-plus" type="button">+0,5 dtk</button></p>
+    <p class="sync-note">Sinkron awal: 90 BPM · koreksi <button id="sync-minus" type="button">−0,5 dtk</button> <strong id="sync-offset">0,0 dtk</strong> <button id="sync-plus" type="button">+0,5 dtk</button></p>
     <div class="instrument-tabs" role="tablist" aria-label="Pilih instrumen">
-      <button type="button" role="tab" aria-selected="true" data-instrument="melody">🎼 Melodi</button>
+      <button type="button" role="tab" aria-selected="true" data-instrument="melody">🎼 Melodi/Lead</button>
       <button type="button" role="tab" aria-selected="false" data-instrument="guitar">🎸 Gitar</button>
       <button type="button" role="tab" aria-selected="false" data-instrument="bass">🎵 Bass</button>
       <button type="button" role="tab" aria-selected="false" data-instrument="drums">🥁 Drum</button>
     </div>
     <div class="toolbar">
       <div class="transport"><button class="play" id="play" type="button">▶ Dengar Part</button><button class="stop" id="stop" type="button">■ Stop Part</button></div>
-      <label class="tempo">Tempo Part <input id="tempo" type="range" min="50" max="130" value="91"><strong><span id="bpm">91</span> BPM</strong></label>
+      <label class="tempo">Tempo Part <input id="tempo" type="range" min="50" max="130" value="90"><strong><span id="bpm">90</span> BPM</strong></label>
       <div class="options"><label class="switch"><input id="metro" type="checkbox" checked> Metronom</label><label class="switch"><input id="loop" type="checkbox" checked> Ulang</label></div>
     </div>
     <div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div>
     <div class="section-tabs" aria-label="Bagian lagu"><button type="button" aria-pressed="true" data-section="intro">Intro</button><button type="button" aria-pressed="false" data-section="verse1">Verse 1</button><button type="button" aria-pressed="false" data-section="pre">Pra-Reff</button><button type="button" aria-pressed="false" data-section="reff">Reff</button><button type="button" aria-pressed="false" data-section="verse2">Reff Lanjutan</button><button type="button" aria-pressed="false" data-section="interlude">Interlude</button><button type="button" aria-pressed="false" data-section="outro">Outro</button></div>
     <div class="score">
-      <div class="score-head"><strong id="score-title">Melodi Latihan · Intro</strong><span id="tuning">Nada panduan pada senar e tinggi</span></div>
+      <div class="score-head"><strong id="score-title">Melodi Intro · Intro</strong><span id="tuning">Tuning standar E A D G B e</span></div>
       <div class="bars" id="bars"></div>
     </div>
-    <p class="legend" id="legend">Nama nada dan posisi fret membantu mempelajari arah melodi latihan.</p>
+    <p class="legend" id="legend">Setiap dua karakter mewakili not 1/16; tanda ~~ berarti nada ditahan.</p>
     <p class="status" id="status">Tekan Mulai untuk mendengar pola latihan.</p>
-    <p class="source">Progresi chord mengacu pada <a href="https://www.kompilasichord.com/2018/12/chord-exist-dirantai-digelangi-rindu.html" target="_blank" rel="noopener">halaman chord KompilasiChord</a>. Pola instrumen dibuat sebagai latihan sederhana dan bukan transkripsi rekaman resmi.</p>
+    <p class="source">Progresi chord mengacu pada <a href="https://www.kompilasichord.com/2018/12/chord-exist-dirantai-digelangi-rindu.html" target="_blank" rel="noopener">halaman chord KompilasiChord</a>. Delapan birama melodi intro ditranskripsi dari audio yang diberikan untuk latihan; pola pada bagian lagu lainnya tetap berupa aransemen latihan sederhana.</p>
   </section>
 </main>
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -86,6 +86,17 @@
   ];
   var GUITAR={Am:['0','1','2','2','0','x'],E:['0','0','1','2','2','0'],C:['0','1','0','2','3','x'],Dm:['1','3','2','0','x','x'],G:['3','0','0','0','2','3'],F:['1','1','2','3','3','1'],Bm:['2','3','4','4','2','x']};
   var MELODY={Am:['A4','C5','E5','C5'],E:['G#4','B4','E5','B4'],C:['G4','E4','C5','G4'],Dm:['A4','F4','D5','F4'],G:['G4','B4','D5','B4'],F:['A4','C5','F5','C5'],Bm:['B4','D5','F#5','D5']};
+  var INTRO_TUNING=[64,59,55,50,45,40];
+  var INTRO_LEAD=[
+    [{p:0,s:3,f:7,d:2},{p:2,s:1,f:0,d:2},{p:4,s:2,f:5,d:2},{p:6,s:0,f:0,d:4},{p:10,s:1,f:0,d:2},{p:12,s:2,f:5,d:2},{p:14,s:3,f:7,d:2}],
+    [{p:0,s:3,f:6,d:2},{p:2,s:1,f:5,d:2},{p:4,s:2,f:4,d:2},{p:6,s:0,f:4,d:4},{p:10,s:1,f:5,d:2},{p:12,s:2,f:4,d:2},{p:14,s:4,f:0,d:1},{p:15,s:4,f:2,d:1}],
+    [{p:0,s:4,f:3,d:2},{p:2,s:3,f:2,d:2},{p:4,s:1,f:3,d:2},{p:6,s:2,f:0,d:4},{p:10,s:0,f:0,d:2},{p:12,s:1,f:3,d:2},{p:14,s:2,f:0,d:2}],
+    [{p:6,s:4,f:7,d:2},{p:8,s:3,f:5,d:1},{p:9,s:3,f:7,d:1},{p:10,s:2,f:5,d:1},{p:11,s:2,f:7,d:1},{p:12,s:1,f:5,d:1},{p:13,s:1,f:6,d:1},{p:14,s:1,f:5,d:1},{p:15,s:2,f:7,d:1}],
+    [{p:0,s:1,f:5,d:12,v:true},{p:12,s:1,f:5,d:2,t:true},{p:14,s:1,f:9,d:2}],
+    [{p:0,s:1,f:9,d:2,t:true},{p:2,s:1,f:10,d:2},{p:4,s:1,f:12,d:2},{p:6,s:2,f:9,d:2},{p:8,s:2,f:9,d:8,v:true}],
+    [{p:0,s:1,f:5,d:2},{p:2,s:1,f:10,d:2},{p:4,s:1,f:12,d:2},{p:6,s:1,f:13,d:2},{p:8,s:1,f:12,d:2},{p:10,s:1,f:13,d:2},{p:12,s:1,f:15,d:2},{p:14,s:1,f:12,d:2}],
+    [{p:0,s:1,f:9,d:4},{p:4,s:1,f:15,d:2},{p:6,s:2,f:9,d:2},{p:8,s:2,f:9,d:8,t:true}]
+  ];
   var FRET={E4:0,F4:1,'F#4':2,G4:3,'G#4':4,A4:5,'A#4':6,B4:7,C5:8,'C#5':9,D5:10,'D#5':11,E5:12,F5:13,'F#5':14,G5:15};
   var FREQ={E4:329.63,F4:349.23,'F#4':369.99,G4:392,'G#4':415.3,A4:440,'A#4':466.16,B4:493.88,C5:523.25,'C#5':554.37,D5:587.33,'D#5':622.25,E5:659.25,F5:698.46,'F#5':739.99,G5:783.99};
   var ROOT={Am:220,E:164.81,C:261.63,Dm:146.83,G:196,F:174.61,Bm:246.94};
@@ -102,23 +113,25 @@
   var bars=document.getElementById('bars'),play=document.getElementById('play'),stop=document.getElementById('stop'),tempo=document.getElementById('tempo');
   function track(name,params){if(typeof window.gtag==='function')window.gtag('event',name,params||{});}
   function melodyTab(chord){var notes=MELODY[chord]||MELODY.Am,frets=notes.map(function(n){return String(FRET[n]).padEnd(4,'-');}).join('');return 'Not|'+notes.map(function(n){return n.padEnd(4,'-');}).join('')+'|\n'+'e  |'+frets+'|\nB  |----------------|\nG  |----------------|';}
+  function midiName(midi){var names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[midi%12]+(Math.floor(midi/12)-1);}
+  function introMelodyTab(index){var events=INTRO_LEAD[index]||[],names=['e','B','G','D','A','E'],grid=names.map(function(){return Array(16).fill('--');}),notes=[];events.forEach(function(e){var midi=INTRO_TUNING[e.s]+e.f;if(!e.t)notes.push(midiName(midi));grid[e.s][e.p]=e.t?'~~':String(e.f).padStart(2,'-');for(var i=1;i<e.d&&e.p+i<16;i++)grid[e.s][e.p+i]='~~';});function row(cells){var out='';for(var i=0;i<16;i++){if(i%4===0)out+='|';out+=cells[i];}return out+'|';}return 'Nada: '+notes.join(' · ')+'\n'+names.map(function(name,i){return name.padEnd(2,' ')+' '+row(grid[i]);}).join('\n');}
   function guitarTab(chord){var f=GUITAR[chord]||GUITAR.Am,order=[5,3,2,1,0,1,2,3],names=['e','B','G','D','A','E'];return names.map(function(name,string){var cells=order.map(function(s){return s===string?String(f[string]).padEnd(2,'-'):'--';}).join('');return name+'|'+cells+'|';}).join('\n');}
   function bassTab(chord){return (BASS[chord]||BASS.Am).join('\n');}
   function drumTab(){var strong=state.section==='reff'||state.section==='outro';return strong?'CR|x---------------|\nHH|x-x-x-x-x-x-x-x-|\nSN|----o-------o---|\nBD|o--o----o-o-----|':'HH|x-x-x-x-x-x-x-x-|\nSN|----o-------o---|\nBD|o-------o-o-----|';}
-  function tabFor(chord){if(state.instrument==='melody')return melodyTab(chord);if(state.instrument==='guitar')return guitarTab(chord);if(state.instrument==='bass')return bassTab(chord);return drumTab();}
-  function instrumentName(){return state.instrument==='melody'?'Melodi Latihan':state.instrument==='guitar'?'Tab Gitar':state.instrument==='bass'?'Tab Bass':'Tab Drum';}
-  function render(){var section=SECTIONS[state.section];bars.innerHTML=section.bars.map(function(chord,i){return '<article class="bar-card" data-bar="'+i+'"><div class="bar-label"><strong>'+chord+'</strong><span>Birama '+(i+1)+'</span></div><pre>'+tabFor(chord)+'</pre></article>';}).join('');document.getElementById('score-title').textContent=instrumentName()+' · '+section.label;document.getElementById('tuning').textContent=state.instrument==='melody'?'Nada panduan pada senar e tinggi':state.instrument==='guitar'?'Tuning E A D G B e · pola petikan dasar':state.instrument==='bass'?'Tuning E A D G · root, fifth, dan oktaf':'CR = crash · HH = hi-hat · SN = snare · BD = bass drum';document.getElementById('legend').textContent=state.instrument==='melody'?'Melodi latihan memakai nada chord agar arah nada mudah dipelajari; ini bukan melodi vokal rekaman asli.':state.instrument==='drums'?'x = cymbal/hi-hat dan o = pukulan drum dalam ketukan 4/4.':'Angka menunjukkan fret. Tanda “-” menunjukkan senar tidak dipetik pada langkah tersebut.';state.lastBar=-1;highlight();}
+  function tabFor(chord,index){if(state.instrument==='melody')return state.section==='intro'?introMelodyTab(index):melodyTab(chord);if(state.instrument==='guitar')return guitarTab(chord);if(state.instrument==='bass')return bassTab(chord);return drumTab();}
+  function instrumentName(){return state.instrument==='melody'?(state.section==='intro'?'Melodi Intro':'Panduan Nada Chord'):state.instrument==='guitar'?'Tab Gitar':state.instrument==='bass'?'Tab Bass':'Tab Drum';}
+  function render(){var section=SECTIONS[state.section],exactIntro=state.instrument==='melody'&&state.section==='intro';bars.innerHTML=section.bars.map(function(chord,i){return '<article class="bar-card" data-bar="'+i+'"><div class="bar-label"><strong>'+chord+'</strong><span>Birama '+(i+1)+'</span></div><pre>'+tabFor(chord,i)+'</pre></article>';}).join('');document.getElementById('score-title').textContent=instrumentName()+' · '+section.label;document.getElementById('tuning').textContent=exactIntro?'Tuning standar E A D G B e · 90 BPM':state.instrument==='melody'?'Nada panduan berdasarkan chord':state.instrument==='guitar'?'Tuning E A D G B e · pola petikan dasar':state.instrument==='bass'?'Tuning E A D G · root, fifth, dan oktaf':'CR = crash · HH = hi-hat · SN = snare · BD = bass drum';document.getElementById('legend').textContent=exactIntro?'Transkripsi 8 birama intro: setiap dua karakter = not 1/16, garis tegak = batas ketukan, dan ~~ = nada ditahan/tie atau vibrato.':state.instrument==='melody'?'Bagian ini masih berupa panduan nada chord, bukan melodi rekaman asli.':state.instrument==='drums'?'x = cymbal/hi-hat dan o = pukulan drum dalam ketukan 4/4.':'Angka menunjukkan fret. Tanda “-” menunjukkan senar tidak dipetik pada langkah tersebut.';state.lastBar=-1;highlight();}
   function fmt(sec){sec=Math.max(0,Math.floor(sec||0));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
   function setSection(key){if(!SECTIONS[key]||state.section===key)return;state.section=key;Array.prototype.forEach.call(document.querySelectorAll('.section-tabs button'),function(x){x.setAttribute('aria-pressed',String(x.dataset.section===key));});render();}
   function timelineIndex(time){var adjusted=time+state.syncOffset,index=0;for(var i=0;i<TIMELINE.length-1;i++){if(adjusted>=TIMELINE[i].start)index=i;else break;}return index;}
-  function syncOriginal(){if(!state.player||typeof state.player.getCurrentTime!=='function')return;var time=state.player.getCurrentTime()||0,playerState=state.player.getPlayerState(),idx=timelineIndex(time),entry=TIMELINE[idx],next=TIMELINE[idx+1];state.videoPlaying=playerState===1;document.getElementById('video-clock').textContent=fmt(time);if(entry&&entry.key!=='end'){setSection(entry.key);var local=Math.max(0,time+state.syncOffset-entry.start),barSeconds=240/91,bar=Math.min(SECTIONS[entry.key].bars.length-1,Math.floor(local/barSeconds)),beat=Math.min(3,Math.floor((local-bar*barSeconds)/(barSeconds/4)));state.step=bar*4+beat;highlight();if(state.videoPlaying&&document.getElementById('original-loop').checked&&next&&time+state.syncOffset>=next.start-.08)state.player.seekTo(Math.max(0,entry.start-state.syncOffset),true);}}
+  function syncOriginal(){if(!state.player||typeof state.player.getCurrentTime!=='function')return;var time=state.player.getCurrentTime()||0,playerState=state.player.getPlayerState(),idx=timelineIndex(time),entry=TIMELINE[idx],next=TIMELINE[idx+1];state.videoPlaying=playerState===1;document.getElementById('video-clock').textContent=fmt(time);if(entry&&entry.key!=='end'){setSection(entry.key);var local=Math.max(0,time+state.syncOffset-entry.start),barSeconds=240/90,bar=Math.min(SECTIONS[entry.key].bars.length-1,Math.floor(local/barSeconds)),beat=Math.min(3,Math.floor((local-bar*barSeconds)/(barSeconds/4)));state.step=bar*4+beat;highlight();if(state.videoPlaying&&document.getElementById('original-loop').checked&&next&&time+state.syncOffset>=next.start-.08)state.player.seekTo(Math.max(0,entry.start-state.syncOffset),true);}}
   function updateOffset(value){state.syncOffset=Math.max(-12,Math.min(12,Math.round(value*2)/2));localStorage.setItem('kcTabSyncOffset',String(state.syncOffset));document.getElementById('sync-offset').textContent=(state.syncOffset>0?'+':'')+state.syncOffset.toFixed(1).replace('.',',')+' dtk';syncOriginal();}
   window.onYouTubeIframeAPIReady=function(){state.player=new YT.Player('youtube-player',{videoId:'dcEyID3okrM',playerVars:{playsinline:1,rel:0},events:{onReady:function(){state.videoTimer=window.setInterval(syncOriginal,200);syncOriginal();},onStateChange:function(e){state.videoPlaying=e.data===YT.PlayerState.PLAYING;if(state.videoPlaying)stopPlayback();}}});};
   function audio(){if(!state.context)state.context=new (window.AudioContext||window.webkitAudioContext)();if(state.context.state==='suspended')state.context.resume();return state.context;}
   function tone(freq,duration,volume,type,offset){var c=audio(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(offset||0);o.type=type||'sine';o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration);}
   function noise(duration,volume,offset){var c=audio(),len=Math.floor(c.sampleRate*duration),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<len;i++)d[i]=Math.random()*2-1;var s=c.createBufferSource(),g=c.createGain(),t=c.currentTime+(offset||0);s.buffer=buf;g.gain.setValueAtTime(volume,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);s.connect(g);g.connect(c.destination);s.start(t);}
   function currentChord(){var list=SECTIONS[state.section].bars;return list[Math.floor(state.step/4)%list.length];}
-  function sound(beat){var chord=currentChord(),root=ROOT[chord]||220,note=(MELODY[chord]||MELODY.Am)[beat];if(document.getElementById('metro').checked)tone(beat===0?1100:760,.04,beat===0?.07:.035,'square',0);if(state.instrument==='melody'){tone(FREQ[note]||440,.35,.075,'sine',.02);}else if(state.instrument==='guitar'){tone(root*(beat%2?1.5:1),.32,.055,'triangle',.02);tone(root*2,.22,.025,'sine',.06);}else if(state.instrument==='bass'){tone(root/2,.42,.11,'triangle',.02);}else{if(beat===0||beat===2)tone(70,.13,.16,'sine',.01);if(beat===1||beat===3)noise(.09,.09,.01);noise(.025,.025,0);}}
+  function sound(beat){var chord=currentChord(),root=ROOT[chord]||220,note=(MELODY[chord]||MELODY.Am)[beat];if(document.getElementById('metro').checked)tone(beat===0?1100:760,.04,beat===0?.07:.035,'square',0);if(state.instrument==='melody'&&state.section==='intro'){var bar=Math.floor(state.step/4)%INTRO_LEAD.length,from=beat*4,to=from+4,slotSeconds=60/Number(tempo.value)/4;(INTRO_LEAD[bar]||[]).forEach(function(e){if(!e.t&&e.p>=from&&e.p<to){var midi=INTRO_TUNING[e.s]+e.f,freq=440*Math.pow(2,(midi-69)/12);tone(freq,Math.max(.08,e.d*slotSeconds*.92),.075,'sine',(e.p-from)*slotSeconds+.02);}});}else if(state.instrument==='melody'){tone(FREQ[note]||440,.35,.075,'sine',.02);}else if(state.instrument==='guitar'){tone(root*(beat%2?1.5:1),.32,.055,'triangle',.02);tone(root*2,.22,.025,'sine',.06);}else if(state.instrument==='bass'){tone(root/2,.42,.11,'triangle',.02);}else{if(beat===0||beat===2)tone(70,.13,.16,'sine',.01);if(beat===1||beat===3)noise(.09,.09,.01);noise(.025,.025,0);}}
   function highlight(){var current=Math.floor(state.step/4)%SECTIONS[state.section].bars.length;Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){var active=Number(el.dataset.bar)===current;el.classList.toggle('active',active);if(active&&state.lastBar!==current&&(state.running||state.videoPlaying))el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});});state.lastBar=current;Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===state.step%4);});}
   function schedule(){if(!state.running)return;var beat=state.step%4;sound(beat);highlight();state.step++;var limit=SECTIONS[state.section].bars.length*4;if(state.step>=limit){if(document.getElementById('loop').checked)state.step=0;else{return stopPlayback();}}state.timer=window.setTimeout(schedule,60000/Number(tempo.value));}
   function startPlayback(){if(state.running)return;state.running=true;audio();play.textContent='⏸ Jeda';document.getElementById('status').textContent='Memainkan '+instrumentName()+' · '+SECTIONS[state.section].label;track('tab_play_start',{instrument:state.instrument,section:state.section,bpm:Number(tempo.value)});schedule();}
