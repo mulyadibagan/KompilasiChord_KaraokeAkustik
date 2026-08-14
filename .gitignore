@@ -2,4 +2,6 @@
 *.wav
 *.m4a
 *.flac
+!samples/cc0/**/*.wav
+!samples/cc0/**/*.flac
 __pycache__/
