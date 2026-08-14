@@ -9,6 +9,7 @@
     var end=start+length;
     var release=Math.min(.09,length*.28);
     var level=Math.max(.0001,volume||.03);
+    var clearPitch=!!options.clearPitch;
 
     var output=context.createGain();
     var compressor=context.createDynamicsCompressor();
@@ -27,9 +28,9 @@
     // Jalur nada dasar dipertahankan agar tinggi nada tetap jelas di speaker tablet.
     var fundamental=context.createOscillator();
     var fundamentalGain=context.createGain();
-    fundamental.type='triangle';
+    fundamental.type=clearPitch?'sine':'triangle';
     fundamental.frequency.setValueAtTime(frequency,start);
-    fundamentalGain.gain.value=.78;
+    fundamentalGain.gain.value=clearPitch?1:.78;
     fundamental.connect(fundamentalGain);
     fundamentalGain.connect(output);
 
@@ -37,14 +38,14 @@
     var harmonic=context.createOscillator();
     var harmonicGain=context.createGain();
     var formant=context.createBiquadFilter();
-    harmonic.type='sawtooth';
-    harmonic.frequency.setValueAtTime(frequency,start);
-    harmonicGain.gain.value=.22;
+    harmonic.type=clearPitch?'sine':'sawtooth';
+    harmonic.frequency.setValueAtTime(clearPitch?frequency*2:frequency,start);
+    harmonicGain.gain.value=clearPitch?.11:.22;
     formant.type='bandpass';
     formant.frequency.value=frequency<220?780:920;
     formant.Q.value=2.4;
-    harmonic.connect(formant);
-    formant.connect(harmonicGain);
+    if(clearPitch)harmonic.connect(harmonicGain);
+    else{harmonic.connect(formant);formant.connect(harmonicGain);}
     harmonicGain.connect(output);
 
     // Penanda singkat pada awal nada membantu membedakan perpindahan not.
@@ -52,8 +53,8 @@
     var markerGain=context.createGain();
     marker.type='sine';
     marker.frequency.setValueAtTime(frequency,start);
-    markerGain.gain.setValueAtTime(level*.32,start);
-    markerGain.gain.exponentialRampToValueAtTime(.0001,start+Math.min(.055,length*.35));
+    markerGain.gain.setValueAtTime(level*(clearPitch?.48:.32),start);
+    markerGain.gain.exponentialRampToValueAtTime(.0001,start+Math.min(clearPitch?.075:.055,length*.35));
     marker.connect(markerGain);
     markerGain.connect(compressor);
 
@@ -61,7 +62,7 @@
     var vibratoDepth=context.createGain();
     vibrato.frequency.value=5.0;
     vibratoDepth.gain.setValueAtTime(0,start);
-    vibratoDepth.gain.linearRampToValueAtTime(options.vibrato?5:1.5,Math.min(end,start+.24));
+    vibratoDepth.gain.linearRampToValueAtTime(clearPitch?0:(options.vibrato?5:1.5),Math.min(end,start+.24));
     vibrato.connect(vibratoDepth);
     vibratoDepth.connect(fundamental.detune);
     vibratoDepth.connect(harmonic.detune);
