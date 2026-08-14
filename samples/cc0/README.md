@@ -10,6 +10,9 @@ small subset of each library is included so the page stays reasonably light.
 - `virtuosity-drums/`: Virtuosity Drums by Versilian Studios and Karoryfer
   Samples, CC0 1.0.
   Source: https://github.com/sfzinstruments/virtuosity_drums
+  The `natural/` subset uses kick/snare close microphones, cymbal overheads,
+  and mid microphones for high/low toms. Multiple dynamics and alternate hits
+  are included to reduce repetitive machine-gun playback.
 
 The source libraries' CC0 license permits commercial and non-commercial use.
 This notice documents provenance; attribution is not required by CC0.

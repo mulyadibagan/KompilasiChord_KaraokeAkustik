@@ -14,11 +14,18 @@
       {note:'C4',url:asset('big-little-bass/c4.wav')}
     ],
     drums:{
-      kick:asset('virtuosity-drums/kick.flac'),snare:asset('virtuosity-drums/snare.flac'),
-      hihat:asset('virtuosity-drums/hihat.flac'),crash:asset('virtuosity-drums/crash.flac')
+      kick:[asset('virtuosity-drums/natural/kick-soft.flac'),asset('virtuosity-drums/natural/kick-hard-1.flac'),asset('virtuosity-drums/natural/kick-hard-2.flac')],
+      snare:[asset('virtuosity-drums/natural/snare-soft.flac'),asset('virtuosity-drums/natural/snare-mid.flac'),asset('virtuosity-drums/natural/snare-hard.flac')],
+      rimshot:[asset('virtuosity-drums/natural/snare-rim.flac')],
+      hihat:[asset('virtuosity-drums/natural/hihat-closed-1.flac'),asset('virtuosity-drums/natural/hihat-closed-2.flac'),asset('virtuosity-drums/natural/hihat-closed-3.flac')],
+      openhat:[asset('virtuosity-drums/natural/hihat-open.flac')],
+      ride:[asset('virtuosity-drums/natural/ride.flac')],ridebell:[asset('virtuosity-drums/natural/ride-bell.flac')],
+      tomhigh:[asset('virtuosity-drums/natural/tom-high-soft.flac'),asset('virtuosity-drums/natural/tom-high-hard.flac')],
+      tomlow:[asset('virtuosity-drums/natural/tom-low-soft.flac'),asset('virtuosity-drums/natural/tom-low-hard.flac')],
+      crash:[asset('virtuosity-drums/natural/crash.flac')]
     }
   };
-  var state={context:null,buffers:{guitar:[],bass:[],drums:{}},loadPromise:null,loaded:false,failures:0,active:[]};
+  var state={context:null,buffers:{guitar:[],bass:[],drums:{}},loadPromise:null,loaded:false,failures:0,active:[],drumIndex:{},drumBus:null,openHats:[]};
   function noteMidi(note){var match=/^([A-G])(#?)(-?\d)$/.exec(note||'');if(!match)return 69;var semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11};return(Number(match[3])+1)*12+semis[match[1]]+(match[2]?1:0);}
   function midiName(midi){var names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[midi%12]+(Math.floor(midi/12)-1);}
   function decode(url){return fetch(url).then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.arrayBuffer();}).then(function(data){return state.context.decodeAudioData(data);});}
@@ -26,12 +33,12 @@
     if(state.loadPromise)return state.loadPromise;
     state.context=context;var jobs=[];
     ['guitar','bass'].forEach(function(group){manifest[group].forEach(function(item){jobs.push(decode(item.url).then(function(buffer){state.buffers[group].push({note:item.note,midi:noteMidi(item.note),buffer:buffer});}).catch(function(){state.failures++;}));});});
-    Object.keys(manifest.drums).forEach(function(name){jobs.push(decode(manifest.drums[name]).then(function(buffer){state.buffers.drums[name]=buffer;}).catch(function(){state.failures++;}));});
-    state.loadPromise=Promise.all(jobs).then(function(){state.loaded=state.buffers.guitar.length>0||state.buffers.bass.length>0||Object.keys(state.buffers.drums).length>0;return state.loaded;});
+    Object.keys(manifest.drums).forEach(function(name){state.buffers.drums[name]=[];manifest.drums[name].forEach(function(url,index){jobs.push(decode(url).then(function(buffer){state.buffers.drums[name][index]=buffer;}).catch(function(){state.failures++;}));});});
+    state.loadPromise=Promise.all(jobs).then(function(){var drumsReady=Object.keys(state.buffers.drums).some(function(name){return(state.buffers.drums[name]||[]).some(Boolean);});state.loaded=state.buffers.guitar.length>0||state.buffers.bass.length>0||drumsReady;return state.loaded;});
     return state.loadPromise;
   }
   function remember(source){state.active.push(source);source.onended=function(){var index=state.active.indexOf(source);if(index>=0)state.active.splice(index,1);};}
-  function stopAll(){state.active.slice().forEach(function(source){try{source.stop();}catch(ignore){}});state.active=[];}
+  function stopAll(){state.active.slice().forEach(function(source){try{source.stop();}catch(ignore){}});state.active=[];state.openHats=[];}
   function nearest(group,note){var list=state.buffers[group]||[],target=noteMidi(note),best=null;list.forEach(function(sample){if(!best||Math.abs(sample.midi-target)<Math.abs(best.midi-target))best=sample;});return best;}
   function playNote(context,group,note,duration,volume,offset,options){
     var sample=nearest(group,note);if(!sample)return false;
@@ -41,7 +48,9 @@
     gain.connect(context.destination);remember(source);source.start(t);source.stop(end+.015);return true;
   }
   function playFreq(context,group,freq,duration,volume,offset,options){return playNote(context,group,midiName(Math.round(69+12*Math.log(freq/440)/Math.LN2)),duration,volume,offset,options);}
-  function playDrum(context,name,volume,offset){var buffer=state.buffers.drums[name];if(!buffer)return false;var source=context.createBufferSource(),gain=context.createGain(),t=context.currentTime+(offset||0);source.buffer=buffer;gain.gain.value=Math.max(.0001,volume);source.connect(gain);gain.connect(context.destination);remember(source);source.start(t);return true;}
+  function drumBus(context){if(state.drumBus&&state.context===context)return state.drumBus;var input=context.createGain(),compressor=context.createDynamicsCompressor(),master=context.createGain(),room=context.createGain(),convolver=context.createConvolver(),roomGain=context.createGain(),length=Math.floor(context.sampleRate*.72),impulse=context.createBuffer(2,length,context.sampleRate);for(var channel=0;channel<2;channel++){var data=impulse.getChannelData(channel);for(var i=0;i<length;i++){var fade=Math.pow(1-i/length,2.7);data[i]=(Math.random()*2-1)*fade;}}compressor.threshold.value=-18;compressor.knee.value=16;compressor.ratio.value=3.2;compressor.attack.value=.004;compressor.release.value=.16;master.gain.value=.84;roomGain.gain.value=.11;convolver.buffer=impulse;input.connect(compressor);room.connect(convolver);convolver.connect(roomGain);roomGain.connect(compressor);compressor.connect(master);master.connect(context.destination);state.drumBus={input:input,room:room};return state.drumBus;}
+  function chooseDrum(name,velocity){var list=(state.buffers.drums[name]||[]).filter(Boolean);if(!list.length)return null;var counter=state.drumIndex[name]||0,index=counter%list.length;if((name==='kick'||name==='snare'||name==='tomhigh'||name==='tomlow')&&list.length>1){if(velocity<.55)index=0;else if(velocity>.82)index=list.length-1;else index=Math.min(1,list.length-1);}else if(name==='hihat')index=(counter+(velocity>.78?2:0))%list.length;state.drumIndex[name]=counter+1;return list[index];}
+  function playDrum(context,name,volume,offset,options){options=options||{};var velocity=typeof options.velocity==='number'?options.velocity:.75,buffer=chooseDrum(name,velocity);if(!buffer)return false;var bus=drumBus(context),source=context.createBufferSource(),filter=context.createBiquadFilter(),pan=context.createStereoPanner?context.createStereoPanner():context.createGain(),gain=context.createGain(),send=context.createGain(),t=context.currentTime+(offset||0),durations={kick:.62,snare:.72,rimshot:.55,hihat:.16,openhat:.85,ride:1.25,ridebell:.95,tomhigh:.72,tomlow:.88,crash:3.1},duration=Math.min(buffer.duration,options.duration||durations[name]||.8);source.buffer=buffer;source.playbackRate.value=Math.pow(2,(options.pitch||0)/1200);if(name==='kick'){filter.type='lowshelf';filter.frequency.value=95;filter.gain.value=3.5;}else if(name==='hihat'||name==='openhat'||name==='ride'||name==='ridebell'||name==='crash'){filter.type='highpass';filter.frequency.value=name==='hihat'?3200:900;}else{filter.type='peaking';filter.frequency.value=name.indexOf('tom')===0?180:210;filter.Q.value=.85;filter.gain.value=1.8;}if(pan.pan)pan.pan.value=Math.max(-1,Math.min(1,options.pan||0));gain.gain.setValueAtTime(Math.max(.0001,volume),t);gain.gain.setValueAtTime(Math.max(.0001,volume*.88),Math.max(t+.01,t+duration-.08));gain.gain.exponentialRampToValueAtTime(.0001,t+duration);send.gain.value=typeof options.room==='number'?options.room:(name==='kick'?.025:name==='hihat'?.05:.1);source.connect(filter);filter.connect(pan);pan.connect(gain);gain.connect(bus.input);gain.connect(send);send.connect(bus.room);if(name==='hihat'){state.openHats.slice().forEach(function(open){try{open.stop(t+.025);}catch(ignore){}});state.openHats=[];}if(name==='openhat')state.openHats.push(source);remember(source);source.start(t);source.stop(t+duration+.02);return true;}
   function status(){return{loaded:state.loaded,failures:state.failures};}
   global.KCSampler={load:load,playNote:playNote,playFreq:playFreq,playDrum:playDrum,stopAll:stopAll,status:status};
 })(window);
