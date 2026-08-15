@@ -213,8 +213,6 @@ def onset_slots(path, cfg, maximum=8):
             best[slot] = max(best.get(slot, 0), strength)
         selected = sorted(best.items(), key=lambda item: item[1], reverse=True)[:maximum]
         out[bar] = sorted(slot for slot, _ in selected)
-        if not out[bar]:
-            out[bar] = [0, 4, 8, 12]
     return out
 
 
@@ -254,21 +252,15 @@ def drum_grid(path, cfg):
     kicks = band_onsets(y, sr, 25, 170, cfg, 55, 5)
     snares = band_onsets(y, sr, 170, 3200, cfg, 68, 4)
     hats = band_onsets(y, sr, 4200, sr / 2 - 10, cfg, 45, 8)
-    section_starts = set()
-    cursor = 0
-    for _, _, length in cfg["sections"]:
-        section_starts.add(cursor)
-        cursor += length
     result = []
     for bar in range(cfg["bars"]):
+        # Keep silence as silence. Missing detections must never become a
+        # canonical rock pattern because that invents an instrument part that
+        # may not exist in the reference audio.
         h = hats[bar]
-        if len(h) < 4:
-            h = sorted(set(h + [0, 2, 4, 6, 8, 10, 12, 14]))[:8]
         s = [slot for slot in snares[bar] if slot not in kicks[bar]][:4]
-        if len(s) < 2:
-            s = sorted(set(s + [4, 12]))[:4]
-        k = kicks[bar][:5] or [0, 8]
-        result.append({"h": h, "s": s, "k": k, "c": [0] if bar in section_starts and bar else [], "t": []})
+        k = kicks[bar][:5]
+        result.append({"h": h, "s": s, "k": k, "c": [], "t": []})
     return result
 
 

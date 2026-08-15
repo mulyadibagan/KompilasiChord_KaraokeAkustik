@@ -77,6 +77,10 @@
   }
   function clean(transcription,chordAt){
     if(!transcription||transcription.__harmonyCleaned)return transcription;
+    if(transcription.meta&&transcription.meta.preservePitch){
+      try{Object.defineProperty(transcription,'__harmonyCleaned',{value:true});}catch(ignorePreserve){transcription.__harmonyCleaned=true;}
+      return transcription;
+    }
     ['lead','vocal','bass'].forEach(function(kind){
       var bars=transcription[kind]||[],previous={value:null};
       transcription[kind]=bars.map(function(events,barIndex){return cleanBar(events,kind,barIndex,chordAt,previous);});
