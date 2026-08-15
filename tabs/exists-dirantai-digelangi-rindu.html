@@ -48,7 +48,6 @@
           <div class="track-row"><button class="view-track" type="button" aria-selected="false" data-instrument="guitar">🎸 Gitar Elektrik</button><input class="track-volume" type="range" min="0" max="100" value="62" data-volume="guitar" title="Volume Gitar Elektrik" aria-label="Volume Gitar Elektrik"><label class="track-switch" title="Aktifkan Gitar Elektrik"><input type="checkbox" data-mix="guitar" aria-label="Gitar elektrik aktif"></label></div>
           <div class="track-row"><button class="view-track" type="button" aria-selected="false" data-instrument="bass">🎵 Bass</button><input class="track-volume" type="range" min="0" max="100" value="78" data-volume="bass" title="Volume Bass" aria-label="Volume Bass"><label class="track-switch" title="Aktifkan Bass"><input type="checkbox" data-mix="bass" aria-label="Bass aktif"></label></div>
           <div class="track-row"><button class="view-track" type="button" aria-selected="false" data-instrument="drums">🥁 Drum</button><input class="track-volume" type="range" min="0" max="100" value="68" data-volume="drums" title="Volume Drum" aria-label="Volume Drum"><label class="track-switch" title="Aktifkan Drum"><input type="checkbox" data-mix="drums" aria-label="Drum aktif"></label></div>
-          <div class="track-row"><button class="view-track" type="button" aria-selected="false" data-instrument="vocal">🎤 Vokal Panduan</button><input class="track-volume" type="range" min="0" max="100" value="72" data-volume="vocal" title="Volume Vokal Panduan" aria-label="Volume Vokal Panduan"><label class="track-switch" title="Aktifkan Vokal Panduan"><input type="checkbox" data-mix="vocal" aria-label="Vokal panduan aktif"></label></div>
         </div>
         <p class="side-title">Bagian lagu</p>
         <div class="section-tabs" aria-label="Bagian lagu"><button type="button" aria-pressed="true" data-section="full">▶ Full Lagu</button><button type="button" aria-pressed="false" data-section="intro">Intro</button><button type="button" aria-pressed="false" data-section="verse1">Pickup &amp; Verse 1</button><button type="button" aria-pressed="false" data-section="pre">Pra-Reff</button><button type="button" aria-pressed="false" data-section="reff1">Reff 1</button><button type="button" aria-pressed="false" data-section="verse2a">Reff Lanjutan 1</button><button type="button" aria-pressed="false" data-section="interlude">Interlude</button><button type="button" aria-pressed="false" data-section="reff2">Reff 2</button><button type="button" aria-pressed="false" data-section="verse2b">Reff Lanjutan 2</button><button type="button" aria-pressed="false" data-section="outro">Outro &amp; Ending</button></div>
@@ -63,8 +62,7 @@
     </div>
   </section>
 </main>
-<script src="cc0-sampler.js?v=tablet-kit-1"></script>
-<script src="vocal-guide.js?v=phrase-4"></script>
+<script src="cc0-sampler.js?v=songsterr-tone-1"></script>
 <script src="harmony-engine.js?v=3"></script>
 <script src="exists-dirantai-digelangi-rindu-data.js"></script>
 <script>
@@ -133,12 +131,12 @@
     F:['G|----------------|','D|------3---------|','A|----3-------3---|','E|1-------1-------|'],
     Bm:['G|----------------|','D|------4---------|','A|2---2-----2---2---|','E|----------------|']
   };
-  var DEFAULT_MIX={melody:true,guitar:false,bass:false,drums:false,vocal:false};
-  var DEFAULT_VOLUME={melody:.64,guitar:.48,bass:.66,drums:.56,vocal:.72};
+  var DEFAULT_MIX={melody:true,guitar:false,bass:false,drums:false};
+  var DEFAULT_VOLUME={melody:.72,guitar:.52,bass:.62,drums:.58};
   var state={instrument:'melody',section:'full',running:false,loading:false,timer:0,tick:0,scheduleTick:0,nextTickTime:0,playToken:0,context:null,lastBar:-1,enabled:Object.assign({},DEFAULT_MIX),volume:Object.assign({},DEFAULT_VOLUME)};
   var bars=document.getElementById('bars'),play=document.getElementById('play'),stop=document.getElementById('stop'),rewind=document.getElementById('rewind'),tempo=document.getElementById('tempo'),metro=document.getElementById('metro'),seek=document.getElementById('seek');
-  try{var savedMix=JSON.parse(localStorage.getItem('kcTabMixer')||'null');if(savedMix)Object.keys(DEFAULT_MIX).forEach(function(key){if(typeof savedMix[key]==='boolean')state.enabled[key]=savedMix[key];});}catch(ignore){}
-  if(window.KCHarmony)KCHarmony.resetMix('harmoni-2',DEFAULT_VOLUME);
+  try{var savedMix=JSON.parse(localStorage.getItem('kcTabMixer')||'null');if(savedMix)Object.keys(DEFAULT_MIX).forEach(function(key){if(typeof savedMix[key]==='boolean')state.enabled[key]=savedMix[key];});if(!Object.keys(state.enabled).some(function(key){return state.enabled[key];}))state.enabled.melody=true;localStorage.setItem('kcTabMixer',JSON.stringify(state.enabled));}catch(ignore){}
+  if(window.KCHarmony)KCHarmony.resetMix('songsterr-tone-1',DEFAULT_VOLUME);
   try{var savedVolume=JSON.parse(localStorage.getItem('kcTabVolumes')||'null');if(savedVolume)Object.keys(DEFAULT_VOLUME).forEach(function(key){if(typeof savedVolume[key]==='number')state.volume[key]=Math.max(0,Math.min(1,savedVolume[key]));});}catch(ignoreVolume){}
   function track(name,params){if(typeof window.gtag==='function')window.gtag('event',name,params||{});}
   function midiName(midi){var names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[midi%12]+(Math.floor(midi/12)-1);}
