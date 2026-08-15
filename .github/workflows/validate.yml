@@ -1,7 +1,7 @@
 name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','tabs/sultan-*','tabs/aiman-*','tabs/cc0-sampler.js','.github/workflows/validate.yml']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','tabs/sultan-*','tabs/aiman-*','tabs/anie-carera-hati-siapa-tak-luka*','tabs/cc0-sampler.js','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -28,3 +28,5 @@ jobs:
         run: python analyzer/validate_sultan_tab.py
       - name: Validate Aiman MP3-derived instrument tabs
         run: python analyzer/validate_aiman_tab.py
+      - name: Validate Hati Siapa Tak Luka MP3-derived instrument tabs
+        run: python analyzer/validate_hati_siapa_tak_luka_tab.py
