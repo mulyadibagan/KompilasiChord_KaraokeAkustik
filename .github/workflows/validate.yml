@@ -1,7 +1,7 @@
-name: Validate karaoke data
+name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -22,3 +22,5 @@ jobs:
               assert all(x['chord'] for x in data['timeline']), path
           print('Validated',len(glob.glob('data/*.json')),'karaoke timeline(s)')
           PY
+      - name: Validate Exists MP3-aligned tab
+        run: python analyzer/validate_exists_tab.py
