@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "aiman-transcription-data.js"
 HTML_PATH = ROOT / "tabs" / "aiman-tino-berakhirlah-sudah.html"
 SAMPLER_PATH = ROOT / "tabs" / "cc0-sampler.js"
-CATALOG_PATH = ROOT / "tab-musik.html"
+CATALOG_PATH = ROOT / "tab-catalog.json"
 PREFIX = "window.KC_AIMAN_TRANSCRIPTION="
 SOURCE_SHA256 = "521615370a3ee79b42f1b649c4abb9fe84204f93b54362b20fa020bcebf546e6"
 DRUM_KEYS = {"h", "s", "k", "c", "t"}
@@ -194,13 +194,9 @@ def validate_html() -> None:
     assert "cc0-sampler.js?v=guitar-library-4" in html
     assert "humanize:false" in html
 
-    catalog = CATALOG_PATH.read_text(encoding="utf-8")
-    card = re.search(
-        r'<a class="song" href="tabs/aiman-tino-berakhirlah-sudah\.html\?embed=1"[\s\S]*?</a>',
-        catalog,
-    )
-    assert card
-    card_html = card.group(0)
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    entry = next(song for song in catalog["songs"] if song["slug"] == "aiman-tino-berakhirlah-sudah")
+    card_html = json.dumps(entry, ensure_ascii=False)
     for marker in ("4 instrumen · 66 birama", "73 BPM", "Gitar", "Piano/keyboard", "Bass", "Drum"):
         assert marker in card_html, marker
 

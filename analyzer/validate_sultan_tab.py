@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "sultan-transcription-data.js"
 HTML_PATH = ROOT / "tabs" / "sultan-terpaksa-aku-lakukan.html"
-CATALOG_PATH = ROOT / "tab-musik.html"
+CATALOG_PATH = ROOT / "tab-catalog.json"
 PREFIX = "window.KC_SULTAN_TRANSCRIPTION="
 DRUM_KEYS = {"h", "s", "k", "c", "t"}
 SOURCE_SHA256 = "6f4b416bdfef0fe4c16b42834a6006e56aace655501133f5cf63305a3f380ae7"
@@ -124,14 +124,10 @@ def validate_html() -> None:
     assert "Track vokal tidak disertakan" in html
     assert "sultan-transcription-data.js?v=2" in html
 
-    catalog = CATALOG_PATH.read_text(encoding="utf-8")
-    card = re.search(
-        r'<a class="song" href="tabs/sultan-terpaksa-aku-lakukan\.html\?embed=1"[\s\S]*?</a>',
-        catalog,
-    )
-    assert card
-    assert "Lagu lengkap · 158 birama" in card.group(0)
-    assert "Gitar/lead" in card.group(0)
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    entry = next(song for song in catalog["songs"] if song["slug"] == "sultan-terpaksa-aku-lakukan")
+    assert entry["status"] == "Lagu lengkap · 158 birama"
+    assert "Gitar/lead" in entry["instruments"]
 
     check_javascript(DATA_PATH.read_text(encoding="utf-8"))
     inline_scripts = [

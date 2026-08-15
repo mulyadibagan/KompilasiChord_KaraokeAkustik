@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-15T00:00:00+07:00",
+  "songs": [
+    {
+      "slug": "exists-dirantai-digelangi-rindu",
+      "path": "tabs/exists-dirantai-digelangi-rindu.html",
+      "title": "Dirantai Digelangi Rindu",
+      "artist": "Exists",
+      "status": "Lagu lengkap · 100 birama",
+      "bars": 100,
+      "key": "Am",
+      "bpmLabel": "90 BPM",
+      "instruments": ["Gitar/lead", "Bass", "Drum"],
+      "searchTerms": ["malaysia", "rock kapak"]
+    },
+    {
+      "slug": "sultan-terpaksa-aku-lakukan",
+      "path": "tabs/sultan-terpaksa-aku-lakukan.html",
+      "title": "Terpaksa Aku Lakukan",
+      "artist": "Sultan",
+      "status": "Lagu lengkap · 158 birama",
+      "bars": 158,
+      "key": "Gm",
+      "bpmLabel": "125 BPM",
+      "instruments": ["Gitar/lead", "Bass", "Drum"],
+      "searchTerms": ["malaysia", "pop melayu"]
+    },
+    {
+      "slug": "romeo-bunga-terakhir",
+      "path": "tabs/romeo-bunga-terakhir.html",
+      "title": "Bunga Terakhir",
+      "artist": "Romeo",
+      "status": "Lagu lengkap · 87 birama",
+      "bars": 87,
+      "key": "F#m / A",
+      "bpmLabel": "73 BPM",
+      "instruments": ["Gitar elektrik", "Bass", "Drum"],
+      "searchTerms": ["bebi romeo", "indonesia", "pop balada"]
+    },
+    {
+      "slug": "aiman-tino-berakhirlah-sudah",
+      "path": "tabs/aiman-tino-berakhirlah-sudah.html",
+      "title": "Berakhirlah Sudah",
+      "artist": "Aiman Tino",
+      "status": "4 instrumen · 66 birama",
+      "bars": 66,
+      "key": "A",
+      "bpmLabel": "73 BPM",
+      "instruments": ["Gitar", "Piano/keyboard", "Bass", "Drum"],
+      "searchTerms": ["malaysia", "pop melayu", "balada"]
+    },
+    {
+      "slug": "anie-carera-hati-siapa-tak-luka",
+      "path": "tabs/anie-carera-hati-siapa-tak-luka.html",
+      "title": "Hati Siapa Tak Luka",
+      "artist": "Anie Carera",
+      "status": "5 instrumen · 96 birama",
+      "bars": 96,
+      "key": "Bm",
+      "bpmLabel": "73 BPM",
+      "instruments": ["Gitar 1", "Gitar 2", "Keyboard/Synth", "Bass", "Drum"],
+      "searchTerms": ["indonesia", "pop rock", "balada"]
+    },
+    {
+      "slug": "kahitna-cerita-cinta",
+      "path": "tabs/kahitna-cerita-cinta.html",
+      "title": "Cerita Cinta",
+      "artist": "Kahitna",
+      "status": "3 instrumen · 121 birama",
+      "bars": 121,
+      "key": "F#",
+      "bpmLabel": "113,24 BPM",
+      "instruments": ["Gitar elektrik", "Bass", "Drum"],
+      "searchTerms": ["indonesia", "pop"]
+    },
+    {
+      "slug": "for-revenge-jakarta-hari-ini",
+      "path": "tabs/for-revenge-jakarta-hari-ini.html",
+      "title": "Jakarta Hari Ini",
+      "artist": "For Revenge x Stereo Wall",
+      "status": "Lagu lengkap · 106 birama",
+      "bars": 106,
+      "key": "F mayor",
+      "bpmLabel": "114 BPM",
+      "instruments": ["Gitar akustik", "Gitar elektrik", "Bass", "Drum"],
+      "searchTerms": ["stereowall", "indonesia", "emo rock"]
+    }
+  ]
+}

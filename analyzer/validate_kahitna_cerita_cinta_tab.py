@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "kahitna-cerita-cinta-data.js"
 HTML_PATH = ROOT / "tabs" / "kahitna-cerita-cinta.html"
 SAMPLER_PATH = ROOT / "tabs" / "cc0-sampler.js"
-CATALOG_PATH = ROOT / "tab-musik.html"
+CATALOG_PATH = ROOT / "tab-catalog.json"
 GENERATOR_PATH = ROOT / "analyzer" / "rebuild_kahitna_cerita_cinta_tab.py"
 PREFIX = "window.KC_KAHITNA_CERITA_CINTA_TRANSCRIPTION="
 SOURCE_SHA256 = "7e27a19edfa84e3778ff9547a8aea44d4e5410f41ed141d0f21996ae5acb3735"
@@ -183,13 +183,9 @@ def validate_html() -> None:
     assert "cc0-sampler.js?v=guitar-library-4" in html
     assert "humanize:false" in html
 
-    catalog = CATALOG_PATH.read_text(encoding="utf-8")
-    card = re.search(
-        r'<a class="song" href="tabs/kahitna-cerita-cinta\.html\?embed=1"[\s\S]*?</a>',
-        catalog,
-    )
-    assert card
-    card_html = card.group(0)
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    entry = next(song for song in catalog["songs"] if song["slug"] == "kahitna-cerita-cinta")
+    card_html = json.dumps(entry, ensure_ascii=False)
     for marker in ("3 instrumen · 121 birama", "113,24 BPM", "Gitar elektrik", "Bass", "Drum"):
         assert marker in card_html, marker
 

@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "exists-dirantai-digelangi-rindu-data.js"
 HTML_PATH = ROOT / "tabs" / "exists-dirantai-digelangi-rindu.html"
-CATALOG_PATH = ROOT / "tab-musik.html"
+CATALOG_PATH = ROOT / "tab-catalog.json"
 PREFIX = "window.KC_EXISTS_TRANSCRIPTION="
 DRUM_KEYS = {"h", "s", "k", "c", "t"}
 
@@ -86,8 +86,9 @@ def validate_html() -> None:
     for marker in forbidden:
         assert marker not in html, marker
     assert "Track vokal tidak disertakan" in html
-    catalog = CATALOG_PATH.read_text(encoding="utf-8")
-    assert "Gitar/lead" in catalog
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    entry = next(song for song in catalog["songs"] if song["slug"] == "exists-dirantai-digelangi-rindu")
+    assert "Gitar/lead" in entry["instruments"]
 
     inline_scripts = [
         match.group(1)
