@@ -64,7 +64,7 @@
 </main>
 <script src="cc0-sampler.js?v=guitar-library-3"></script>
 <script src="harmony-engine.js?v=3"></script>
-<script src="jakarta-hari-ini-data.js?v=1"></script>
+<script src="jakarta-hari-ini-data.js?v=stem-1"></script>
 <script>
 (function(){
   'use strict';
@@ -102,7 +102,7 @@
   function noteFreq(note){return 440*Math.pow(2,(noteMidi(note)-69)/12);}
   function baseChord(chord){return String(chord||'F').split('/')[0].trim();}
   function chordAt(bar,slot){return slot>=8?(bar.chord2||bar.chord):bar.chord;}
-  if(window.KCHarmony)KCHarmony.clean(TRANSCRIPTION,function(barIndex,slot){var chords=TRANSCRIPTION.chords[barIndex]||[];return chords[slot>=8?1:0]||chords[0]||'F';});
+  if(window.KCHarmony&&(!TRANSCRIPTION.meta||TRANSCRIPTION.meta.source!=='stem-analysis'))KCHarmony.clean(TRANSCRIPTION,function(barIndex,slot){var chords=TRANSCRIPTION.chords[barIndex]||[];return chords[slot>=8?1:0]||chords[0]||'F';});
   function decodedEvents(kind,bar){var source=TRANSCRIPTION[kind]&&TRANSCRIPTION[kind][bar.songIndex];return(source||[]).map(function(e){return{p:e[0],d:e[1],m:e[2],n:midiName(e[2]),v:e[1]>=5};});}
   function guitarPosition(note){var midi=typeof note==='number'?note:noteMidi(note),open=[64,59,55,50,45,40],best=null;open.forEach(function(value,string){var fret=midi-value;if(fret>=0&&fret<=20){var score=fret+string*1.35;if(!best||score<best.score)best={s:string,f:fret,score:score};}});return best||{s:5,f:Math.max(0,midi-40)};}
   function bassPosition(note){var midi=typeof note==='number'?note:noteMidi(note),open=[43,38,33,28],best=null;open.forEach(function(value,string){var fret=midi-value;if(fret>=0&&fret<=20&&(!best||fret<best.f))best={s:string,f:fret};});return best||{s:3,f:Math.max(0,midi-28)};}
