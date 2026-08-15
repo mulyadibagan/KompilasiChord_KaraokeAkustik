@@ -1,7 +1,7 @@
 name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','.github/workflows/validate.yml']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','tabs/sultan-*','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -24,3 +24,5 @@ jobs:
           PY
       - name: Validate Exists MP3-aligned tab
         run: python analyzer/validate_exists_tab.py
+      - name: Validate Sultan MP3-aligned tab
+        run: python analyzer/validate_sultan_tab.py
