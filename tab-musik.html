@@ -9,7 +9,8 @@
   <style>
     :root{--red:#e11d2e;--ink:#101828;--muted:#667085;--line:#d0d5dd;--soft:#f6f7f9;--nav:#111827}
     *{box-sizing:border-box}body{margin:0;background:#eef1f5;color:var(--ink);font:15px/1.5 Inter,Arial,sans-serif}.topbar{height:54px;background:var(--nav);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 1120px)/2));box-shadow:0 3px 14px #10182830}.brand{font-weight:900;letter-spacing:.04em}.brand span{color:#ff4d5d}.topbar small{color:#98a2b3}.wrap{max-width:1120px;margin:auto;padding:28px 18px 55px}.hero{padding:32px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 12px 35px #1018280d}.eyebrow{margin:0;color:var(--red);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero h1{margin:5px 0 7px;font-size:34px;line-height:1.16}.hero p{max-width:740px;margin:0;color:var(--muted);font-size:16px}.tools{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:24px 0 14px}.search{position:relative;flex:1;max-width:560px}.search input{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:13px 15px 13px 42px;font:inherit;outline:none;box-shadow:0 3px 10px #10182808}.search input:focus{border-color:var(--red);box-shadow:0 0 0 3px #fecdd3}.search:before{content:'⌕';position:absolute;left:15px;top:7px;color:#667085;font-size:24px}.count{color:var(--muted);font-size:13px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.song{display:flex;flex-direction:column;min-height:230px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;color:inherit;text-decoration:none;box-shadow:0 5px 18px #1018280a;transition:.18s}.song:hover{border-color:#fda4af;transform:translateY(-2px);box-shadow:0 12px 25px #10182814}.song .status{align-self:flex-start;border:1px solid #abefc6;border-radius:99px;background:#ecfdf3;color:#067647;padding:3px 8px;font-size:11px;font-weight:900}.song h2{margin:15px 0 2px;font-size:20px;line-height:1.25}.artist{margin:0;color:var(--muted)}.meta{display:flex;flex-wrap:wrap;gap:6px;margin:17px 0}.meta span{border:1px solid #e4e7ec;border-radius:99px;background:#f9fafb;padding:3px 8px;color:#475467;font-size:11px;font-weight:750}.open{margin-top:auto;color:var(--red);font-weight:900}.empty{display:none;padding:30px;text-align:center;border:1px dashed var(--line);border-radius:12px;background:#fff;color:var(--muted)}.note{margin:20px 2px 0;color:var(--muted);font-size:13px}.embed .topbar{display:none}.embed .wrap{max-width:none;padding:18px}.embed body{background:#fff}
-    @media(max-width:800px){.wrap,.embed .wrap{padding:12px}.hero{padding:22px 18px}.hero h1{font-size:27px}.tools{align-items:stretch;flex-direction:column}.search{max-width:none}.grid{grid-template-columns:1fr}.song{min-height:205px}.topbar small{display:none}}
+    .mobile-picker{display:none;margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}.mobile-picker label{display:block;margin-bottom:6px;color:#344054;font-size:13px;font-weight:900}.mobile-picker select{display:block;width:100%;min-height:48px;border:1px solid #98a2b3;border-radius:9px;background:#fff;padding:10px 38px 10px 12px;color:var(--ink);font:700 16px/1.3 Arial,sans-serif;touch-action:manipulation}
+    @media(max-width:800px){.wrap,.embed .wrap{padding:12px}.hero{padding:22px 18px}.hero h1{font-size:27px}.mobile-picker{display:block}.tools{align-items:stretch;flex-direction:column}.search{max-width:none}.grid{grid-template-columns:1fr}.song{min-height:205px}.topbar small{display:none}}
   </style>
 </head>
 <body>
@@ -20,6 +21,17 @@
       <h1>Pustaka Musik</h1>
       <p>Pilih lagu untuk mempelajari gitar, bass, dan drum. Setiap instrumen dapat diaktifkan atau dimatikan dan dimainkan bersama.</p>
     </section>
+    <div class="mobile-picker">
+      <label for="mobile-song">Pilih tab musik</label>
+      <select id="mobile-song">
+        <option value="">— Pilih lagu —</option>
+        <option value="tabs/exists-dirantai-digelangi-rindu.html?embed=1">Exists — Dirantai Digelangi Rindu</option>
+        <option value="tabs/sultan-terpaksa-aku-lakukan.html?embed=1">Sultan — Terpaksa Aku Lakukan</option>
+        <option value="tabs/romeo-bunga-terakhir.html?embed=1">Romeo — Bunga Terakhir</option>
+        <option value="tabs/aiman-tino-berakhirlah-sudah.html?embed=1">Aiman Tino — Berakhirlah Sudah</option>
+        <option value="tabs/for-revenge-jakarta-hari-ini.html?embed=1">For Revenge x Stereo Wall — Jakarta Hari Ini</option>
+      </select>
+    </div>
     <div class="tools">
       <label class="search"><input id="search" type="search" placeholder="Cari judul lagu atau artis…" autocomplete="off" aria-label="Cari tab musik"></label>
       <span class="count" id="count">5 tab tersedia</span>
@@ -68,6 +80,7 @@
     (function(){
       var input=document.getElementById('search'),cards=Array.prototype.slice.call(document.querySelectorAll('.song')),count=document.getElementById('count'),empty=document.getElementById('empty');
       input.addEventListener('input',function(){var q=this.value.trim().toLowerCase(),shown=0;cards.forEach(function(card){var match=!q||card.dataset.search.indexOf(q)!==-1;card.style.display=match?'flex':'none';if(match)shown++;});count.textContent=shown+' tab tersedia';empty.style.display=shown?'none':'block';});
+      document.getElementById('mobile-song').addEventListener('change',function(){if(this.value)window.location.assign(this.value);});
     })();
   </script>
 </body>
