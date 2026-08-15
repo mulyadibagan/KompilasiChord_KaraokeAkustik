@@ -7,42 +7,75 @@
     var engine=engines.get(context);
     if(engine)return engine;
 
+    var voice=context.createGain();
+    var direct=context.createGain();
     var input=context.createGain();
-    var body=context.createBiquadFilter();
-    var presence=context.createBiquadFilter();
+    var highpass=context.createBiquadFilter();
+    var lowpass=context.createBiquadFilter();
     var compressor=context.createDynamicsCompressor();
-    input.gain.value=.92;
-    body.type='highpass';
-    body.frequency.value=105;
-    body.Q.value=.7;
-    presence.type='lowpass';
-    presence.frequency.value=3150;
-    presence.Q.value=.55;
-    compressor.threshold.value=-25;
-    compressor.knee.value=20;
-    compressor.ratio.value=2.4;
-    compressor.attack.value=.012;
-    compressor.release.value=.18;
-    input.connect(body);
-    body.connect(presence);
-    presence.connect(compressor);
+    var source=context.createOscillator();
+    var vibrato=context.createOscillator();
+    var vibratoDepth=context.createGain();
+    var real=new Float32Array(12),imag=new Float32Array(12);
+
+    imag[1]=1;
+    imag[2]=.58;
+    imag[3]=.36;
+    imag[4]=.24;
+    imag[5]=.17;
+    imag[6]=.12;
+    imag[7]=.09;
+    imag[8]=.065;
+    source.setPeriodicWave(context.createPeriodicWave(real,imag,{disableNormalization:false}));
+    source.frequency.value=220;
+
+    voice.gain.value=.0001;
+    direct.gain.value=.16;
+    input.gain.value=.9;
+    highpass.type='highpass';
+    highpass.frequency.value=105;
+    highpass.Q.value=.7;
+    lowpass.type='lowpass';
+    lowpass.frequency.value=3450;
+    lowpass.Q.value=.55;
+    compressor.threshold.value=-27;
+    compressor.knee.value=22;
+    compressor.ratio.value=2.2;
+    compressor.attack.value=.018;
+    compressor.release.value=.2;
+
+    source.connect(direct);
+    direct.connect(voice);
+    [
+      {frequency:720,q:5.2,gain:.72},
+      {frequency:1160,q:6.4,gain:.34},
+      {frequency:2520,q:8.5,gain:.13}
+    ].forEach(function(spec){
+      var filter=context.createBiquadFilter(),gain=context.createGain();
+      filter.type='bandpass';
+      filter.frequency.value=spec.frequency;
+      filter.Q.value=spec.q;
+      gain.gain.value=spec.gain;
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(voice);
+    });
+
+    vibrato.frequency.value=4.7;
+    vibratoDepth.gain.value=1.2;
+    vibrato.connect(vibratoDepth);
+    vibratoDepth.connect(source.detune);
+    voice.connect(input);
+    input.connect(highpass);
+    highpass.connect(lowpass);
+    lowpass.connect(compressor);
     compressor.connect(context.destination);
-    engine={input:input,voices:[]};
+    source.start();
+    vibrato.start();
+
+    engine={voice:voice,source:source,vibratoDepth:vibratoDepth,lastEnd:0,frequency:220,level:.0001};
     engines.set(context,engine);
     return engine;
-  }
-
-  function fadeVoice(voice,at,fast){
-    if(!voice||voice.stopped)return;
-    var end=Math.max(at+.012,at+(fast?.026:.055));
-    try{
-      voice.output.gain.cancelScheduledValues(at);
-      voice.output.gain.setValueAtTime(Math.max(.0001,voice.level),at);
-      voice.output.gain.exponentialRampToValueAtTime(.0001,end);
-      voice.sources.forEach(function(source){source.stop(end+.025);});
-    }catch(ignore){}
-    voice.end=end;
-    voice.stopped=true;
   }
 
   function play(context,frequency,duration,volume,offset,options){
@@ -53,55 +86,31 @@
     var length=Math.max(.12,duration||.25);
     var end=start+length;
     var level=Math.max(.0001,volume||.03);
+    var legato=engine.lastEnd>context.currentTime&&start<=engine.lastEnd+.09;
+    var glide=Math.min(.065,Math.max(.026,length*.12));
+    var releaseStart=end+.025;
+    var releaseEnd=releaseStart+Math.min(.105,Math.max(.06,length*.2));
 
-    engine.voices=engine.voices.filter(function(voice){
-      if(voice.end<=context.currentTime-.1)return false;
-      if(!voice.stopped&&voice.end>start-.018)fadeVoice(voice,Math.max(context.currentTime,start-.016),true);
-      return voice.end>context.currentTime-.1;
-    });
+    engine.source.frequency.cancelScheduledValues(start);
+    engine.source.frequency.setValueAtTime(engine.frequency,start);
+    engine.source.frequency.exponentialRampToValueAtTime(frequency,start+(legato?glide:.018));
+    engine.vibratoDepth.gain.cancelScheduledValues(start);
+    engine.vibratoDepth.gain.setValueAtTime(options.vibrato?4.1:1.25,start);
 
-    var output=context.createGain();
-    var fundamental=context.createOscillator();
-    var fundamentalGain=context.createGain();
-    var warmth=context.createOscillator();
-    var warmthGain=context.createGain();
-    var formant=context.createBiquadFilter();
-    var vibrato=context.createOscillator();
-    var vibratoDepth=context.createGain();
-    var attack=Math.min(.032,length*.2);
-    var release=Math.min(.075,length*.3);
+    engine.voice.gain.cancelScheduledValues(start);
+    if(legato){
+      engine.voice.gain.setValueAtTime(Math.max(.0001,engine.level),start);
+      engine.voice.gain.linearRampToValueAtTime(level,start+Math.min(.045,glide));
+    }else{
+      engine.voice.gain.setValueAtTime(.0001,start);
+      engine.voice.gain.exponentialRampToValueAtTime(level,start+Math.min(.065,length*.25));
+    }
+    engine.voice.gain.setValueAtTime(level,releaseStart);
+    engine.voice.gain.exponentialRampToValueAtTime(.0001,releaseEnd);
 
-    output.gain.setValueAtTime(.0001,start);
-    output.gain.exponentialRampToValueAtTime(level,start+attack);
-    output.gain.setValueAtTime(level,Math.max(start+attack,end-release));
-    output.gain.exponentialRampToValueAtTime(.0001,end);
-    output.connect(engine.input);
-
-    fundamental.type='triangle';
-    fundamental.frequency.setValueAtTime(frequency,start);
-    fundamentalGain.gain.value=.76;
-    fundamental.connect(fundamentalGain);
-    fundamentalGain.connect(output);
-
-    warmth.type='sawtooth';
-    warmth.frequency.setValueAtTime(frequency,start);
-    warmthGain.gain.value=.16;
-    formant.type='bandpass';
-    formant.frequency.value=frequency<210?720:880;
-    formant.Q.value=2.1;
-    warmth.connect(formant);
-    formant.connect(warmthGain);
-    warmthGain.connect(output);
-
-    vibrato.frequency.value=4.8;
-    vibratoDepth.gain.setValueAtTime(0,start);
-    vibratoDepth.gain.linearRampToValueAtTime(options.vibrato?4.2:1.15,Math.min(end,start+.28));
-    vibrato.connect(vibratoDepth);
-    vibratoDepth.connect(fundamental.detune);
-    vibratoDepth.connect(warmth.detune);
-
-    [fundamental,warmth,vibrato].forEach(function(source){source.start(start);source.stop(end+.025);});
-    engine.voices.push({output:output,sources:[fundamental,warmth,vibrato],level:level,end:end,stopped:false});
+    engine.frequency=frequency;
+    engine.level=level;
+    engine.lastEnd=releaseStart;
     return true;
   }
 
@@ -110,8 +119,13 @@
     var engine=engines.get(context);
     if(!engine)return;
     var now=context.currentTime;
-    engine.voices.forEach(function(voice){fadeVoice(voice,now,true);});
-    engine.voices=[];
+    try{
+      engine.voice.gain.cancelScheduledValues(now);
+      engine.voice.gain.setValueAtTime(Math.max(.0001,engine.level),now);
+      engine.voice.gain.exponentialRampToValueAtTime(.0001,now+.035);
+    }catch(ignore){}
+    engine.lastEnd=0;
+    engine.level=.0001;
   }
 
   global.KCVocalGuide={play:play,stop:stop};
