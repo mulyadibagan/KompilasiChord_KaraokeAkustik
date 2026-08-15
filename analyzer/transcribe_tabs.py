@@ -13,23 +13,8 @@ from scipy.signal import butter, sosfilt
 
 
 SONGS = {
-    "aiman": {
-        "namespace": "KC_AIMAN_TRANSCRIPTION",
-        "bpm": 73,
-        "start": 2.312,
-        "bars": 66,
-        "lead_stem": "Other",
-        "chords": ["A", "D", "E", "C#m", "F#m", "Bm"],
-        "sections": [
-            ["intro", "Intro", 3],
-            ["verse1", "Verse 1", 16],
-            ["reff", "Reff 1", 16],
-            ["interlude", "Interlude", 4],
-            ["reff2", "Reff 2", 16],
-            ["ending", "Ending", 8],
-            ["outro", "Outro", 3],
-        ],
-    },
+    # Aiman uses rebuild_aiman_reference_tab.py because its four detected
+    # instrumental stems require polyphonic note events and drum classification.
     "romeo": {
         "namespace": "KC_ROMEO_TRANSCRIPTION",
         "bpm": 73,
@@ -267,8 +252,6 @@ def drum_grid(path, cfg):
 def build_song(song, cfg, stems_root, audio_root):
     lead_path = stem_path(stems_root, song, cfg["lead_stem"])
     guitar_path = stem_path(stems_root, song, "Guitar")
-    if song == "aiman":
-        guitar_path = stem_path(stems_root, song, "Other")
     data = {
         "meta": {"bpm": cfg["bpm"], "start": cfg["start"], "grid": "1/16", "bars": cfg["bars"]},
         "sections": [{"key": key, "label": label, "length": length} for key, label, length in cfg["sections"]],
