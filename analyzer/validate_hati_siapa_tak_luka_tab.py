@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "anie-carera-hati-siapa-tak-luka-data.js"
 HTML_PATH = ROOT / "tabs" / "anie-carera-hati-siapa-tak-luka.html"
 SAMPLER_PATH = ROOT / "tabs" / "cc0-sampler.js"
-CATALOG_PATH = ROOT / "tab-musik.html"
+CATALOG_PATH = ROOT / "tab-catalog.json"
 GENERATOR_PATH = ROOT / "analyzer" / "rebuild_hati_siapa_tak_luka_tab.py"
 PREFIX = "window.KC_HATI_SIAPA_TAK_LUKA_TRANSCRIPTION="
 SOURCE_SHA256 = "f4819f91d08cf21ec16c84db3eac949012e2be7326a45ca93a48cdb62c4745ca"
@@ -216,13 +216,9 @@ def validate_html() -> None:
     assert "sampleKeys()" in html
     assert "guitarTrack('guitar1'" in html and "guitarTrack('guitar2'" in html
 
-    catalog = CATALOG_PATH.read_text(encoding="utf-8")
-    card = re.search(
-        r'<a class="song" href="tabs/anie-carera-hati-siapa-tak-luka\.html\?embed=1"[\s\S]*?</a>',
-        catalog,
-    )
-    assert card
-    card_html = card.group(0)
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    entry = next(song for song in catalog["songs"] if song["slug"] == "anie-carera-hati-siapa-tak-luka")
+    card_html = json.dumps(entry, ensure_ascii=False)
     for marker in (
         "5 instrumen · 96 birama", "73 BPM", "Gitar 1", "Gitar 2",
         "Keyboard/Synth", "Bass", "Drum",

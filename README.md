@@ -16,6 +16,11 @@ Database timeline dan pemutar Karaoke Akustik untuk KompilasiChord.com.
 - `data/` — timeline publik berukuran kecil.
 - `player/` — pemutar yang digunakan halaman Karaoke Akustik.
 - `catalog.json` — indeks karaoke yang sudah tersedia.
+- `tab-catalog.json` — satu-satunya daftar lagu untuk halaman katalog dan kotak pemilih di seluruh player Tab Musik.
+
+## Menambahkan Tab Musik
+
+Tambahkan halaman player ke folder `tabs/`, lalu daftarkan metadata lagunya satu kali di `tab-catalog.json`. Halaman `tab-musik.html` dan kotak **Pilih Tab Musik** pada setiap player akan membaca katalog yang sama secara otomatis.
 
 ## Analisis lokal
 

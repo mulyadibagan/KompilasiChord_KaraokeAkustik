@@ -1,7 +1,7 @@
 name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tabs/exists-dirantai-digelangi-rindu*','tabs/sultan-*','tabs/aiman-*','tabs/anie-carera-hati-siapa-tak-luka*','tabs/kahitna-*','tabs/cc0-sampler.js','.github/workflows/validate.yml']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tab-catalog.json','tab-navigation.css','tab-navigation.js','tabs/*.html','tabs/cc0-sampler.js','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -21,6 +21,32 @@ jobs:
               assert times==sorted(times), path
               assert all(x['chord'] for x in data['timeline']), path
           print('Validated',len(glob.glob('data/*.json')),'karaoke timeline(s)')
+          PY
+      - name: Validate shared Tab Musik catalog and navigation
+        run: |
+          node --check tab-navigation.js
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          catalog=json.loads(Path('tab-catalog.json').read_text())
+          assert catalog['schemaVersion']==1
+          songs=catalog['songs']
+          assert songs
+          assert len({song['slug'] for song in songs})==len(songs)
+          assert len({song['path'] for song in songs})==len(songs)
+          for song in songs:
+              path=Path(song['path'])
+              assert path.is_file(), path
+              page=path.read_text()
+              assert '<body class="kc-player-page">' in page, path
+              assert 'tab-navigation.css' in page, path
+              assert 'tab-navigation.js' in page, path
+              assert f"<h1>{song['title']}</h1>" in page, path
+          library=Path('tab-musik.html').read_text()
+          assert 'tab-navigation.css' in library
+          assert 'tab-navigation.js' in library
+          print('Validated',len(songs),'shared music tab entries')
           PY
       - name: Validate Exists MP3-aligned tab
         run: python analyzer/validate_exists_tab.py

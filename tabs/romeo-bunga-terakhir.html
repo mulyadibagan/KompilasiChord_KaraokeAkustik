@@ -29,9 +29,10 @@
     @media(min-width:821px){.embed .wrap{height:100vh;padding:0}}
     @media(max-width:820px){.topbar small{display:none}.wrap{padding:8px 5px 30px}.songline{display:block;padding:15px}.songline h1{font-size:22px}.badge{display:inline-block;margin-top:9px}.playerbar{top:54px;grid-template-columns:1fr;gap:10px;padding:10px}.transport button{flex:1}.tempo input,.seek input{width:53vw}.options{justify-content:center}.workspace{display:block}.sidebar{position:static;max-height:none;overflow:visible;border-right:0;border-bottom:1px solid var(--line);padding:10px}.side-title{display:none}.instrument-tabs,.section-tabs{flex-direction:row;overflow-x:auto;margin:0 0 8px;padding-bottom:2px}.track-row{grid-template-columns:auto 54px auto;flex:0 0 auto;border:1px solid var(--line);padding:2px}.track-volume{width:54px}.view-track,.section-tabs button{white-space:nowrap;border:1px solid var(--line);padding:8px}.view-track[aria-selected="true"],.section-tabs button[aria-pressed="true"]{border:1px solid var(--red)}.score-area{height:auto;min-height:0;overflow:visible;padding:7px}.score-head{position:static;display:block}.score-head>span{display:block;margin-top:4px}.bars{grid-template-columns:1fr;padding:5px}.bar-card{border-right:0;min-height:270px}.bar-card:nth-child(2n){border-right:0}pre{font-size:11px}}
   </style>
+  <link rel="stylesheet" href="../tab-navigation.css?v=20260815">
 </head>
-<body>
-<header class="topbar"><div class="brand"><span>Kompilasi</span>Chord Studio</div><small>Interactive Tab Player</small></header>
+<body class="kc-player-page">
+<header class="topbar kc-topbar"><div class="brand"><span>Kompilasi</span>Chord Studio</div><small>Interactive Tab Player</small></header>
 <main class="wrap">
   <section class="card">
     <div class="songline"><div><a class="back-hub" href="../tab-musik.html?embed=1">← Semua Tab Musik</a><h1>Bunga Terakhir</h1><p>Romeo · F#m / A · 4/4 · 73 BPM · 4:49,878</p></div><span class="badge">87 birama penuh + pickup</span></div>
@@ -176,5 +177,6 @@
   document.addEventListener('visibilitychange',function(){if(document.hidden&&state.running)pausePlayback();});render();track('music_tab_open',{song:'romeo-bunga-terakhir'});
 })();
 </script>
+<script src="../tab-navigation.js?v=20260815" data-base=".."></script>
 </body>
 </html>
