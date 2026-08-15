@@ -46,12 +46,32 @@
     var keep=ranked.slice(0,maximum).map(function(item){return item.index;});
     return events.filter(function(_,index){return keep.indexOf(index)>=0;});
   }
+  function stabilizeVocalRhythm(events){
+    var stable=[];
+    events.forEach(function(event){
+      var current=event.slice(),previous=stable[stable.length-1];
+      if(!previous){stable.push(current);return;}
+      var previousEnd=previous[0]+previous[1],distance=Math.abs(current[2]-previous[2]);
+      if(current[2]===previous[2]&&current[0]<=previousEnd+1){
+        previous[1]=Math.min(16-previous[0],Math.max(previousEnd,current[0]+current[1])-previous[0]);
+        return;
+      }
+      if(previous[1]===1&&current[0]===previous[0]+1&&distance<=2){
+        previous[2]=current[2];
+        previous[1]=Math.min(16-previous[0],current[0]+current[1]-previous[0]);
+        return;
+      }
+      stable.push(current);
+    });
+    return stable;
+  }
   function cleanBar(raw,kind,barIndex,chordAt,previous){
     var range=RANGE[kind],events=(raw||[]).filter(function(e){return e&&e.length>=3&&isFinite(e[0])&&isFinite(e[1])&&isFinite(e[2]);}).map(function(e){return[Math.max(0,Math.min(15,Math.round(e[0]))),Math.max(1,Math.round(e[1])),Math.round(e[2])];});
     events.sort(function(a,b){return a[0]-b[0]||b[1]-a[1];});
     events=events.filter(function(e,index){return index===0||e[0]!==events[index-1][0];});
     events.forEach(function(event){var midi=octaveSmooth(event[2],previous.value,range);midi=harmonize(kind,midi,chordAt(barIndex,event[0]),event[0],event[1],range);midi=octaveSmooth(midi,previous.value,range);event[2]=midi;previous.value=midi;});
     events=removePitchSpikes(events);events=limitDensity(events,kind);events.sort(function(a,b){return a[0]-b[0];});
+    if(kind==='vocal')events=stabilizeVocalRhythm(events);
     events.forEach(function(event,index){var next=index+1<events.length?events[index+1][0]:16;event[1]=Math.max(1,Math.min(event[1],next-event[0],16-event[0]));});
     return events;
   }
