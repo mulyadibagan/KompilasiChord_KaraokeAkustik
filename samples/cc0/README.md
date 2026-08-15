@@ -5,8 +5,15 @@ small subset of each library is included so the page stays reasonably light.
 
 - `emilyguitar/`: Karoryfer Samples Emilyguitar, CC0 1.0.
   Source: https://github.com/sfzinstruments/karoryfer.emilyguitar
-  The selected notes include three round-robin pick variations. The player
-  rotates them and builds full six-string chord voicings for natural strums.
+  Retained as the legacy guitar bank.
+- `freepats-nylon/`: FreePats Spanish Classical Guitar, CC0 1.0.
+  Source: https://freepats.zenvoid.org/Guitar/acoustic-guitar.html
+  Nine pitch anchors cover the playable guitar range with genuine
+  microphone-recorded nylon-string samples.
+- `freepats-clean/`: FreePats FSBS Electric Guitar Clean #1, CC0 1.0.
+  Source: https://freepats.zenvoid.org/ElectricGuitar/clean-electric-guitar.html
+  Thirteen pitch anchors from a sampled Fender-style electric guitar are used
+  for clean, crunch, and distorted amplifier profiles.
 - `big-little-bass/`: Karoryfer Samples Big Little Bass, CC0 1.0.
   Source: https://github.com/sfzinstruments/karoryfer.big-little-bass
 - `virtuosity-drums/`: Virtuosity Drums by Versilian Studios and Karoryfer
