@@ -119,9 +119,9 @@ def validate_html() -> None:
     )
     for marker in forbidden:
         assert marker not in html, marker
-    assert "Dicocokkan ke stem MP3 · tanpa pola buatan" in html
-    assert "birama tanpa event dibiarkan kosong" in html
-    assert "Track vokal tidak disertakan" in html
+    assert "Dicocokkan ke stem MP3 · tanpa pola buatan" not in html
+    assert "birama tanpa event dibiarkan kosong" not in html
+    assert "Track vokal tidak disertakan" not in html
     assert "sultan-transcription-data.js?v=2" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))

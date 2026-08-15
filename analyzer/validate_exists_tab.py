@@ -85,7 +85,8 @@ def validate_html() -> None:
     )
     for marker in forbidden:
         assert marker not in html, marker
-    assert "Track vokal tidak disertakan" in html
+    assert "Track vokal tidak disertakan" not in html
+    assert "Dicocokkan ke stem MP3" not in html
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     entry = next(song for song in catalog["songs"] if song["slug"] == "exists-dirantai-digelangi-rindu")
     assert "Gitar/lead" in entry["instruments"]
