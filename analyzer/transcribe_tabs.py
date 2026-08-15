@@ -52,7 +52,7 @@ SONGS = {
     "sultan": {
         "namespace": "KC_SULTAN_TRANSCRIPTION",
         "bpm": 125,
-        "start": 1.52,
+        "start": 1.590567,
         "bars": 158,
         "lead_stem": "Guitar",
         "chords": ["Gm", "Cm", "D", "D#", "A", "F", "A#", "Dm"],
