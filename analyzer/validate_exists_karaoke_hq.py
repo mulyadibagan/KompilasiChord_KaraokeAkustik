@@ -66,6 +66,8 @@ for name in STEMS + ["full-band"]:
         assert abs(float(metadata["format"]["duration"]) - 267.18) < 0.12, (name, metadata)
 
 html = PAGE.read_text(encoding="utf-8")
+assert 'data-mode="practice"' not in html
+assert "Latihan Tab" not in html
 for required in (
     "Karaoke Full Band HQ · tanpa vokal",
     "var KARAOKE_BPM=89.84",
@@ -73,6 +75,7 @@ for required in (
     "setMode('karaoke',true)",
     "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/exists/dirantai-digelangi-rindu/",
     "media.crossOrigin='anonymous'",
+    "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen.",
     "Promise.all(attempts)",
     "syncKaraoke(false)",
     "full-band.mp3?v=exists-full-1",
