@@ -1,0 +1,86 @@
+name: Publish Exists audio to Cloudflare R2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/r2-publish-trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Exists Karaoke HQ
+        run: python analyzer/validate_exists_karaoke_hq.py
+
+      - name: Install R2 client
+        run: python -m pip install --disable-pip-version-check boto3
+
+      - name: Upload production audio to R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          python - <<'PY'
+          import mimetypes
+          import os
+          from pathlib import Path
+
+          import boto3
+
+          required = ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY")
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit("Missing GitHub secrets: " + ", ".join(missing))
+
+          bucket = "kompilasichord-audio"
+          prefix = "exists/dirantai-digelangi-rindu"
+          source = Path("audio/exists-karaoke-hq")
+          files = sorted(path for path in source.iterdir() if path.suffix in {".mp3", ".json"})
+          assert len(files) == 8, files
+
+          client = boto3.client(
+              "s3",
+              endpoint_url=f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
+              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              region_name="auto",
+          )
+
+          for path in files:
+              key = f"{prefix}/{path.name}"
+              content_type = "audio/mpeg" if path.suffix == ".mp3" else "application/json"
+              cache_control = "public, max-age=31536000, immutable" if path.suffix == ".mp3" else "public, max-age=300"
+              client.upload_file(
+                  str(path),
+                  bucket,
+                  key,
+                  ExtraArgs={"ContentType": content_type, "CacheControl": cache_control},
+              )
+              head = client.head_object(Bucket=bucket, Key=key)
+              if head["ContentLength"] != path.stat().st_size:
+                  raise SystemExit(f"Size mismatch for {key}")
+              print(f"Uploaded {key} ({head['ContentLength']} bytes)")
+          PY
+
+      - name: Verify public streaming
+        env:
+          PUBLIC_BASE: https://pub-f24c157419c64a00886e77e672bff365.r2.dev
+        run: |
+          set -euo pipefail
+          prefix="$PUBLIC_BASE/exists/dirantai-digelangi-rindu"
+          for name in full-band guitar-clean guitar-lead bass drums strings synth; do
+            curl --fail --silent --show-error --range 0-1023 "$prefix/$name.mp3" --output /dev/null
+          done
+          curl --fail --silent --show-error "$prefix/manifest.json" --output /dev/null
+          echo "R2 public streaming verified."
