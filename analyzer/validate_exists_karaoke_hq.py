@@ -73,7 +73,7 @@ for required in (
     "var KARAOKE_BPM=89.84",
     "mode:'karaoke'",
     "setMode('karaoke',true)",
-    "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/exists/dirantai-digelangi-rindu/",
+    "var KARAOKE_AUDIO_BASE='../audio/exists-karaoke-hq/'",
     "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen.",
     "full-band.mp3?v=exists-full-2",
     "state.karaoke.fallback.play()",
