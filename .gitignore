@@ -5,4 +5,6 @@
 !samples/cc0/**/*.mp3
 !samples/cc0/**/*.wav
 !samples/cc0/**/*.flac
+!audio/exists-hq-preview/*.mp3
+!audio/exists-karaoke-hq/*.mp3
 __pycache__/

@@ -1,7 +1,7 @@
 name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','input/**.json','tab-musik.html','tab-catalog.json','tab-navigation.css','tab-navigation.js','tabs/*.html','tabs/*.js','.github/workflows/validate.yml']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','audio/exists-hq-preview/**','audio/exists-karaoke-hq/**','input/**.json','tab-musik.html','tab-catalog.json','tab-navigation.css','tab-navigation.js','tabs/*.html','tabs/*.js','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -52,6 +52,10 @@ jobs:
         run: python analyzer/validate_audio_engine.py
       - name: Validate Exists MP3-aligned tab
         run: python analyzer/validate_exists_tab.py
+      - name: Validate Exists Karaoke HQ preview
+        run: python analyzer/validate_exists_hq_preview.py
+      - name: Validate complete Exists Karaoke HQ
+        run: python analyzer/validate_exists_karaoke_hq.py
       - name: Validate Sultan MP3-aligned tab
         run: python analyzer/validate_sultan_tab.py
       - name: Validate Aiman MP3-derived instrument tabs

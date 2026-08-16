@@ -1,0 +1,16 @@
+{
+  "title": "Exists – Dirantai Digelangi Rindu · Karaoke Full Band HQ",
+  "kind": "full",
+  "duration": 267.1,
+  "bpm": 89.84,
+  "bars": 100,
+  "meter": "4/4",
+  "sampleRate": 44100,
+  "channels": 2,
+  "codec": "MP3 160 kbps",
+  "vocal": false,
+  "source": "CC0 instrument samples rendered from multitrack performance data",
+  "stems": ["guitar-clean", "guitar-lead", "bass", "drums", "strings", "synth"],
+  "fallback": "full-band.mp3",
+  "renderVersion": "exists-full-1"
+}

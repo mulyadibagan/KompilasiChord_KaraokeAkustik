@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-15T00:00:00+07:00",
+  "updatedAt": "2026-08-17T00:00:00+07:00",
   "songs": [
     {
       "slug": "exists-dirantai-digelangi-rindu",
       "path": "tabs/exists-dirantai-digelangi-rindu.html",
       "title": "Dirantai Digelangi Rindu",
       "artist": "Exists",
-      "status": "Lagu lengkap · 100 birama",
+      "status": "Karaoke Full Band HQ · 100 birama",
       "bars": 100,
       "key": "Am",
-      "bpmLabel": "90 BPM",
-      "instruments": ["Gitar/lead", "Bass", "Drum"],
+      "bpmLabel": "89,84 BPM",
+      "instruments": ["Gitar/lead", "Bass", "Drum", "Strings", "Synth"],
       "searchTerms": ["malaysia", "rock kapak"]
     },
     {
