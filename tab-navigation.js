@@ -80,8 +80,11 @@
     header.className = 'topbar kc-topbar';
     header.innerHTML =
       '<a class="kc-brand" href="' + homeUrl + '" target="_top" aria-label="KompilasiChord, kembali ke beranda">' +
-        '<span class="kc-brand-name"><span>Kompilasi</span>Chord</span>' +
-        '<span class="kc-brand-sub">Tab Musik Interaktif</span>' +
+        '<span class="kc-brand-mark" aria-hidden="true"><span>K</span></span>' +
+        '<span class="kc-brand-copy">' +
+          '<span class="kc-brand-name">Kompilasi<span>Chord</span></span>' +
+          '<span class="kc-brand-sub">Tab Musik Interaktif</span>' +
+        '</span>' +
       '</a>' +
       '<div class="kc-song-picker">' +
         '<button class="kc-picker-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="kc-picker-panel">' +

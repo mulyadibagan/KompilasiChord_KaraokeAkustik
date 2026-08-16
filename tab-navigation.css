@@ -34,13 +34,45 @@ html.embed {
 .kc-brand {
   display: flex;
   flex: 0 0 auto;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 150px;
-  border-radius: 8px;
+  align-items: center;
+  gap: 10px;
+  min-width: 196px;
+  border-radius: 10px;
   color: var(--kc-ink);
   line-height: 1.05;
   text-decoration: none;
+}
+
+.kc-brand-mark {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  background: #f00012;
+  box-shadow: 0 4px 12px #e11d2e2e;
+}
+
+.kc-brand-mark > span {
+  display: grid;
+  width: 27px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -.08em;
+  line-height: 1;
+}
+
+.kc-brand-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .kc-brand-name {
@@ -80,6 +112,19 @@ html.embed {
 
 .embed .kc-brand-name {
   font-size: 16px;
+}
+
+.embed .kc-brand-mark {
+  flex-basis: 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+}
+
+.embed .kc-brand-mark > span {
+  width: 23px;
+  height: 25px;
+  font-size: 15px;
 }
 
 .embed .kc-picker-trigger {
@@ -334,6 +379,19 @@ html.embed {
     letter-spacing: 0;
   }
 
+  .kc-brand-mark {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+
+  .kc-brand-mark > span {
+    width: 22px;
+    height: 24px;
+    font-size: 14px;
+  }
+
   .kc-brand-sub,
   .kc-library-label {
     display: none;
@@ -384,6 +442,21 @@ html.embed {
 
   .kc-brand-name,
   .embed .kc-brand-name {
+    font-size: 12px;
+  }
+
+  .kc-brand-mark,
+  .embed .kc-brand-mark {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .kc-brand-mark > span,
+  .embed .kc-brand-mark > span {
+    width: 19px;
+    height: 21px;
     font-size: 12px;
   }
 
