@@ -74,18 +74,15 @@ for required in (
     "mode:'karaoke'",
     "setMode('karaoke',true)",
     "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/exists/dirantai-digelangi-rindu/",
-    "media.crossOrigin='anonymous'",
     "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen.",
-    "Promise.all(attempts)",
-    "syncKaraoke(false)",
-    "full-band.mp3?v=exists-full-1",
-    "mode kompatibilitas",
-    "catch(ignoreWebAudio){state.karaoke.failed=true;}",
-    "state.karaoke.fallback.volume=state.karaoke.fallbackMode ? .92 : 0",
+    "full-band.mp3?v=exists-full-2",
+    "state.karaoke.fallback.play()",
+    "Karaoke Full Band HQ · tanpa vokal · tab ",
 ):
     assert required in html, required
-for name in STEMS:
-    assert f"{name}.mp3?v=exists-full-1" in html, name
+assert "Menyiapkan enam stem karaoke HQ" not in html
+assert "data-volume=" not in html
+assert "data-solo=" not in html
 
 scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
 inline = "\n".join(script for script in scripts if script.strip())
@@ -94,4 +91,4 @@ with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8") as handle:
     handle.flush()
     subprocess.run(["node", "--check", handle.name], check=True)
 
-print("Exists Karaoke HQ: 6 synchronized full stems, 267.18s, no vocal, Tab Musik JS valid")
+print("Exists Karaoke HQ: one stable 267.18s full-band stream, no vocal, all notation tabs synchronized")
