@@ -6,6 +6,7 @@
   var isEmbed = new URLSearchParams(window.location.search).get('embed') === '1';
   var catalogUrl = base.replace(/\/$/, '') + '/tab-catalog.json?v=20260815';
   var catalogPageUrl = withEmbed(base.replace(/\/$/, '') + '/tab-musik.html');
+  var homeUrl = 'https://www.kompilasichord.com/';
   var playerPage = document.body.classList.contains('kc-player-page');
   var libraryPage = document.body.classList.contains('kc-library-page');
   var playerControls = null;
@@ -78,7 +79,7 @@
     var fallback = playerFallback();
     header.className = 'topbar kc-topbar';
     header.innerHTML =
-      '<a class="kc-brand" href="' + escapeHtml(catalogPageUrl) + '" aria-label="KompilasiChord, buka semua tab musik">' +
+      '<a class="kc-brand" href="' + homeUrl + '" target="_top" aria-label="KompilasiChord, kembali ke beranda">' +
         '<span class="kc-brand-name"><span>Kompilasi</span>Chord</span>' +
         '<span class="kc-brand-sub">Tab Musik Interaktif</span>' +
       '</a>' +
