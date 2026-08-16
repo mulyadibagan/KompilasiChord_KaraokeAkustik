@@ -71,6 +71,8 @@ for required in (
     "var KARAOKE_BPM=89.84",
     "mode:'karaoke'",
     "setMode('karaoke',true)",
+    "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/exists/dirantai-digelangi-rindu/",
+    "media.crossOrigin='anonymous'",
     "Promise.all(attempts)",
     "syncKaraoke(false)",
     "full-band.mp3?v=exists-full-1",
