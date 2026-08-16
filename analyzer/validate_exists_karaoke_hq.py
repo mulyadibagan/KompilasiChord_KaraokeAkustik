@@ -74,15 +74,18 @@ for required in (
     "mode:'karaoke'",
     "setMode('karaoke',true)",
     "var KARAOKE_AUDIO_BASE='../audio/exists-karaoke-hq/'",
-    "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen.",
     "full-band.mp3?v=exists-full-2",
     "state.karaoke.fallback.play()",
     "Karaoke Full Band HQ · tanpa vokal · tab ",
 ):
     assert required in html, required
 assert "Menyiapkan enam stem karaoke HQ" not in html
+assert "Audio Karaoke HQ" not in html
+assert "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen." not in html
 assert "data-volume=" not in html
 assert "data-solo=" not in html
+for instrument in ("lead", "clean", "bass", "drums", "strings", "synth"):
+    assert f'data-instrument="{instrument}"' in html
 
 scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S | re.I)
 inline = "\n".join(script for script in scripts if script.strip())

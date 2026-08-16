@@ -24,7 +24,9 @@ def load_transcription() -> dict:
     return json.loads(source[len(PREFIX) : -1])
 
 
-def validate_note_track(name: str, bars: list[list[list[int]]]) -> int:
+def validate_note_track(
+    name: str, bars: list[list[list[int]]], *, polyphonic: bool = False
+) -> int:
     assert len(bars) == 100, (name, len(bars))
     total = 0
     for bar_index, events in enumerate(bars):
@@ -34,15 +36,16 @@ def validate_note_track(name: str, bars: list[list[list[int]]]) -> int:
             slot, duration, midi = event
             assert 0 <= slot < 16, (name, bar_index, event)
             assert 1 <= duration <= 16, (name, bar_index, event)
-            assert 20 <= midi <= 90, (name, bar_index, event)
+            assert 20 <= midi <= 96, (name, bar_index, event)
             starts.append(slot)
-        assert len(starts) == len(set(starts)), (name, bar_index, starts)
+        if not polyphonic:
+            assert len(starts) == len(set(starts)), (name, bar_index, starts)
         total += len(events)
     return total
 
 
-def validate_data(data: dict) -> tuple[int, int, int]:
-    assert set(data) == {"meta", "lead", "bass", "drums"}, set(data)
+def validate_data(data: dict) -> dict[str, int]:
+    assert set(data) == {"meta", "lead", "clean", "bass", "drums", "strings", "synth"}, set(data)
     meta = data["meta"]
     assert meta["bars"] == 100 and meta["grid"] == "1/16"
     assert meta["preservePitch"] is True
@@ -50,9 +53,16 @@ def validate_data(data: dict) -> tuple[int, int, int]:
     assert meta["vocalTrack"] is False
     assert "no generated fallback" in meta["method"]
     assert re.fullmatch(r"[0-9a-f]{64}", meta["sourceSha256"])
+    assert meta["detectedInstruments"] == [
+        "guitar_clean", "guitar_lead", "bass", "drums", "strings", "synth"
+    ]
+    assert "Basic Pitch per rendered karaoke stem" in meta["missingInstrumentMethod"]
 
     lead_total = validate_note_track("lead", data["lead"])
+    clean_total = validate_note_track("clean", data["clean"], polyphonic=True)
     bass_total = validate_note_track("bass", data["bass"])
+    strings_total = validate_note_track("strings", data["strings"], polyphonic=True)
+    synth_total = validate_note_track("synth", data["synth"], polyphonic=True)
     drums = data["drums"]
     assert len(drums) == 100
     drum_total = 0
@@ -65,7 +75,14 @@ def validate_data(data: dict) -> tuple[int, int, int]:
 
     assert all(not data["bass"][bar] for bar in (0, 1, 2))
     assert all(not any(drums[bar].values()) for bar in (0, 1, 2, 98, 99))
-    return lead_total, bass_total, drum_total
+    return {
+        "lead": lead_total,
+        "clean": clean_total,
+        "bass": bass_total,
+        "drums": drum_total,
+        "strings": strings_total,
+        "synth": synth_total,
+    }
 
 
 def validate_html() -> None:
@@ -87,6 +104,10 @@ def validate_html() -> None:
         assert marker not in html, marker
     assert "Track vokal tidak disertakan" not in html
     assert "Dicocokkan ke stem MP3" not in html
+    assert "Audio Karaoke HQ" not in html
+    assert "Full band tanpa vokal tetap tersinkron saat berpindah tab instrumen." not in html
+    for instrument in ("lead", "clean", "bass", "drums", "strings", "synth"):
+        assert f'data-instrument="{instrument}"' in html
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     entry = next(song for song in catalog["songs"] if song["slug"] == "exists-dirantai-digelangi-rindu")
     assert "Gitar/lead" in entry["instruments"]
@@ -109,9 +130,7 @@ def main() -> None:
     validate_html()
     print(
         "Exists tab validated:",
-        f"{totals[0]} lead events,",
-        f"{totals[1]} bass events,",
-        f"{totals[2]} drum hits",
+        ", ".join(f"{count} {name} events" for name, count in totals.items()),
     )
 
 
