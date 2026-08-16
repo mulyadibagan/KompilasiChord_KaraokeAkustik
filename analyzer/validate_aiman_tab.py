@@ -191,7 +191,7 @@ def validate_html() -> None:
     assert "tidak ada pola buatan dari chord" in html
     assert "birama tanpa event tetap kosong" in html
     assert "aiman-transcription-data.js?v=2" in html
-    assert "cc0-sampler.js?v=guitar-library-4" in html
+    assert "cc0-sampler.js?v=band-mix-5" in html
     assert "humanize:false" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))

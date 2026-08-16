@@ -180,7 +180,7 @@ def validate_html() -> None:
     assert "tidak ada pola buatan dari chord" in html
     assert "birama tanpa event tetap kosong" in html
     assert "kahitna-cerita-cinta-data.js?v=1" in html
-    assert "cc0-sampler.js?v=guitar-library-4" in html
+    assert "cc0-sampler.js?v=band-mix-5" in html
     assert "humanize:false" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
