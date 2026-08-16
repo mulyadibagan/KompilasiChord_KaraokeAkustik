@@ -44,28 +44,12 @@ html.embed {
 }
 
 .kc-brand-mark {
-  display: grid;
+  display: block;
   flex: 0 0 42px;
   width: 42px;
   height: 42px;
-  place-items: center;
   border-radius: 11px;
-  background: #f00012;
   box-shadow: 0 4px 12px #e11d2e2e;
-}
-
-.kc-brand-mark > span {
-  display: grid;
-  width: 27px;
-  height: 30px;
-  place-items: center;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 950;
-  letter-spacing: -.08em;
-  line-height: 1;
 }
 
 .kc-brand-copy {
@@ -121,11 +105,6 @@ html.embed {
   border-radius: 9px;
 }
 
-.embed .kc-brand-mark > span {
-  width: 23px;
-  height: 25px;
-  font-size: 15px;
-}
 
 .embed .kc-picker-trigger {
   min-height: 46px;
@@ -386,11 +365,6 @@ html.embed {
     border-radius: 9px;
   }
 
-  .kc-brand-mark > span {
-    width: 22px;
-    height: 24px;
-    font-size: 14px;
-  }
 
   .kc-brand-sub,
   .kc-library-label {
@@ -453,12 +427,6 @@ html.embed {
     border-radius: 8px;
   }
 
-  .kc-brand-mark > span,
-  .embed .kc-brand-mark > span {
-    width: 19px;
-    height: 21px;
-    font-size: 12px;
-  }
 
   .kc-picker-label {
     font-size: 8px;
