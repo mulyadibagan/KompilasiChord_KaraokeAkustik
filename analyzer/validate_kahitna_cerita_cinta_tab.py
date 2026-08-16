@@ -151,7 +151,6 @@ def validate_html() -> None:
         "rhythmTrack",
         "electricGuitarTone",
         "variation=",
-        "KCHarmony",
         "TRANSCRIPTION.lead",
         "TRANSCRIPTION.vocal",
         "TRANSCRIPTION.piano",
@@ -180,7 +179,9 @@ def validate_html() -> None:
     assert "tidak ada pola buatan dari chord" in html
     assert "birama tanpa event tetap kosong" in html
     assert "kahitna-cerita-cinta-data.js?v=1" in html
-    assert "cc0-sampler.js?v=band-mix-5" in html
+    assert "cc0-sampler.js?v=guitarpro-1" in html
+    assert "harmony-engine.js?v=guitarpro-1" in html
+    assert "{force:true,kinds:['bass'],mode:'anchor'}" in html
     assert "humanize:false" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
@@ -203,7 +204,7 @@ def validate_html() -> None:
         ), name
 
     sampler = SAMPLER_PATH.read_text(encoding="utf-8")
-    assert "options.humanize===false?0" in sampler
+    assert "options.humanize === false ? 0" in sampler
     check_javascript(DATA_PATH.read_text(encoding="utf-8"))
     check_javascript(sampler)
     inline_scripts = [

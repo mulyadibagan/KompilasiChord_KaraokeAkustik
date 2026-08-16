@@ -17,7 +17,7 @@
   if (!tracks.length) return;
 
   const songKey = location.pathname.split('/').pop().replace(/\.html$/i, '');
-  const storageKey = `kcBandMixer:${songKey}:v1`;
+  const storageKey = `kcBandMixer:${songKey}:v2`;
   let soloSnapshot = null;
 
   const classify = (track) => {
@@ -30,10 +30,29 @@
   };
 
   const presets = {
-    full: { guitar: 58, bass: 50, drums: 36, keys: 42, other: 40 },
+    full: { guitar: 56, bass: 44, drums: 33, keys: 32, other: 26 },
     guitar: { guitar: 82, bass: 27, drums: 20, keys: 24, other: 20 },
     bass: { guitar: 24, bass: 82, drums: 24, keys: 20, other: 18 },
     silent: { guitar: 0, bass: 0, drums: 0, keys: 0, other: 0 }
+  };
+
+  // Each arrangement has different track density, so one generic Full Band
+  // balance cannot remain musical across every song.
+  const fullBandBySong = {
+    'aiman-tino-berakhirlah-sudah': { guitar: 56, piano: 32, bass: 44, drums: 32 },
+    'anie-carera-hati-siapa-tak-luka': { guitar1: 42, guitar2: 38, synth: 25, bass: 43, drums: 31 },
+    'for-revenge-jakarta-hari-ini': { melody: 50, guitar: 32, bass: 41, drums: 31 },
+    'kahitna-cerita-cinta': { guitar: 56, bass: 43, drums: 31 },
+    'romeo-bunga-terakhir': { guitar: 52, piano: 29, bass: 42, drums: 30, other: 24 },
+    'sultan-terpaksa-aku-lakukan': { melody: 60, bass: 44, drums: 32 }
+  };
+
+  const presetLevel = (name, track) => {
+    if (name === 'full') {
+      const songProfile = fullBandBySong[songKey];
+      if (songProfile && Number.isFinite(songProfile[track.key])) return songProfile[track.key];
+    }
+    return presets[name][classify(track)];
   };
 
   const fire = (element, type) => element?.dispatchEvent(new Event(type, { bubbles: true }));
@@ -73,9 +92,8 @@
 
   const clearActive = () => document.querySelectorAll('.kc-mix-preset.is-active').forEach((button) => button.classList.remove('is-active'));
   const applyPreset = (name, button) => {
-    const levels = presets[name];
     tracks.forEach((track) => {
-      const level = levels[classify(track)];
+      const level = presetLevel(name, track);
       setTrack(track, name !== 'silent', level);
     });
     soloSnapshot = null;
@@ -88,7 +106,7 @@
   const presetBar = document.createElement('div');
   presetBar.className = 'kc-mix-presets';
   presetBar.setAttribute('aria-label', 'Preset mixer');
-  [['full', 'Full Band'], ['guitar', 'Latihan Gitar'], ['bass', 'Latihan Bass'], ['silent', 'Tab Saja']].forEach(([name, label]) => {
+  [['full', 'Full Band HQ'], ['guitar', 'Latihan Gitar'], ['bass', 'Latihan Bass'], ['silent', 'Tab Saja']].forEach(([name, label]) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'kc-mix-preset';
