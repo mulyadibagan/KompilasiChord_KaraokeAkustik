@@ -48,14 +48,12 @@
       html.embed body.kc-player-page .seek span{min-width:0}
       html.embed body.kc-player-page .options{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:auto}
       html.embed body.kc-player-page .switch{justify-content:center;gap:3px;font-size:10px}
-      html.embed body.kc-player-page .current-note{display:none}
-      html.embed body.kc-player-page .score-head br{display:none}
       html.embed body.kc-player-page .score-head strong,html.embed body.kc-player-page #tuning{display:block}
       html.embed body.kc-player-page.mobile-focus .bar-card{display:none}
       html.embed body.kc-player-page.mobile-focus .bar-card.active{display:block}
     }
   </style>
-  <link rel="stylesheet" href="../tab-navigation.css?v=20260816-pick3">
+  <link rel="stylesheet" href="../tab-navigation.css?v=20260817-note-label-removed">
 </head>
 <body class="kc-player-page" data-mode="youtube">
 <header class="topbar kc-topbar"><div class="brand"><span>Kompilasi</span>Chord Studio</div><small>Interactive Tab Player</small></header>
@@ -81,7 +79,7 @@
       </aside>
       <div class="score-area">
         <div class="score">
-          <div class="score-head"><div><strong id="score-title">Gitar Lead · Full Lagu</strong><span id="tuning">Tuning standar E A D G B e</span><br><span class="current-note" id="current-note">Siap · Intro · Birama 1</span></div><div><span class="position" id="position">Birama 1/106 · Ketukan 1</span><div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div></div></div>
+          <div class="score-head"><div><strong id="score-title">Gitar Lead · Full Lagu</strong><span id="tuning">Tuning standar E A D G B e</span></div><div><span class="position" id="position">Birama 1/106 · Ketukan 1</span><div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div></div></div>
           <div class="bars" id="bars"></div>
           <div class="info"><p class="legend" id="legend">Semua bagian lagu tersusun dalam 106 birama. Angka fret yang berbunyi akan menyala merah.</p><p class="status" id="status">Video resmi YouTube sedang disiapkan · tab akan mengikuti posisi pemutaran.</p><p class="shortcut">Laptop: <kbd>Spasi</kbd> putar/jeda · <kbd>Esc</kbd> stop · <kbd>Home</kbd> kembali ke awal. Geser “Posisi” untuk pindah birama.</p></div>
         </div>
@@ -164,7 +162,7 @@
   function resetScoreScroll(){var area=document.querySelector('.score-area'),sidebar=document.querySelector('.sidebar');if(area)area.scrollTo({top:0,behavior:'smooth'});if(sidebar)sidebar.scrollTop=0;if(window.innerWidth>820)window.scrollTo(0,0);}
   function scrollScoreTo(el){var area=document.querySelector('.score-area');if(!area||window.innerWidth<=820)return;var areaRect=area.getBoundingClientRect(),barRect=el.getBoundingClientRect(),head=document.querySelector('.score-head'),headHeight=head?head.offsetHeight:0,target=area.scrollTop+(barRect.top-areaRect.top)-Math.max(headHeight+18,(area.clientHeight-barRect.height)/2);area.scrollTo({top:Math.max(0,target),behavior:'smooth'});}
   function formatTime(seconds){var m=Math.floor(seconds/60),s=Math.floor(seconds%60);return m+':'+String(s).padStart(2,'0');}
-  function highlight(){var list=SECTIONS[state.section].bars,total=list.length,current=Math.min(total-1,Math.floor(state.tick/16)),slot=state.tick%16,beat=Math.floor(slot/4),bar=list[current],lead=eventAt(leadEvents(bar),slot),rhythm=eventAt(rhythmEvents(bar),slot),bass=eventAt(bassEvents(bar),slot);Array.prototype.forEach.call(document.querySelectorAll('.current'),function(el){el.classList.remove('current');});var activeCard=document.querySelector('.bar-card[data-bar="'+current+'"]');if(activeCard)Array.prototype.forEach.call(activeCard.querySelectorAll('[data-slot="'+slot+'"]'),function(el){el.classList.add('current');});Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){var active=Number(el.dataset.bar)===current;el.classList.toggle('active',active);if(active){el.style.setProperty('--cursor',(2+slot*6)+'%');if(state.lastBar!==current&&state.running)scrollScoreTo(el);}});state.lastBar=current;document.getElementById('position').textContent=bar.partLabel+' · Birama '+(current+1)+'/'+total+' · Ketukan '+(beat+1)+' · 1/16 '+(slot%4+1);var activeGuitar=state.instrument==='melody'?lead:state.instrument==='guitar'?rhythm:null,note=activeGuitar?eventNote(activeGuitar):state.instrument==='bass'&&bass?bass.n:'',leadPos=activeGuitar?guitarPosition(typeof activeGuitar.m==='number'?activeGuitar.m:note):null,fret=leadPos?leadPos.f:state.instrument==='bass'&&bass?bass.f:null,stringName=state.instrument==='bass'&&bass?['G','D','A','E'][bass.s]:leadPos?['e tinggi','B','G','D','A','E rendah'][leadPos.s]:'';document.getElementById('current-note').textContent=note?(state.instrument==='bass'?'Nada bass: ':state.instrument==='guitar'?'Nada rhythm: ':'Nada berbunyi: ')+note+(fret!==null&&typeof fret!=='undefined'?' · Senar '+stringName+' · Fret '+fret:''):state.instrument==='drums'?'Drum · '+bar.partLabel+' · Ketukan '+(beat+1):'Chord '+chordAt(bar,slot)+' · '+bar.partLabel+' · Ketukan '+(beat+1);Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===beat);});seek.value=state.tick;var elapsed=state.tick*(60/Number(tempo.value)/4),duration=total*4*(60/Number(tempo.value));document.getElementById('time').textContent=formatTime(elapsed)+' / '+formatTime(duration);}
+  function highlight(){var list=SECTIONS[state.section].bars,total=list.length,current=Math.min(total-1,Math.floor(state.tick/16)),slot=state.tick%16,beat=Math.floor(slot/4),bar=list[current],lead=eventAt(leadEvents(bar),slot),rhythm=eventAt(rhythmEvents(bar),slot),bass=eventAt(bassEvents(bar),slot);Array.prototype.forEach.call(document.querySelectorAll('.current'),function(el){el.classList.remove('current');});var activeCard=document.querySelector('.bar-card[data-bar="'+current+'"]');if(activeCard)Array.prototype.forEach.call(activeCard.querySelectorAll('[data-slot="'+slot+'"]'),function(el){el.classList.add('current');});Array.prototype.forEach.call(document.querySelectorAll('.bar-card'),function(el){var active=Number(el.dataset.bar)===current;el.classList.toggle('active',active);if(active){el.style.setProperty('--cursor',(2+slot*6)+'%');if(state.lastBar!==current&&state.running)scrollScoreTo(el);}});state.lastBar=current;document.getElementById('position').textContent=bar.partLabel+' · Birama '+(current+1)+'/'+total+' · Ketukan '+(beat+1)+' · 1/16 '+(slot%4+1);Array.prototype.forEach.call(document.querySelectorAll('.beat-dots span'),function(el,i){el.classList.toggle('active',i===beat);});seek.value=state.tick;var elapsed=state.tick*(60/Number(tempo.value)/4),duration=total*4*(60/Number(tempo.value));document.getElementById('time').textContent=formatTime(elapsed)+' / '+formatTime(duration);}
   function scheduleVisual(tick,when,token){window.setTimeout(function(){if(!state.running||token!==state.playToken)return;state.tick=tick;highlight();},Math.max(0,(when-audio().currentTime)*1000));}
   function playbackTiming(){return window.KCSampler?KCSampler.timing(audio()):{lookAhead:.34,startDelay:.22,interval:40,lateTolerance:.09};}
   function recoverLateSchedule(context,limit,sixteenth,timing,loopStart){if(state.nextTickTime>=context.currentTime-timing.lateTolerance)return true;var missed=Math.ceil((context.currentTime-state.nextTickTime)/sixteenth);state.nextTickTime+=missed*sixteenth;state.scheduleTick+=missed;if(state.scheduleTick<limit)return true;if(document.getElementById('loop').checked){var length=Math.max(1,limit-loopStart);state.scheduleTick=loopStart+((state.scheduleTick-loopStart)%length);return true;}stopPlayback();return false;}
@@ -191,6 +189,6 @@
   document.addEventListener('visibilitychange',function(){if(document.hidden&&state.running)pausePlayback();});play.disabled=true;render();loadYouTubeApi();track('music_tab_open',{song:'for-revenge-jakarta-hari-ini'});
 })();
 </script>
-<script src="../tab-navigation.js?v=20260816-pick3" data-base=".."></script>
+<script src="../tab-navigation.js?v=20260817-note-label-removed" data-base=".."></script>
 <script src="tab-mixer-enhancer.js?v=guitarpro-1"></script>\n</body>
 </html>
