@@ -3,7 +3,8 @@
 
   var script = document.currentScript;
   var base = script && script.getAttribute('data-base') || '.';
-  var isEmbed = new URLSearchParams(window.location.search).get('embed') === '1';
+  var isEmbed = new URLSearchParams(window.location.search).get('embed') === '1' || window.self !== window.top;
+  if (isEmbed) document.documentElement.classList.add('embed');
   var catalogUrl = base.replace(/\/$/, '') + '/tab-catalog.json?v=20260815';
   var catalogPageUrl = withEmbed(base.replace(/\/$/, '') + '/tab-musik.html');
   var homeUrl = 'https://www.kompilasichord.com/';
