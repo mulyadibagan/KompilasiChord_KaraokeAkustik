@@ -35,6 +35,13 @@ jobs:
           python -m pip install --disable-pip-version-check \
             "git+https://github.com/facebookresearch/demucs#egg=demucs" boto3
 
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes ffmpeg
+          ffmpeg -version
+          ffprobe -version
+
       - name: Download current R2 master
         run: |
           curl --fail --location --retry 3 "$SOURCE_URL" --output "$RUNNER_TEMP/sultan-v2.mp3"
