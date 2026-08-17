@@ -28,7 +28,7 @@ Pemutar menggunakan bank sampel CC0, scheduler Web Audio dengan look-ahead adapt
 
 Player Exists menyediakan mode **Karaoke HQ** sepanjang 4:27 dari enam stem hasil render bank suara CC0: gitar clean, gitar lead, bass, drum, strings, dan synth. Stem di-stream serempak agar mixer/solo tetap bekerja; `full-band.mp3` menjadi fallback kompatibilitas untuk perangkat tablet yang tidak sanggup membuka enam decoder sekaligus. Mode **Latihan Tab** lama tetap tersedia.
 
-Player Sultan — **Terpaksa Aku Lakukan** memakai mode Karaoke HQ satu master seperti Jakarta Hari Ini. Backing 5:04 dibuat dari MP3 referensi yang sama dengan transkripsi: vokal tengah ditekan, sedangkan pengiring, dinamika, pembuka 0:00, dan timing rekaman asli dipertahankan. Master MP3 disimpan dan di-stream dari Cloudflare R2; GitHub hanya menyimpan kode serta manifest kecil.
+Player **For Revenge x Stereo Wall — Jakarta Hari Ini** memakai video resmi YouTube yang tampil di halaman. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 106 birama data tab; tidak ada MP3 lagu atau hasil pemisahan vokal yang disimpan untuk player ini.
 
 `harmony-engine.js` memahami accidental kres/mol, extension chord, dan slash bass. Pada playback, hanya nada bass non-chord di ketukan kuat yang diamankan ke root/fifth terdekat; event lain, kepadatan tab, dan timing transkripsi tetap dipertahankan. Targetnya adalah pengalaman latihan berbasis sampel yang konsisten seperti workflow Guitar Pro, bukan meniru mesin RSE proprietari.
 
