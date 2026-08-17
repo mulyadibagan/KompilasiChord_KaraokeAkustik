@@ -36,7 +36,7 @@ Player **Anie Carera — Hati Siapa Tak Luka** memakai video dari kanal terverif
 
 Player **Kahitna — Cerita Cinta** memakai video resmi Musica Studios di YouTube dengan sinkronisasi tab 121 birama untuk Gitar Elektrik, Bass, dan Drum. Halaman ini tidak memuat MP3 lagu, pemutar sampel, mixer, atau indikator teks nada berjalan; tampilan desktop, iframe Blogger, dan mobile memakai tata letak responsif yang sama.
 
-Player **Peterpan — Semua Tentang Kita** memakai video resmi Musica Studios di YouTube. Data Guitar Pro yang tersedia hanya memuat 78 birama untuk Gitar Rhythm dan Gitar Lead, sekitar 74% dari perkiraan struktur penuh; halaman menandainya sebagai **tab parsial** dan tidak membuat nada/birama palsu. MP3, sampler, mixer, dan indikator teks nada berjalan tidak digunakan; tampilan desktop, iframe Blogger, dan mobile tetap responsif.
+Player **Peterpan — Semua Tentang Kita** memakai audio resmi dari kanal NOAH OFFICIAL di YouTube karena video musik Musica Studios dibatasi pada sebagian akun Google Workspace/jaringan. Data Guitar Pro yang tersedia hanya memuat 78 birama untuk Gitar Rhythm dan Gitar Lead, sekitar 74% dari perkiraan struktur penuh; halaman menandainya sebagai **tab parsial** dan tidak membuat nada/birama palsu. MP3, sampler, mixer, dan indikator teks nada berjalan tidak digunakan; tampilan desktop, iframe Blogger, dan mobile tetap responsif.
 
 Player **For Revenge x Stereo Wall — Jakarta Hari Ini** memakai video resmi YouTube yang tampil di halaman. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 106 birama data tab; tidak ada MP3 lagu atau hasil pemisahan vokal yang disimpan untuk player ini.
 
