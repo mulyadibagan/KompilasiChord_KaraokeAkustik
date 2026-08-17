@@ -161,12 +161,7 @@ def main() -> None:
         assert "KCSampler.timing" in source, path
         assert "latencyHint:'playback'" in source, path
         if "KARAOKE_BPM" in source:
-            has_media_playback = ".play()" in source
-            has_sample_playback = (
-                "mode:'sample-instrumental'" in source
-                and "soundTick(scheduled" in source
-            )
-            assert has_media_playback or has_sample_playback, path
+            assert ".play()" in source, path
         else:
             assert "{force:true,kinds:['bass'],mode:'anchor'}" in source, path
             assert "if(!ready)" in source, path
