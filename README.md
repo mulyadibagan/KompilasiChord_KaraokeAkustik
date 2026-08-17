@@ -26,7 +26,7 @@ Tambahkan halaman player ke folder `tabs/`, lalu daftarkan metadata lagunya satu
 
 Pemutar menggunakan bank sampel CC0, scheduler Web Audio dengan look-ahead adaptif, bus EQ/kompresor per kelompok instrumen, sustain-loop untuk nada panjang, dan limiter master. Full Band memiliki profil volume khusus per lagu; suara osilator sintetis hanya dipakai untuk klik metronom, bukan sebagai pengganti instrumen yang gagal dimuat.
 
-Player Exists menyediakan mode **Karaoke HQ** sepanjang 4:27 dari enam stem hasil render bank suara CC0: gitar clean, gitar lead, bass, drum, strings, dan synth. Stem di-stream serempak agar mixer/solo tetap bekerja; `full-band.mp3` menjadi fallback kompatibilitas untuk perangkat tablet yang tidak sanggup membuka enam decoder sekaligus. Mode **Latihan Tab** lama tetap tersedia.
+Player **Exists — Dirantai Digelangi Rindu** memakai video resmi ExistsVEVO di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 100 birama data tab; tampilan gitar lead, gitar rhythm, bass, drum, strings, dan synth tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
 
 Player **For Revenge x Stereo Wall — Jakarta Hari Ini** memakai video resmi YouTube yang tampil di halaman. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 106 birama data tab; tidak ada MP3 lagu atau hasil pemisahan vokal yang disimpan untuk player ini.
 
