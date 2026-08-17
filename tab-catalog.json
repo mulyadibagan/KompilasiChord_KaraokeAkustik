@@ -28,14 +28,16 @@
       "path": "tabs/romeo-bunga-terakhir.html",
       "title": "Bunga Terakhir",
       "artist": "Romeo",
-      "status": "3 instrumen · 87 birama",
-      "bars": 87,
+      "status": "5 instrumen · 88 birama",
+      "bars": 88,
       "key": "F#m / A",
       "bpmLabel": "73 BPM",
       "instruments": [
         "Gitar elektrik",
+        "Piano",
         "Bass",
-        "Drum"
+        "Drum",
+        "Orkestra/Pad"
       ],
       "searchTerms": [
         "bebi romeo",
