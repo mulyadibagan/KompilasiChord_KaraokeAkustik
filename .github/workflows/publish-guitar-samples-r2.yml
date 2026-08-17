@@ -1,0 +1,72 @@
+name: Publish guitar samples to Cloudflare R2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/publish-guitar-samples-r2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install R2 client
+        run: python -m pip install --disable-pip-version-check boto3
+      - name: Upload CC0 guitar banks
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import boto3
+
+          required = ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY")
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit("Missing GitHub secrets: " + ", ".join(missing))
+
+          client = boto3.client(
+              "s3",
+              endpoint_url=f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
+              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              region_name="auto",
+          )
+          bucket = "kompilasichord-audio"
+          roots = [Path("samples/cc0/freepats-nylon"), Path("samples/cc0/freepats-clean")]
+          files = [p for root in roots for p in sorted(root.glob("*.mp3"))]
+          if not files:
+              raise SystemExit("No guitar samples found")
+          for path in files:
+              key = "samples/cc0/" + path.relative_to("samples/cc0").as_posix()
+              client.upload_file(str(path), bucket, key, ExtraArgs={
+                  "ContentType": "audio/mpeg",
+                  "CacheControl": "public, max-age=31536000, immutable",
+              })
+              print(f"Uploaded {key} ({path.stat().st_size} bytes)")
+          PY
+      - name: Verify public samples
+        env:
+          PUBLIC_BASE: https://pub-f24c157419c64a00886e77e672bff365.r2.dev
+        run: |
+          python - <<'PY'
+          import os
+          import urllib.request
+          base = os.environ["PUBLIC_BASE"]
+          for path in ("samples/cc0/freepats-nylon/e2.mp3", "samples/cc0/freepats-clean/e3.mp3"):
+              request = urllib.request.Request(f"{base}/{path}", method="HEAD")
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  if response.status != 200:
+                      raise SystemExit(f"Unexpected status {response.status} for {path}")
+                  print(path, response.headers.get("Content-Length"))
+          PY
