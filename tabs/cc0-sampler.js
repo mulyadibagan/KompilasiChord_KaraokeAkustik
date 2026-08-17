@@ -4,7 +4,11 @@
   if (global.KCSampler) return;
 
   var scriptBase = new URL('.', document.currentScript.src);
-  function asset(path) { return new URL('../samples/cc0/' + path, scriptBase).href; }
+  var guitarR2Base = 'https://pub-f24c157419c64a00886e77e672bff365.r2.dev/samples/cc0/';
+  function asset(path) {
+    if (/^freepats-(nylon|clean)\//.test(path)) return new URL(path, guitarR2Base).href;
+    return new URL('../samples/cc0/' + path, scriptBase).href;
+  }
 
   var manifest = {
     acoustic: [
