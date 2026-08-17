@@ -28,6 +28,8 @@ Pemutar menggunakan bank sampel CC0, scheduler Web Audio dengan look-ahead adapt
 
 Player **Exists — Dirantai Digelangi Rindu** memakai video resmi ExistsVEVO di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 100 birama data tab; tampilan gitar lead, gitar rhythm, bass, drum, strings, dan synth tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
 
+Player **Romeo — Bunga Terakhir** memakai rekaman Bebi Romeo di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 88 birama data tab termasuk pickup; tampilan gitar elektrik, piano, bass, drum, dan orkestra/pad tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
+
 Player **For Revenge x Stereo Wall — Jakarta Hari Ini** memakai video resmi YouTube yang tampil di halaman. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 106 birama data tab; tidak ada MP3 lagu atau hasil pemisahan vokal yang disimpan untuk player ini.
 
 `harmony-engine.js` memahami accidental kres/mol, extension chord, dan slash bass. Pada playback, hanya nada bass non-chord di ketukan kuat yang diamankan ke root/fifth terdekat; event lain, kepadatan tab, dan timing transkripsi tetap dipertahankan. Targetnya adalah pengalaman latihan berbasis sampel yang konsisten seperti workflow Guitar Pro, bukan meniru mesin RSE proprietari.
