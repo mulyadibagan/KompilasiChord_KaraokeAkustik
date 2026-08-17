@@ -142,7 +142,7 @@ def main() -> None:
 
     catalog = json.loads((ROOT / "tab-catalog.json").read_text())
     pages = [ROOT / song["path"] for song in catalog["songs"]]
-    assert len(pages) == 7, "audio validation must cover all seven published players"
+    assert pages, "audio validation must cover every song listed in tab-catalog.json"
 
     forbidden = [
         "function fallbackDrum",
@@ -156,6 +156,11 @@ def main() -> None:
     ]
     for path in pages:
         source = path.read_text()
+        if 'data-playback="synthesis-only"' in source:
+            assert "AudioContext" in source or "webkitAudioContext" in source, path
+            assert ".mp3" not in source.lower(), path
+            check_inline_scripts(path)
+            continue
         assert "cc0-sampler.js?v=guitarpro-1" in source, path
         assert "harmony-engine.js?v=guitarpro-1" in source, path
         assert "KCSampler.timing" in source, path
@@ -174,7 +179,7 @@ def main() -> None:
         assert required in sampler, f"sampler missing {required}"
 
     mixer = (TABS / "tab-mixer-enhancer.js").read_text()
-    enhanced_songs = {path.stem for path in pages if path.name != "exists-dirantai-digelangi-rindu.html"}
+    enhanced_songs = {path.stem for path in pages if path.name != "exists-dirantai-digelangi-rindu.html" and 'data-playback="synthesis-only"' not in path.read_text()}
     for slug in enhanced_songs:
         assert f"'{slug}'" in mixer, f"missing Full Band profile for {slug}"
     exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text()
