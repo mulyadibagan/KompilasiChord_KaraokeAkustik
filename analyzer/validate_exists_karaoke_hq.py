@@ -73,7 +73,10 @@ for required in (
     "var KARAOKE_BPM=89.84",
     "mode:'karaoke'",
     "setMode('karaoke',true)",
-    "var KARAOKE_AUDIO_BASE='../audio/exists-karaoke-hq/'",
+    "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/exists/dirantai-digelangi-rindu/",
+    "var KARAOKE_LOCAL_FALLBACK='../audio/exists-karaoke-hq/'",
+    "fallback.appendChild(r2Source)",
+    "fallback.appendChild(localSource)",
     "full-band.mp3?v=exists-full-2",
     "state.karaoke.fallback.play()",
     "Karaoke Full Band HQ · tanpa vokal · tab ",
@@ -94,4 +97,4 @@ with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8") as handle:
     handle.flush()
     subprocess.run(["node", "--check", handle.name], check=True)
 
-print("Exists Karaoke HQ: one stable 267.18s full-band stream, no vocal, all notation tabs synchronized")
+print("Exists Karaoke HQ: R2 primary stream with same-origin fallback, no vocal, all notation tabs synchronized")
