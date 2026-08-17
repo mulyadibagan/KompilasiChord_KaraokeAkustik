@@ -32,6 +32,8 @@ Player **Romeo — Bunga Terakhir** memakai rekaman Bebi Romeo di YouTube. Kontr
 
 Player **Anie Carera — Hati Siapa Tak Luka** memakai video dari kanal terverifikasi GP Musikpedia di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 96 birama data tab; tampilan Gitar 1, Gitar 2, Keyboard/Synth, Bass, dan Drum tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
 
+Player **Kahitna — Cerita Cinta** memakai video resmi Musica Studios di YouTube dengan sinkronisasi tab 121 birama untuk Gitar Elektrik, Bass, dan Drum. Halaman ini tidak memuat MP3 lagu, pemutar sampel, mixer, atau indikator teks nada berjalan; tampilan desktop, iframe Blogger, dan mobile memakai tata letak responsif yang sama.
+
 Player **For Revenge x Stereo Wall — Jakarta Hari Ini** memakai video resmi YouTube yang tampil di halaman. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 106 birama data tab; tidak ada MP3 lagu atau hasil pemisahan vokal yang disimpan untuk player ini.
 
 `harmony-engine.js` memahami accidental kres/mol, extension chord, dan slash bass. Pada playback, hanya nada bass non-chord di ketukan kuat yang diamankan ke root/fifth terdekat; event lain, kepadatan tab, dan timing transkripsi tetap dipertahankan. Targetnya adalah pengalaman latihan berbasis sampel yang konsisten seperti workflow Guitar Pro, bukan meniru mesin RSE proprietari.
