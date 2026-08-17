@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-17T16:30:00+07:00",
+  "updatedAt": "2026-08-17T17:30:00+07:00",
   "songs": [
     {
       "slug": "exists-dirantai-digelangi-rindu",
@@ -21,25 +21,6 @@
       "searchTerms": [
         "malaysia",
         "rock kapak"
-      ]
-    },
-    {
-      "slug": "sultan-terpaksa-aku-lakukan",
-      "path": "tabs/sultan-terpaksa-aku-lakukan.html",
-      "title": "Terpaksa Aku Lakukan",
-      "artist": "Sultan",
-      "status": "3 instrumen · 158 birama",
-      "bars": 158,
-      "key": "Gm",
-      "bpmLabel": "125 BPM",
-      "instruments": [
-        "Gitar/lead",
-        "Bass",
-        "Drum"
-      ],
-      "searchTerms": [
-        "malaysia",
-        "pop melayu"
       ]
     },
     {
