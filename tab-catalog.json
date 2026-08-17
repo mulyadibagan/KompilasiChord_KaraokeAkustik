@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-17T20:30:00+07:00",
+  "updatedAt": "2026-08-17T21:00:00+07:00",
   "songs": [
     {
       "slug": "exists-dirantai-digelangi-rindu",
@@ -133,19 +133,20 @@
       "path": "tabs/peterpan-semua-tentang-kita.html",
       "title": "Semua Tentang Kita",
       "artist": "Peterpan",
-      "status": "2 gitar sintetis · 78 birama",
+      "status": "Tab parsial · 2 gitar · 78/±105 birama",
       "bars": 78,
       "key": "C",
-      "bpmLabel": "90 BPM",
+      "bpmLabel": "≈95 BPM video",
       "instruments": [
-        "Gitar rhythm sintetis",
-        "Gitar lead sintetis"
+        "Gitar rhythm",
+        "Gitar lead"
       ],
       "searchTerms": [
         "noah",
         "indonesia",
         "pop rock",
-        "sintesis"
+        "guitar pro",
+        "tab parsial"
       ]
     }
   ]
