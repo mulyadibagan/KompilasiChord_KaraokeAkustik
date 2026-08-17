@@ -37,7 +37,9 @@
   }
 
   function songUrl(song) {
-    return withEmbed(base.replace(/\/$/, '') + '/' + song.path);
+    var url = base.replace(/\/$/, '') + '/' + song.path;
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'v=20260817-note-label-removed';
+    return withEmbed(url);
   }
 
   function searchText(song) {
