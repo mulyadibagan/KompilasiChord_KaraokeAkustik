@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Regression checks for the Sultan MP3-aligned interactive tab."""
+"""Regression checks for the Sultan MP3-aligned tab and Karaoke HQ backing."""
 
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import tempfile
@@ -14,6 +15,14 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "tabs" / "sultan-transcription-data.js"
 HTML_PATH = ROOT / "tabs" / "sultan-terpaksa-aku-lakukan.html"
 CATALOG_PATH = ROOT / "tab-catalog.json"
+AUDIO_DIR = Path(os.environ.get("SULTAN_AUDIO_DIR", ROOT / "audio" / "sultan-karaoke-hq"))
+AUDIO_PATH = AUDIO_DIR / "full-band-clean.mp3"
+MANIFEST_PATH = Path(
+    os.environ.get(
+        "SULTAN_MANIFEST_PATH",
+        ROOT / "audio" / "sultan-karaoke-hq" / "manifest.json",
+    )
+)
 PREFIX = "window.KC_SULTAN_TRANSCRIPTION="
 DRUM_KEYS = {"h", "s", "k", "c", "t"}
 SOURCE_SHA256 = "6f4b416bdfef0fe4c16b42834a6006e56aace655501133f5cf63305a3f380ae7"
@@ -97,6 +106,53 @@ def check_javascript(source: str) -> None:
         subprocess.run(["node", "--check", handle.name], check=True)
 
 
+def validate_audio() -> None:
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    assert manifest["kind"] == "full"
+    assert manifest["vocal"] is False
+    assert manifest["instruments"] == ["guitar/lead", "bass", "drums"]
+    assert manifest["bpm"] == 125.0
+    assert manifest["startOffset"] == 1.590567
+    assert manifest["bars"] == 158 and manifest["meter"] == "4/4"
+    assert manifest["sampleRate"] == 44_100 and manifest["channels"] == 2
+    assert manifest["codec"] == "MP3 192 kbps"
+    assert manifest["fallback"] == "full-band-clean.mp3"
+    assert manifest["r2ObjectKey"] == "sultan/terpaksa-aku-lakukan/full-band-clean.mp3"
+    assert manifest["publicUrl"] == (
+        "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/"
+        "sultan/terpaksa-aku-lakukan/full-band-clean.mp3"
+    )
+    assert manifest["renderVersion"] == "sultan-karaoke-1"
+    assert "validated MP3-derived instrument events" in manifest["source"]
+    if not AUDIO_PATH.exists():
+        return
+    assert AUDIO_PATH.stat().st_size > 7_000_000
+
+    result = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-select_streams",
+            "a:0",
+            "-show_entries",
+            "stream=codec_name,sample_rate,channels:format=duration",
+            "-of",
+            "json",
+            str(AUDIO_PATH),
+        ],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    )
+    metadata = json.loads(result.stdout)
+    stream = metadata["streams"][0]
+    assert stream["codec_name"] == "mp3"
+    assert int(stream["sample_rate"]) == 44_100
+    assert int(stream["channels"]) == 2
+    assert abs(float(metadata["format"]["duration"]) - 304.436825) < 0.08
+
+
 def validate_html() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     forbidden = (
@@ -123,10 +179,25 @@ def validate_html() -> None:
     assert "birama tanpa event dibiarkan kosong" not in html
     assert "Track vokal tidak disertakan" not in html
     assert "sultan-transcription-data.js?v=2" in html
+    assert '<body class="kc-player-page" data-mode="karaoke">' in html
+    assert "var KARAOKE_BPM=125,KARAOKE_START=1.590567" in html
+    assert (
+        "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/"
+        "sultan/terpaksa-aku-lakukan/full-band-clean.mp3?v=sultan-karaoke-1"
+    ) in html
+    assert "Mode Karaoke HQ siap" in html
+    assert "Karaoke Full Band · tanpa vokal" in html
+    assert "karaoke.play()" in html
+    assert "function sectionAudioStart()" in html
+    assert "function syncKaraoke()" in html
+    assert "soundTick(scheduled" not in html
+    assert "KCHarmony.clean" not in html
+    assert "data-volume=" not in html
+    assert "data-mix=" not in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     entry = next(song for song in catalog["songs"] if song["slug"] == "sultan-terpaksa-aku-lakukan")
-    assert entry["status"] == "Lagu lengkap · 158 birama"
+    assert entry["status"] == "3 instrumen · 158 birama"
     assert "Gitar/lead" in entry["instruments"]
 
     check_javascript(DATA_PATH.read_text(encoding="utf-8"))
@@ -142,6 +213,7 @@ def validate_html() -> None:
 
 def main() -> None:
     lead_total, bass_total, drum_totals = validate_data(load_transcription())
+    validate_audio()
     validate_html()
     print(
         "Sultan tab validated:",

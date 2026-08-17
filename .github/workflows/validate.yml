@@ -1,7 +1,7 @@
 name: Validate karaoke and music tabs
 on:
   push:
-    paths: ['data/**.json','catalog.json','analyzer/**.py','audio/exists-hq-preview/**','audio/exists-karaoke-hq/**','input/**.json','tab-musik.html','tab-catalog.json','tab-navigation.css','tab-navigation.js','tabs/*.html','tabs/*.js','.github/workflows/validate.yml']
+    paths: ['data/**.json','catalog.json','analyzer/**.py','audio/exists-hq-preview/**','audio/exists-karaoke-hq/**','audio/sultan-karaoke-hq/**','input/**.json','tab-musik.html','tab-catalog.json','tab-navigation.css','tab-navigation.js','tabs/*.html','tabs/*.js','.github/workflows/validate.yml']
   pull_request:
 jobs:
   validate:
@@ -39,7 +39,7 @@ jobs:
               path=Path(song['path'])
               assert path.is_file(), path
               page=path.read_text()
-              assert '<body class="kc-player-page">' in page, path
+              assert '<body class="kc-player-page"' in page, path
               assert 'tab-navigation.css' in page, path
               assert 'tab-navigation.js' in page, path
               assert f"<h1>{song['title']}</h1>" in page, path

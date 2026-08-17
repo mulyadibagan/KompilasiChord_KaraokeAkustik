@@ -1,0 +1,107 @@
+name: Publish Sultan audio to Cloudflare R2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/r2-sultan-publish-trigger"
+      - ".github/workflows/publish-sultan-r2.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-sultan-r2
+  cancel-in-progress: false
+
+jobs:
+  render-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes ffmpeg
+          ffmpeg -version >/dev/null
+
+      - name: Install renderer and R2 dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy boto3
+
+      - name: Render temporary Karaoke HQ master
+        env:
+          SULTAN_AUDIO_DIR: ${{ runner.temp }}/sultan-karaoke-hq
+          SULTAN_MANIFEST_PATH: ${{ runner.temp }}/sultan-karaoke-hq/manifest.json
+        run: |
+          python analyzer/render_sultan_karaoke_hq.py --output "$SULTAN_AUDIO_DIR"
+          cmp audio/sultan-karaoke-hq/manifest.json "$SULTAN_AUDIO_DIR/manifest.json"
+          python analyzer/validate_sultan_tab.py
+
+      - name: Upload master and manifest to R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          SULTAN_AUDIO_DIR: ${{ runner.temp }}/sultan-karaoke-hq
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          import boto3
+
+          required = ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY")
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit("Missing GitHub secrets: " + ", ".join(missing))
+
+          bucket = "kompilasichord-audio"
+          prefix = "sultan/terpaksa-aku-lakukan"
+          source = Path(os.environ["SULTAN_AUDIO_DIR"])
+          files = [source / "full-band-clean.mp3", source / "manifest.json"]
+
+          client = boto3.client(
+              "s3",
+              endpoint_url=f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
+              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              region_name="auto",
+          )
+
+          for path in files:
+              key = f"{prefix}/{path.name}"
+              is_audio = path.suffix == ".mp3"
+              client.upload_file(
+                  str(path),
+                  bucket,
+                  key,
+                  ExtraArgs={
+                      "ContentType": "audio/mpeg" if is_audio else "application/json",
+                      "CacheControl": (
+                          "public, max-age=31536000, immutable"
+                          if is_audio
+                          else "public, max-age=300"
+                      ),
+                  },
+              )
+              head = client.head_object(Bucket=bucket, Key=key)
+              if head["ContentLength"] != path.stat().st_size:
+                  raise SystemExit(f"Size mismatch for {key}")
+              print(f"Uploaded {key} ({head['ContentLength']} bytes)")
+          PY
+
+      - name: Verify public R2 streaming
+        env:
+          PUBLIC_PREFIX: https://pub-f24c157419c64a00886e77e672bff365.r2.dev/sultan/terpaksa-aku-lakukan
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --range 0-1023 \
+            "$PUBLIC_PREFIX/full-band-clean.mp3?v=sultan-karaoke-1" --output /dev/null
+          curl --fail --silent --show-error \
+            "$PUBLIC_PREFIX/manifest.json" --output /dev/null
+          echo "Sultan R2 public streaming verified."
