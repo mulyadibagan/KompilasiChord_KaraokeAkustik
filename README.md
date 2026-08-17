@@ -28,6 +28,8 @@ Pemutar menggunakan bank sampel CC0, scheduler Web Audio dengan look-ahead adapt
 
 Player Exists menyediakan mode **Karaoke HQ** sepanjang 4:27 dari enam stem hasil render bank suara CC0: gitar clean, gitar lead, bass, drum, strings, dan synth. Stem di-stream serempak agar mixer/solo tetap bekerja; `full-band.mp3` menjadi fallback kompatibilitas untuk perangkat tablet yang tidak sanggup membuka enam decoder sekaligus. Mode **Latihan Tab** lama tetap tersedia.
 
+Player Sultan — **Terpaksa Aku Lakukan** memakai mode Karaoke HQ satu master seperti Jakarta Hari Ini. Backing 5:04 dirender hanya dari event gitar/lead, bass, dan drum hasil transkripsi yang tervalidasi; instrumen yang tidak terdeteksi tidak ditambahkan. Master MP3 disimpan dan di-stream dari Cloudflare R2, sedangkan GitHub hanya menyimpan kode serta manifest kecil.
+
 `harmony-engine.js` memahami accidental kres/mol, extension chord, dan slash bass. Pada playback, hanya nada bass non-chord di ketukan kuat yang diamankan ke root/fifth terdekat; event lain, kepadatan tab, dan timing transkripsi tetap dipertahankan. Targetnya adalah pengalaman latihan berbasis sampel yang konsisten seperti workflow Guitar Pro, bukan meniru mesin RSE proprietari.
 
 Jalankan pemeriksaan mesin bersama dan seluruh player dengan:
@@ -42,4 +44,4 @@ python analyzer/validate_audio_engine.py
 python analyzer/analyze.py song.wav input/mangu.json data/JENpTmMQBQY.json
 ```
 
-MP3/WAV lagu asli dilarang di-commit. Stem karaoke yang seluruh bunyinya dirender dari bank CC0 repository boleh dipublikasikan bersama manifest asal-usulnya.
+MP3/WAV lagu asli dilarang di-commit. Backing karaoke yang seluruh bunyinya dirender dari bank CC0 dipublikasikan ke Cloudflare R2; repository hanya menyimpan renderer dan manifest asal-usulnya.

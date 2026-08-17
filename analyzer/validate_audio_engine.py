@@ -160,8 +160,11 @@ def main() -> None:
         assert "harmony-engine.js?v=guitarpro-1" in source, path
         assert "KCSampler.timing" in source, path
         assert "latencyHint:'playback'" in source, path
-        assert "{force:true,kinds:['bass'],mode:'anchor'}" in source, path
-        assert "if(!ready)" in source, path
+        if "KARAOKE_BPM" in source:
+            assert ".play()" in source, path
+        else:
+            assert "{force:true,kinds:['bass'],mode:'anchor'}" in source, path
+            assert "if(!ready)" in source, path
         for text in forbidden:
             assert text not in source, f"{path.name} still contains {text!r}"
         check_inline_scripts(path)
