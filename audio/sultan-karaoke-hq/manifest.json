@@ -10,14 +10,23 @@
   "channels": 2,
   "codec": "MP3 192 kbps",
   "vocal": false,
-  "source": "CC0 samples rendered only from validated MP3-derived instrument events",
+  "source": "approved original MP3 with centre-vocal suppression; original accompaniment and timing retained",
+  "sourceSha256": "6f4b416bdfef0fe4c16b42834a6006e56aace655501133f5cf63305a3f380ae7",
   "instruments": [
+    "original accompaniment"
+  ],
+  "tabInstruments": [
     "guitar/lead",
     "bass",
     "drums"
   ],
-  "fallback": "full-band-clean.mp3",
-  "r2ObjectKey": "sultan/terpaksa-aku-lakukan/full-band-clean.mp3",
-  "publicUrl": "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/sultan/terpaksa-aku-lakukan/full-band-clean.mp3",
-  "renderVersion": "sultan-karaoke-1"
+  "fallback": "full-band-clean-v2.mp3",
+  "r2ObjectKey": "sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3",
+  "publicUrl": "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3",
+  "renderVersion": "sultan-karaoke-2",
+  "validation": {
+    "openingAudioRetained": true,
+    "referenceEnergyCorrelation2s": 0.9752,
+    "referenceOnsetCorrelation100ms": 0.8906
+  }
 }

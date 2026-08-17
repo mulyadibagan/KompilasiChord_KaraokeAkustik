@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 import tempfile
+from array import array
 from pathlib import Path
 
 
@@ -16,7 +17,7 @@ DATA_PATH = ROOT / "tabs" / "sultan-transcription-data.js"
 HTML_PATH = ROOT / "tabs" / "sultan-terpaksa-aku-lakukan.html"
 CATALOG_PATH = ROOT / "tab-catalog.json"
 AUDIO_DIR = Path(os.environ.get("SULTAN_AUDIO_DIR", ROOT / "audio" / "sultan-karaoke-hq"))
-AUDIO_PATH = AUDIO_DIR / "full-band-clean.mp3"
+AUDIO_PATH = AUDIO_DIR / "full-band-clean-v2.mp3"
 MANIFEST_PATH = Path(
     os.environ.get(
         "SULTAN_MANIFEST_PATH",
@@ -110,20 +111,25 @@ def validate_audio() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     assert manifest["kind"] == "full"
     assert manifest["vocal"] is False
-    assert manifest["instruments"] == ["guitar/lead", "bass", "drums"]
+    assert manifest["instruments"] == ["original accompaniment"]
+    assert manifest["tabInstruments"] == ["guitar/lead", "bass", "drums"]
     assert manifest["bpm"] == 125.0
     assert manifest["startOffset"] == 1.590567
     assert manifest["bars"] == 158 and manifest["meter"] == "4/4"
     assert manifest["sampleRate"] == 44_100 and manifest["channels"] == 2
     assert manifest["codec"] == "MP3 192 kbps"
-    assert manifest["fallback"] == "full-band-clean.mp3"
-    assert manifest["r2ObjectKey"] == "sultan/terpaksa-aku-lakukan/full-band-clean.mp3"
+    assert manifest["fallback"] == "full-band-clean-v2.mp3"
+    assert manifest["r2ObjectKey"] == "sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3"
     assert manifest["publicUrl"] == (
         "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/"
-        "sultan/terpaksa-aku-lakukan/full-band-clean.mp3"
+        "sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3"
     )
-    assert manifest["renderVersion"] == "sultan-karaoke-1"
-    assert "validated MP3-derived instrument events" in manifest["source"]
+    assert manifest["renderVersion"] == "sultan-karaoke-2"
+    assert manifest["sourceSha256"] == SOURCE_SHA256
+    assert "original accompaniment and timing retained" in manifest["source"]
+    assert manifest["validation"]["openingAudioRetained"] is True
+    assert manifest["validation"]["referenceEnergyCorrelation2s"] >= 0.97
+    assert manifest["validation"]["referenceOnsetCorrelation100ms"] >= 0.89
     if not AUDIO_PATH.exists():
         return
     assert AUDIO_PATH.stat().st_size > 7_000_000
@@ -151,6 +157,31 @@ def validate_audio() -> None:
     assert int(stream["sample_rate"]) == 44_100
     assert int(stream["channels"]) == 2
     assert abs(float(metadata["format"]["duration"]) - 304.436825) < 0.08
+
+    decoded = subprocess.run(
+        [
+            "ffmpeg",
+            "-v",
+            "error",
+            "-t",
+            "0.5",
+            "-i",
+            str(AUDIO_PATH),
+            "-f",
+            "f32le",
+            "-acodec",
+            "pcm_f32le",
+            "-ac",
+            "1",
+            "-",
+        ],
+        check=True,
+        stdout=subprocess.PIPE,
+    )
+    samples = array("f")
+    samples.frombytes(decoded.stdout)
+    opening_rms = (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
+    assert opening_rms > 0.05, opening_rms
 
 
 def validate_html() -> None:
@@ -183,7 +214,7 @@ def validate_html() -> None:
     assert "var KARAOKE_BPM=125,KARAOKE_START=1.590567" in html
     assert (
         "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/"
-        "sultan/terpaksa-aku-lakukan/full-band-clean.mp3?v=sultan-karaoke-1"
+        "sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3?v=sultan-karaoke-2"
     ) in html
     assert "Mode Karaoke HQ siap" in html
     assert "Karaoke Full Band · tanpa vokal" in html
