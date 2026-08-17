@@ -156,6 +156,13 @@ def main() -> None:
     ]
     for path in pages:
         source = path.read_text()
+        if 'data-mode="youtube"' in source:
+            assert "youtube.com/watch?v=" in source, path
+            assert "youtube.com/iframe_api" in source, path
+            assert "new YT.Player" in source, path
+            assert ".mp3" not in source.lower(), path
+            check_inline_scripts(path)
+            continue
         if 'data-playback="synthesis-only"' in source:
             assert "AudioContext" in source or "webkitAudioContext" in source, path
             assert ".mp3" not in source.lower(), path
@@ -165,11 +172,8 @@ def main() -> None:
         assert "harmony-engine.js?v=guitarpro-1" in source, path
         assert "KCSampler.timing" in source, path
         assert "latencyHint:'playback'" in source, path
-        if "KARAOKE_BPM" in source:
-            assert ".play()" in source, path
-        else:
-            assert "{force:true,kinds:['bass'],mode:'anchor'}" in source, path
-            assert "if(!ready)" in source, path
+        assert "{force:true,kinds:['bass'],mode:'anchor'}" in source, path
+        assert "if(!ready)" in source, path
         for text in forbidden:
             assert text not in source, f"{path.name} still contains {text!r}"
         check_inline_scripts(path)
@@ -179,11 +183,12 @@ def main() -> None:
         assert required in sampler, f"sampler missing {required}"
 
     mixer = (TABS / "tab-mixer-enhancer.js").read_text()
-    enhanced_songs = {path.stem for path in pages if path.name != "exists-dirantai-digelangi-rindu.html" and 'data-playback="synthesis-only"' not in path.read_text()}
+    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text() and 'data-playback="synthesis-only"' not in path.read_text()}
     for slug in enhanced_songs:
         assert f"'{slug}'" in mixer, f"missing Full Band profile for {slug}"
     exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text()
-    assert "Full Band HQ" in exists and "kcExistsBandProfile" in exists
+    assert "dcEyID3okrM" in exists and "data-mode=\"youtube\"" in exists
+    assert ".mp3" not in exists.lower()
 
     check_harmony_parser()
     check_sampler_runtime()
