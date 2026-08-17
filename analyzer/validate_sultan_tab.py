@@ -216,12 +216,10 @@ def validate_html() -> None:
         "https://pub-f24c157419c64a00886e77e672bff365.r2.dev/"
         "sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3?v=sultan-karaoke-2"
     ) in html
-    assert "Mode Karaoke HQ siap" in html
-    assert "Karaoke Full Band · tanpa vokal" in html
-    assert "karaoke.play()" in html
-    assert "function sectionAudioStart()" in html
-    assert "function syncKaraoke()" in html
-    assert "soundTick(scheduled" not in html
+    assert "Instrumental sampel · benar-benar tanpa vokal" in html
+    assert "mode:'sample-instrumental'" in html
+    assert "karaoke.play()" not in html
+    assert "soundTick(scheduled" in html
     assert "KCHarmony.clean" not in html
     assert "data-volume=" not in html
     assert "data-mix=" not in html
