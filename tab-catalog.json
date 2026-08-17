@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-17T00:00:00+07:00",
+  "updatedAt": "2026-08-17T16:30:00+07:00",
   "songs": [
     {
       "slug": "exists-dirantai-digelangi-rindu",
@@ -11,8 +11,17 @@
       "bars": 100,
       "key": "Am",
       "bpmLabel": "89,84 BPM",
-      "instruments": ["Gitar/lead", "Bass", "Drum", "Strings", "Synth"],
-      "searchTerms": ["malaysia", "rock kapak"]
+      "instruments": [
+        "Gitar/lead",
+        "Bass",
+        "Drum",
+        "Strings",
+        "Synth"
+      ],
+      "searchTerms": [
+        "malaysia",
+        "rock kapak"
+      ]
     },
     {
       "slug": "sultan-terpaksa-aku-lakukan",
@@ -23,8 +32,15 @@
       "bars": 158,
       "key": "Gm",
       "bpmLabel": "125 BPM",
-      "instruments": ["Gitar/lead", "Bass", "Drum"],
-      "searchTerms": ["malaysia", "pop melayu"]
+      "instruments": [
+        "Gitar/lead",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "malaysia",
+        "pop melayu"
+      ]
     },
     {
       "slug": "romeo-bunga-terakhir",
@@ -35,8 +51,16 @@
       "bars": 87,
       "key": "F#m / A",
       "bpmLabel": "73 BPM",
-      "instruments": ["Gitar elektrik", "Bass", "Drum"],
-      "searchTerms": ["bebi romeo", "indonesia", "pop balada"]
+      "instruments": [
+        "Gitar elektrik",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "bebi romeo",
+        "indonesia",
+        "pop balada"
+      ]
     },
     {
       "slug": "aiman-tino-berakhirlah-sudah",
@@ -47,8 +71,17 @@
       "bars": 66,
       "key": "A",
       "bpmLabel": "73 BPM",
-      "instruments": ["Gitar", "Piano/keyboard", "Bass", "Drum"],
-      "searchTerms": ["malaysia", "pop melayu", "balada"]
+      "instruments": [
+        "Gitar",
+        "Piano/keyboard",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "malaysia",
+        "pop melayu",
+        "balada"
+      ]
     },
     {
       "slug": "anie-carera-hati-siapa-tak-luka",
@@ -59,8 +92,18 @@
       "bars": 96,
       "key": "Bm",
       "bpmLabel": "73 BPM",
-      "instruments": ["Gitar 1", "Gitar 2", "Keyboard/Synth", "Bass", "Drum"],
-      "searchTerms": ["indonesia", "pop rock", "balada"]
+      "instruments": [
+        "Gitar 1",
+        "Gitar 2",
+        "Keyboard/Synth",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "indonesia",
+        "pop rock",
+        "balada"
+      ]
     },
     {
       "slug": "kahitna-cerita-cinta",
@@ -71,8 +114,15 @@
       "bars": 121,
       "key": "F#",
       "bpmLabel": "113,24 BPM",
-      "instruments": ["Gitar elektrik", "Bass", "Drum"],
-      "searchTerms": ["indonesia", "pop"]
+      "instruments": [
+        "Gitar elektrik",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "indonesia",
+        "pop"
+      ]
     },
     {
       "slug": "for-revenge-jakarta-hari-ini",
@@ -83,8 +133,37 @@
       "bars": 106,
       "key": "F mayor",
       "bpmLabel": "114 BPM",
-      "instruments": ["Gitar akustik", "Gitar elektrik", "Bass", "Drum"],
-      "searchTerms": ["stereowall", "indonesia", "emo rock"]
+      "instruments": [
+        "Gitar akustik",
+        "Gitar elektrik",
+        "Bass",
+        "Drum"
+      ],
+      "searchTerms": [
+        "stereowall",
+        "indonesia",
+        "emo rock"
+      ]
+    },
+    {
+      "slug": "peterpan-semua-tentang-kita",
+      "path": "tabs/peterpan-semua-tentang-kita.html",
+      "title": "Semua Tentang Kita",
+      "artist": "Peterpan",
+      "status": "2 gitar sintetis · 78 birama",
+      "bars": 78,
+      "key": "C",
+      "bpmLabel": "90 BPM",
+      "instruments": [
+        "Gitar rhythm sintetis",
+        "Gitar lead sintetis"
+      ],
+      "searchTerms": [
+        "noah",
+        "indonesia",
+        "pop rock",
+        "sintesis"
+      ]
     }
   ]
 }
