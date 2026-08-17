@@ -3,18 +3,11 @@ name: Publish Exists audio to Cloudflare R2
 on:
   workflow_dispatch:
   push:
-    branches: [master]
     paths:
       - ".github/r2-publish-trigger"
-      - ".github/workflows/publish-exists-r2.yml"
-      - "audio/exists-karaoke-hq/**"
 
 permissions:
   contents: read
-
-concurrency:
-  group: publish-exists-r2
-  cancel-in-progress: false
 
 jobs:
   publish:
@@ -32,56 +25,6 @@ jobs:
       - name: Install R2 client
         run: python -m pip install --disable-pip-version-check boto3
 
-      - name: Configure browser CORS
-        env:
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-        run: |
-          python - <<'PY'
-          import os
-
-          import boto3
-
-          required = ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY")
-          missing = [name for name in required if not os.environ.get(name)]
-          if missing:
-              raise SystemExit("Missing GitHub secrets: " + ", ".join(missing))
-
-          bucket = "kompilasichord-audio"
-          origins = [
-              "https://mulyadibagan.github.io",
-              "https://www.kompilasichord.com",
-              "https://kompilasichord.com",
-          ]
-          client = boto3.client(
-              "s3",
-              endpoint_url=f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
-              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
-              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
-              region_name="auto",
-          )
-          rule = {
-              "AllowedOrigins": origins,
-              "AllowedMethods": ["GET", "HEAD"],
-              "AllowedHeaders": ["Range"],
-              "ExposeHeaders": ["Accept-Ranges", "Content-Length", "Content-Range", "ETag"],
-              "MaxAgeSeconds": 86400,
-          }
-          client.put_bucket_cors(
-              Bucket=bucket,
-              CORSConfiguration={"CORSRules": [rule]},
-          )
-          applied = client.get_bucket_cors(Bucket=bucket)["CORSRules"]
-          if not any(
-              set(item.get("AllowedOrigins", [])) == set(origins)
-              and set(item.get("AllowedMethods", [])) == {"GET", "HEAD"}
-              for item in applied
-          ):
-              raise SystemExit(f"Unexpected CORS policy: {applied!r}")
-          print("R2 browser CORS configured for GitHub Pages and Kompilasi Chord.")
-          PY
-
       - name: Upload production audio to R2
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
@@ -89,6 +32,7 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           python - <<'PY'
+          import mimetypes
           import os
           from pathlib import Path
 
@@ -129,45 +73,14 @@ jobs:
               print(f"Uploaded {key} ({head['ContentLength']} bytes)")
           PY
 
-      - name: Verify public streaming and browser CORS
+      - name: Verify public streaming
         env:
           PUBLIC_BASE: https://pub-f24c157419c64a00886e77e672bff365.r2.dev
         run: |
           set -euo pipefail
           prefix="$PUBLIC_BASE/exists/dirantai-digelangi-rindu"
-
           for name in full-band guitar-clean guitar-lead bass drums strings synth; do
             curl --fail --silent --show-error --range 0-1023 "$prefix/$name.mp3" --output /dev/null
           done
           curl --fail --silent --show-error "$prefix/manifest.json" --output /dev/null
-
-          for origin in \
-            "https://mulyadibagan.github.io" \
-            "https://www.kompilasichord.com" \
-            "https://kompilasichord.com"
-          do
-            cors_ready=0
-            for attempt in 1 2 3 4 5 6; do
-              headers="$(mktemp)"
-              if curl --fail --silent --show-error \
-                --range 0-1023 \
-                --header "Origin: $origin" \
-                --dump-header "$headers" \
-                "$prefix/full-band.mp3" \
-                --output /dev/null &&
-                tr -d '\r' < "$headers" | grep -Fqi "access-control-allow-origin: $origin"
-              then
-                cors_ready=1
-                rm -f "$headers"
-                break
-              fi
-              rm -f "$headers"
-              sleep 5
-            done
-            if [ "$cors_ready" -ne 1 ]; then
-              echo "CORS header missing for $origin" >&2
-              exit 1
-            fi
-          done
-
-          echo "R2 public streaming and browser CORS verified."
+          echo "R2 public streaming verified."
