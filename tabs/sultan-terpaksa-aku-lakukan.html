@@ -76,7 +76,7 @@
   var INTRO_TUNING=[64,59,55,50,45,40];
   var DEFAULT_MIX={melody:true,bass:false,drums:false};
   var DEFAULT_VOLUME={melody:.72,bass:.62,drums:.58};
-  var KARAOKE_BPM=125,KARAOKE_START=1.590567,KARAOKE_URL='https://pub-f24c157419c64a00886e77e672bff365.r2.dev/sultan/terpaksa-aku-lakukan/full-band-clean.mp3?v=sultan-karaoke-1';
+  var KARAOKE_BPM=125,KARAOKE_START=1.590567,KARAOKE_URL='https://pub-f24c157419c64a00886e77e672bff365.r2.dev/sultan/terpaksa-aku-lakukan/full-band-clean-v2.mp3?v=sultan-karaoke-2';
   var karaoke=new Audio(KARAOKE_URL);karaoke.preload='metadata';karaoke.playsInline=true;karaoke.setAttribute('playsinline','');
   var state={instrument:'melody',section:'full',running:false,loading:false,timer:0,tick:0,scheduleTick:0,nextTickTime:0,playToken:0,context:null,lastBar:-1,enabled:Object.assign({},DEFAULT_MIX),volume:Object.assign({},DEFAULT_VOLUME)};
   var bars=document.getElementById('bars'),play=document.getElementById('play'),stop=document.getElementById('stop'),rewind=document.getElementById('rewind'),tempo=document.getElementById('tempo'),metro=document.getElementById('metro'),seek=document.getElementById('seek');
