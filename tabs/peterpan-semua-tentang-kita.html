@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Tab Musik Peterpan — Semua Tentang Kita: video resmi YouTube dengan 78 birama tab Guitar Pro parsial untuk gitar rhythm dan lead.">
+  <meta name="description" content="Tab Musik Peterpan — Semua Tentang Kita: audio resmi YouTube dengan 78 birama tab Guitar Pro parsial untuk gitar rhythm dan lead.">
   <title>Tab Musik — Peterpan · Semua Tentang Kita</title>
   <script>if(new URLSearchParams(location.search).get('embed')==='1'||window.self!==window.top)document.documentElement.classList.add('embed');</script>
   <style>
@@ -59,7 +59,7 @@
 <header class="topbar kc-topbar"><div class="brand"><span>Kompilasi</span>Chord Studio</div><small>Interactive Tab Player</small></header>
 <main class="wrap">
   <section class="card">
-    <div class="songline"><div><a class="back-hub" href="../tab-musik.html?embed=1">← Semua Tab Musik</a><h1>Semua Tentang Kita</h1><p>Peterpan · C · 4/4 · ≈95 BPM · video 4:29</p></div><span class="badge" style="background:#fffaeb;color:#b54708;border-color:#fedf89">Tab parsial · 2 gitar · 78 birama</span></div>
+    <div class="songline"><div><a class="back-hub" href="../tab-musik.html?embed=1">← Semua Tab Musik</a><h1>Semua Tentang Kita</h1><p>Peterpan · C · 4/4 · ≈95 BPM · audio resmi 4:26</p></div><span class="badge" style="background:#fffaeb;color:#b54708;border-color:#fedf89">Tab parsial · 2 gitar · 78 birama</span></div>
     <div class="playerbar">
       <div class="transport"><button id="rewind" type="button" title="Kembali ke awal">↶ Awal</button><button class="play" id="play" type="button" aria-keyshortcuts="Space">▶ Putar</button><button id="stop" type="button" aria-keyshortcuts="Escape">■ Stop</button></div>
       <div class="control-center"><label class="tempo">Tempo video <input id="tempo" type="range" min="95" max="95" step="1" value="95" disabled title="Tempo mengikuti rekaman YouTube"><strong><span id="bpm">≈95</span> BPM</strong></label><label class="seek">Posisi data <input id="seek" type="range" min="0" max="1247" value="0"><span id="time">0:00 / 3:17</span></label></div>
@@ -79,15 +79,15 @@
         <div class="score">
           <div class="score-head"><div><strong id="score-title">Gitar Rhythm · Full Data</strong><span id="tuning">Tuning E A D G B e · data Guitar Pro yang tersedia</span></div><div><span class="position" id="position">Birama 1/78 · Ketukan 1</span><div class="beat-dots" aria-label="Indikator ketukan"><span></span><span></span><span></span><span></span></div></div></div>
           <div class="bars" id="bars"></div>
-          <div class="info"><p class="legend" id="legend">Tab Guitar Pro parsial ditampilkan apa adanya; birama tanpa nada dibiarkan kosong.</p><p class="status" id="status">Video resmi YouTube sedang disiapkan · tab parsial akan mengikuti posisi pemutaran.</p><p class="shortcut">Laptop: <kbd>Spasi</kbd> putar/jeda · <kbd>Esc</kbd> stop · <kbd>Home</kbd> kembali ke awal. Geser “Posisi” untuk pindah birama.</p><p class="source"><strong>Catatan kelengkapan:</strong> data Guitar Pro yang tersedia hanya 78 birama (sekitar 3:17 pada tempo video), sedangkan video resmi berdurasi 4:29. Sistem menandainya sebagai tab parsial dan tidak membuat nada atau birama palsu. Sumber audio dan video: <a href="https://www.youtube.com/watch?v=hhn-nGSuenM" target="_blank" rel="noopener noreferrer">Peterpan — Semua Tentang Kita (Official Music Video) di YouTube</a>.</p></div>
+          <div class="info"><p class="legend" id="legend">Tab Guitar Pro parsial ditampilkan apa adanya; birama tanpa nada dibiarkan kosong.</p><p class="status" id="status">Audio resmi YouTube sedang disiapkan · tab parsial akan mengikuti posisi pemutaran.</p><p class="shortcut">Laptop: <kbd>Spasi</kbd> putar/jeda · <kbd>Esc</kbd> stop · <kbd>Home</kbd> kembali ke awal. Geser “Posisi” untuk pindah birama.</p><p class="source"><strong>Catatan kelengkapan:</strong> data Guitar Pro yang tersedia hanya 78 birama (sekitar 3:17 pada tempo video), sedangkan audio resmi berdurasi 4:26. Sistem menandainya sebagai tab parsial dan tidak membuat nada atau birama palsu. Sumber audio resmi: <a href="https://www.youtube.com/watch?v=QiNUtoTsObs" target="_blank" rel="noopener noreferrer">Peterpan — Semua Tentang Kita (Official Audio) di YouTube</a>.</p></div>
         </div>
       </div>
-      <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video Peterpan — Semua Tentang Kita"></div><p class="youtube-credit">Audio dan video dari <a href="https://www.youtube.com/watch?v=hhn-nGSuenM" target="_blank" rel="noopener noreferrer">video resmi Peterpan — Semua Tentang Kita di YouTube</a>.</p></div></div>
+      <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Audio resmi Peterpan — Semua Tentang Kita"></div><p class="youtube-credit">Audio dari <a href="https://www.youtube.com/watch?v=QiNUtoTsObs" target="_blank" rel="noopener noreferrer">audio resmi Peterpan — Semua Tentang Kita di YouTube</a>.</p></div></div>
     </div>
   </section>
 </main>
 <script src="harmony-engine.js?v=guitarpro-1"></script>
-<script src="peterpan-semua-tentang-kita-data.js?v=20260817-youtube"></script>
+<script src="peterpan-semua-tentang-kita-data.js?v=20260817-audio"></script>
 <script>
 (function(){
   'use strict';
@@ -96,7 +96,7 @@
   function buildPart(key,label){return PARTS[key].bars.map(function(chords,i){var values=Array.isArray(chords)?chords:[chords];return{chord:values[0]||'—',chord2:values[1]||values[0]||'—',part:key,partLabel:label||PARTS[key].label,local:i};});}
   var FULL_BARS=[];SONG_ORDER.forEach(function(item){FULL_BARS=FULL_BARS.concat(buildPart(item.part,item.label));});FULL_BARS.forEach(function(bar,i){bar.songIndex=i;});
   var SECTIONS={full:{label:'Full Lagu',bars:FULL_BARS}};Object.keys(PARTS).forEach(function(key){SECTIONS[key]={label:PARTS[key].label,bars:FULL_BARS.filter(function(bar){return bar.part===key;})};});
-  var SONG_BPM=95,YOUTUBE_START=0,YOUTUBE_VIDEO_ID='hhn-nGSuenM';
+  var SONG_BPM=95,YOUTUBE_START=0,YOUTUBE_VIDEO_ID='QiNUtoTsObs';
   var PICKUP_SLOT=0;
   var youtubePlayer=null,youtubeReady=false;
   var state={instrument:'rhythm',section:'full',running:false,loading:false,timer:0,tick:PICKUP_SLOT,scheduleTick:PICKUP_SLOT,playToken:0,context:null,lastBar:-1};
@@ -147,6 +147,6 @@
 })();
 
 </script>
-<script src="../tab-navigation.js?v=20260817-peterpan-youtube" data-base=".."></script>
+<script src="../tab-navigation.js?v=20260817-peterpan-audio" data-base=".."></script>
 </body>
 </html>
