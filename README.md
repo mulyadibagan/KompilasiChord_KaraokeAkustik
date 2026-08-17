@@ -30,6 +30,8 @@ Player **Exists — Dirantai Digelangi Rindu** memakai video resmi ExistsVEVO di
 
 Player **Romeo — Bunga Terakhir** memakai rekaman Bebi Romeo di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 88 birama data tab termasuk pickup; tampilan gitar elektrik, piano, bass, drum, dan orkestra/pad tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
 
+Player **Atmosfera — Berakhirlah Sudah** memakai video resmi Rusa Music di YouTube dengan sinkronisasi 66 birama untuk Gitar, Piano/Keyboard, Bass, dan Drum. Identitas artis lama “Aiman Tino” dikoreksi karena data nada, akor, tempo, dan durasi cocok dengan rekaman Atmosfera. Halaman tidak memuat MP3 lagu, pemutar sampel, mixer, atau indikator teks nada berjalan; tampilan desktop, iframe Blogger, dan mobile menggunakan tata letak responsif.
+
 Player **Anie Carera — Hati Siapa Tak Luka** memakai video dari kanal terverifikasi GP Musikpedia di YouTube. Kontrol putar, jeda, geser posisi, pilihan bagian, dan pengulangan disinkronkan dengan 96 birama data tab; tampilan Gitar 1, Gitar 2, Keyboard/Synth, Bass, dan Drum tetap tersedia tanpa menyimpan MP3 lagu atau hasil pemisahan audio.
 
 Player **Kahitna — Cerita Cinta** memakai video resmi Musica Studios di YouTube dengan sinkronisasi tab 121 birama untuk Gitar Elektrik, Bass, dan Drum. Halaman ini tidak memuat MP3 lagu, pemutar sampel, mixer, atau indikator teks nada berjalan; tampilan desktop, iframe Blogger, dan mobile memakai tata letak responsif yang sama.
