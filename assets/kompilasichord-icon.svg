@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title">
+  <title id="title">Kompilasi Chord</title>
+  <rect width="192" height="192" rx="42" fill="#D71920"/>
+  <path d="M96 27c33 0 54 15 54 45 0 42-24 75-54 93-30-18-54-51-54-93 0-30 21-45 54-45Z" fill="none" stroke="#fff" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M81 60v72M81 96l36-36M81 96l36 36" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
