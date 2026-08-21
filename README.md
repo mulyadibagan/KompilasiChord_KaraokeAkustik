@@ -22,6 +22,16 @@ Database timeline dan pemutar Karaoke Akustik untuk KompilasiChord.com.
 
 Tambahkan halaman player ke folder `tabs/`, lalu daftarkan metadata lagunya satu kali di `tab-catalog.json`. Halaman `tab-musik.html` dan kotak **Pilih Tab Musik** pada setiap player akan membaca katalog yang sama secara otomatis.
 
+### Otomatis dari GP5 melalui GitHub Actions
+
+1. Di GitHub, buka folder `input/`, pilih **Add file → Upload files**, lalu unggah GP3/GP4/GP5 biner.
+2. Buka **Actions → Build Tab Music from Guitar Pro → Run workflow**.
+3. Isi `gp5_path` (misalnya `input/romeo-bunga-terakhir.gp5`) dan `youtube_url`.
+4. `title`, `artist`, dan `slug` boleh dikosongkan jika metadata GP5 sudah benar.
+5. Workflow membuat `tabs/<slug>.html`, `tabs/<slug>-data.js`, memperbarui `tab-catalog.json`, lalu push ke `master`.
+
+Parser menggunakan PyGuitarPro dan mendukung GP3, GP4, serta GP5 biner. Arsip GPX/GP7 yang hanya diganti ekstensi menjadi `.gp5` ditolak; ekspor ulang dari Guitar Pro sebagai GP5. URL YouTube hanya dipakai sebagai embed/referensi dan audionya tidak disimpan di repository.
+
 ## Mesin audio Tab Musik
 
 Pemutar menggunakan bank sampel CC0, scheduler Web Audio dengan look-ahead adaptif, bus EQ/kompresor per kelompok instrumen, sustain-loop untuk nada panjang, dan limiter master. Full Band memiliki profil volume khusus per lagu; suara osilator sintetis hanya dipakai untuk klik metronom, bukan sebagai pengganti instrumen yang gagal dimuat.

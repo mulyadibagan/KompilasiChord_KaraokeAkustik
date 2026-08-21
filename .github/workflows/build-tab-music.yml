@@ -1,0 +1,99 @@
+name: Build Tab Music from Guitar Pro
+
+on:
+  workflow_dispatch:
+    inputs:
+      gp5_path:
+        description: "Path file di repo, contoh: input/artis-judul.gp5"
+        required: true
+        type: string
+      youtube_url:
+        description: "URL video YouTube resmi/referensi"
+        required: true
+        type: string
+      title:
+        description: "Judul lagu (kosong = baca dari GP5)"
+        required: false
+        type: string
+      artist:
+        description: "Nama artis (kosong = baca dari GP5)"
+        required: false
+        type: string
+      slug:
+        description: "Slug opsional, contoh: artis-judul-lagu"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-tab-music
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-tab-builder.txt
+
+      - name: Install GP5 parser
+        run: python -m pip install -r requirements-tab-builder.txt
+
+      - name: Validate source path
+        shell: bash
+        env:
+          GP5_PATH: ${{ inputs.gp5_path }}
+        run: |
+          case "$GP5_PATH" in
+            input/*.gp3|input/*.gp4|input/*.gp5) ;;
+            *) echo "gp5_path harus berada di input/ dan berekstensi .gp3/.gp4/.gp5"; exit 1 ;;
+          esac
+          test -f "$GP5_PATH"
+
+      - name: Generate player and catalog entry
+        id: generate
+        env:
+          GP5_PATH: ${{ inputs.gp5_path }}
+          YOUTUBE_URL: ${{ inputs.youtube_url }}
+          TAB_TITLE: ${{ inputs.title }}
+          TAB_ARTIST: ${{ inputs.artist }}
+          TAB_SLUG: ${{ inputs.slug }}
+        run: |
+          python analyzer/build_tab_from_gp5.py \
+            --gp5 "$GP5_PATH" \
+            --youtube "$YOUTUBE_URL" \
+            --title "$TAB_TITLE" \
+            --artist "$TAB_ARTIST" \
+            --slug "$TAB_SLUG"
+
+      - name: Validate generated files
+        shell: bash
+        run: |
+          test -s "${{ steps.generate.outputs.page }}"
+          test -s "${{ steps.generate.outputs.data }}"
+          grep -F 'window.KC_TAB_DATA' "${{ steps.generate.outputs.data }}"
+          python -m py_compile analyzer/build_tab_from_gp5.py
+
+      - name: Commit generated tab
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${{ steps.generate.outputs.page }}" "${{ steps.generate.outputs.data }}" tab-catalog.json
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan yang perlu dipublikasikan."
+            exit 0
+          fi
+          git commit -m "Add generated tab: ${{ steps.generate.outputs.slug }}"
+          git push origin HEAD:master
