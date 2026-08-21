@@ -54,7 +54,8 @@
   <script>
     const form=document.querySelector('#form'),fileInput=document.querySelector('#gp5'),fileName=document.querySelector('#fileName'),drop=document.querySelector('#drop'),statusBox=document.querySelector('#status'),button=document.querySelector('#submit'),endpoint=document.querySelector('#endpoint');
     const queryApi=new URLSearchParams(location.search).get('api');
-    endpoint.value=queryApi||localStorage.getItem('kc-tab-upload-api')||'';
+    const defaultApi='https://kompilasichord-tab-upload.yg-webgis-public-data-worker.workers.dev/submit';
+    endpoint.value=queryApi||localStorage.getItem('kc-tab-upload-api')||defaultApi;
     function show(message,type=''){statusBox.className=`status show ${type}`;statusBox.innerHTML=message}
     function chosen(){fileName.textContent=fileInput.files[0]?.name||''}
     fileInput.addEventListener('change',chosen);
