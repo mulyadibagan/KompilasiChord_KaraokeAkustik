@@ -18,6 +18,7 @@
     });
   }
   function track() { return data.tracks[state.track]; }
+  function maxTick() { return Math.max(0, data.measureCount * 16 - 1); }
   function stringLabel(item, index) {
     if (track().percussion) return item && item.name ? item.name : 'Drum ' + (index + 1);
     return item && item.name ? item.name.replace(/\d+$/, '') : 'S' + (index + 1);
@@ -49,50 +50,70 @@
     bars.innerHTML = current.measures.map(function (measure, index) {
       return '<article class="bar-card" data-bar="' + index + '"><div class="bar-label"><strong>' + escapeHtml(measure.section || '') + '</strong><span>Birama ' + measure.number + '</span></div><pre>' + measureTab(measure) + '</pre></article>';
     }).join('');
-    seek.max = Math.max(0, current.measures.length * 16 - 1);
+    seek.max = maxTick();
     seek.value = Math.min(state.tick, Number(seek.max));
-    highlight();
+    highlight(false);
   }
-  function highlight() {
+  function highlight(autoScroll) {
     var barIndex = Math.floor(state.tick / 16), slot = state.tick % 16;
     document.querySelectorAll('.current').forEach(function (el) { el.classList.remove('current'); });
+    var activeCard = null;
     document.querySelectorAll('.bar-card').forEach(function (card) {
       var active = Number(card.dataset.bar) === barIndex;
       card.classList.toggle('active', active);
       if (active) {
+        activeCard = card;
         card.style.setProperty('--cursor', (2 + slot * 6) + '%');
         card.querySelectorAll('[data-slot="' + slot + '"]').forEach(function (el) { el.classList.add('current'); });
       }
     });
-    document.getElementById('position').textContent = 'Birama ' + (barIndex + 1) + '/' + track().measures.length + ' · 1/16 ' + (slot + 1);
+    document.getElementById('position').textContent = 'Birama ' + (barIndex + 1) + '/' + data.measureCount + ' · 1/16 ' + (slot + 1);
     document.getElementById('position-time').textContent = 'Birama ' + (barIndex + 1);
     seek.value = state.tick;
+    if (autoScroll && activeCard && slot === 0) activeCard.scrollIntoView({block:'nearest',behavior:'smooth'});
   }
   function frame(now) {
     if (!state.running) return;
     var interval = 60000 / Math.max(30, data.tempo) / 4;
     if (now - state.last >= interval) {
-      state.last = now;
-      state.tick += 1;
-      if (state.tick > Number(seek.max)) {
-        if (document.getElementById('loop').checked) state.tick = 0;
-        else return stop();
+      var steps = Math.max(1, Math.floor((now - state.last) / interval));
+      state.last += steps * interval;
+      state.tick += steps;
+      if (state.tick > maxTick()) {
+        if (document.getElementById('loop').checked) state.tick = state.tick % (maxTick() + 1);
+        else { state.tick = maxTick(); highlight(true); return stop(); }
       }
-      highlight();
+      highlight(true);
     }
     state.timer = requestAnimationFrame(frame);
   }
-  function stop() { state.running = false; cancelAnimationFrame(state.timer); document.getElementById('play').textContent = '▶ Putar'; }
+  function stop() {
+    state.running = false;
+    cancelAnimationFrame(state.timer);
+    document.getElementById('play').textContent = '▶ Putar';
+  }
+  function togglePlay() {
+    if (state.running) return stop();
+    if (state.tick >= maxTick()) state.tick = 0;
+    state.running = true;
+    state.last = performance.now();
+    document.getElementById('play').textContent = '⏸ Jeda';
+    state.timer = requestAnimationFrame(frame);
+  }
   tabs.addEventListener('click', function (event) {
     var button = event.target.closest('[data-track]'); if (!button) return;
-    stop(); state.track = Number(button.dataset.track); state.tick = 0; renderTabs(); renderScore();
+    state.track = Number(button.dataset.track);
+    renderTabs();
+    renderScore();
   });
-  document.getElementById('play').addEventListener('click', function () {
-    if (state.running) return stop(); state.running = true; state.last = performance.now(); this.textContent = '⏸ Jeda'; state.timer = requestAnimationFrame(frame);
+  document.getElementById('play').addEventListener('click', togglePlay);
+  document.getElementById('stop').addEventListener('click', function () { stop(); state.tick = 0; highlight(false); });
+  document.getElementById('rewind').addEventListener('click', function () { state.tick = 0; highlight(false); });
+  seek.addEventListener('input', function () { state.tick = Number(this.value); state.last = performance.now(); highlight(false); });
+  document.addEventListener('keydown', function (event) {
+    if (event.code !== 'Space' || /INPUT|TEXTAREA|BUTTON/.test(document.activeElement && document.activeElement.tagName)) return;
+    event.preventDefault(); togglePlay();
   });
-  document.getElementById('stop').addEventListener('click', function () { stop(); state.tick = 0; highlight(); });
-  document.getElementById('rewind').addEventListener('click', function () { state.tick = 0; highlight(); });
-  seek.addEventListener('input', function () { state.tick = Number(this.value); highlight(); });
   document.getElementById('song-meta').textContent = data.tempo + ' BPM · ' + data.measureCount + ' birama · ' + data.tracks.length + ' instrumen';
   renderTabs(); renderScore();
 })();
