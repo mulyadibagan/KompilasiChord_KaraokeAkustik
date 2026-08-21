@@ -148,6 +148,26 @@
         "guitar pro",
         "tab parsial"
       ]
+    },
+    {
+      "slug": "tab-for-revenge-ada-selamanya-08-06-2024",
+      "path": "tabs/tab-for-revenge-ada-selamanya-08-06-2024.html",
+      "title": "Ada Selamanya",
+      "artist": "For Revenge",
+      "status": "4 instrumen · 132 birama",
+      "bars": 132,
+      "key": "8.1.3",
+      "bpmLabel": "138 BPM",
+      "instruments": [
+        "Drums",
+        "Electric Bass (finger)",
+        "Acoustic Guitar (steel)",
+        "Acoustic Guitar (steel)"
+      ],
+      "searchTerms": [
+        "guitar pro",
+        "otomatis"
+      ]
     }
   ]
 }
