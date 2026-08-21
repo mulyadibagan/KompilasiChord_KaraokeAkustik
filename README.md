@@ -30,11 +30,11 @@ Tambahkan halaman player ke folder `tabs/`, lalu daftarkan metadata lagunya satu
 4. `title`, `artist`, dan `slug` boleh dikosongkan jika metadata GP5 sudah benar.
 5. Workflow membuat `tabs/<slug>.html`, `tabs/<slug>-data.js`, memperbarui `tab-catalog.json`, lalu push ke `master`.
 
-Parser menggunakan PyGuitarPro dan mendukung GP3, GP4, serta GP5 biner. Arsip GPX/GP7 yang hanya diganti ekstensi menjadi `.gp5` ditolak; ekspor ulang dari Guitar Pro sebagai GP5. URL YouTube hanya dipakai sebagai embed/referensi dan audionya tidak disimpan di repository.
+Parser mendukung GP3, GP4, GP5 biner melalui PyGuitarPro serta file `.gp` modern Guitar Pro 7/8 melalui data GPIF bawaan. URL YouTube hanya dipakai sebagai embed/referensi dan audionya tidak disimpan di repository.
 
 ### Form upload admin
 
-Halaman `tab-upload.html` menyediakan form visual untuk memilih GP3/GP4/GP5 dan menempel URL YouTube. Form meneruskan file ke Cloudflare Worker di `worker/tab-upload/`; token GitHub hanya disimpan sebagai secret Worker dan tidak pernah dimasukkan ke HTML.
+Halaman `tab-upload.html` menyediakan form visual untuk memilih GP/GP3/GP4/GP5 dan menempel URL YouTube. Form meneruskan file ke Cloudflare Worker di `worker/tab-upload/`; token GitHub hanya disimpan sebagai secret Worker dan tidak pernah dimasukkan ke HTML.
 
 Deployment pertama:
 

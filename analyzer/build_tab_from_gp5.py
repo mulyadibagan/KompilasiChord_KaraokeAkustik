@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a KompilasiChord tab player from a binary GP3/GP4/GP5 file."""
+"""Build a KompilasiChord tab player from GP3/GP4/GP5 or modern GP7/GP8."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import unicodedata
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -102,6 +103,130 @@ def extract(song) -> dict:
     }
 
 
+RHYTHM_QUARTERS = {
+    "Longa": 16.0, "DoubleWhole": 8.0, "Whole": 4.0, "Half": 2.0,
+    "Quarter": 1.0, "Eighth": 0.5, "16th": 0.25, "32nd": 0.125,
+    "64th": 0.0625, "128th": 0.03125,
+}
+
+
+def gpif_text(node, path: str, default="") -> str:
+    found = node.find(path) if node is not None else None
+    return (found.text or "").strip() if found is not None else default
+
+
+def gpif_refs(node, path: str) -> list[int]:
+    return [safe_int(value, -1) for value in gpif_text(node, path).split() if safe_int(value, -1) >= 0]
+
+
+def gpif_rhythm_quarters(rhythm) -> float:
+    base_value = RHYTHM_QUARTERS.get(gpif_text(rhythm, "NoteValue"), 1.0)
+    value = base_value
+    dot = rhythm.find("AugmentationDot")
+    dots = safe_int(dot.get("count"), 0) if dot is not None else 0
+    addition = 0.5
+    for _ in range(dots):
+        value += base_value * addition
+        addition *= 0.5
+    tuplet = rhythm.find("PrimaryTuplet")
+    if tuplet is not None:
+        numerator = safe_int(tuplet.get("num") or gpif_text(tuplet, "Num"), 1)
+        denominator = safe_int(tuplet.get("den") or gpif_text(tuplet, "Den"), 1)
+        if numerator > 0:
+            value *= denominator / numerator
+    return max(value, 1 / 128)
+
+
+def gpif_property(node, name: str, child: str, default="") -> str:
+    if node is None:
+        return default
+    prop = node.find(f"./Properties/Property[@name='{name}']/{child}")
+    return (prop.text or "").strip() if prop is not None else default
+
+
+def extract_gpif(source: Path) -> tuple[dict, str, str, str]:
+    with zipfile.ZipFile(source) as archive:
+        try:
+            score_info = archive.getinfo("Content/score.gpif")
+            if score_info.file_size > 20 * 1024 * 1024:
+                raise SystemExit("Data score.gpif terlalu besar (maksimal 20 MB)")
+            root = ET.fromstring(archive.read(score_info))
+        except KeyError as exc:
+            raise SystemExit("Arsip .gp tidak memiliki Content/score.gpif") from exc
+
+    score = root.find("Score")
+    title = gpif_text(score, "Title", source.stem)
+    artist = gpif_text(score, "Artist", "Artis belum diisi")
+    version = gpif_text(root, "GPVersion", "GP7/GP8")
+    tempo = 120
+    for automation in root.findall("./MasterTrack/Automations/Automation"):
+        if gpif_text(automation, "Type") == "Tempo":
+            tempo = safe_int(gpif_text(automation, "Value").split()[0], 120)
+            break
+
+    tracks_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Tracks/Track")}
+    bars_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Bars/Bar")}
+    voices_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Voices/Voice")}
+    beats_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Beats/Beat")}
+    notes_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Notes/Note")}
+    rhythms_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Rhythms/Rhythm")}
+    master_bars = root.findall("./MasterBars/MasterBar")
+    master_track_ids = gpif_refs(root.find("MasterTrack"), "Tracks") or sorted(tracks_by_id)
+
+    tracks = []
+    for track_position, track_id in enumerate(master_track_ids):
+        track_node = tracks_by_id.get(track_id)
+        if track_node is None:
+            continue
+        name = gpif_text(track_node, "Name", f"Track {track_position + 1}")
+        kind = gpif_text(track_node, "InstrumentSet/Type").lower()
+        percussion = "drum" in kind or "percussion" in kind
+        program = safe_int(gpif_text(track_node, "Sounds/Sound/MIDI/Program"), 0)
+        pitches = [safe_int(value) for value in gpif_property(track_node.find("Staves/Staff"), "Tuning", "Pitches").split()]
+        if not pitches:
+            pitches = [36, 38, 42, 46, 49, 51] if percussion else [40, 45, 50, 55, 59, 64]
+        display_pitches = list(reversed(pitches))
+        strings = [{"number": index + 1, "midi": midi, "name": string_name(midi)} for index, midi in enumerate(display_pitches)]
+        measures = []
+
+        for measure_index, master_bar in enumerate(master_bars):
+            bar_refs = gpif_refs(master_bar, "Bars")
+            bar_node = bars_by_id.get(bar_refs[track_position]) if track_position < len(bar_refs) else None
+            numerator, _, denominator = gpif_text(master_bar, "Time", "4/4").partition("/")
+            measure_quarters = max(0.25, safe_int(numerator, 4) * 4 / max(1, safe_int(denominator, 4)))
+            events = []
+            for voice_id in gpif_refs(bar_node, "Voices"):
+                voice = voices_by_id.get(voice_id)
+                position = 0.0
+                for beat_id in gpif_refs(voice, "Beats"):
+                    beat = beats_by_id.get(beat_id)
+                    rhythm_ref = safe_int(beat.find("Rhythm").get("ref"), -1) if beat is not None and beat.find("Rhythm") is not None else -1
+                    duration = gpif_rhythm_quarters(rhythms_by_id.get(rhythm_ref))
+                    slot = max(0, min(15, round(position / measure_quarters * 16)))
+                    slots = max(1, min(16 - slot, round(duration / measure_quarters * 16)))
+                    for note_id in gpif_refs(beat, "Notes"):
+                        note = notes_by_id.get(note_id)
+                        fret = safe_int(gpif_property(note, "Fret", "Fret"), 0)
+                        gp_string = safe_int(gpif_property(note, "String", "String"), -1)
+                        midi = safe_int(gpif_property(note, "Midi", "Number"), 0)
+                        string_index = len(pitches) - 1 - gp_string if gp_string >= 0 else (midi % len(pitches))
+                        tie = note.find("Tie") if note is not None else None
+                        events.append({
+                            "slot": slot, "duration": slots,
+                            "string": max(0, min(len(pitches) - 1, string_index)),
+                            "fret": fret if gp_string >= 0 else midi,
+                            "velocity": 95,
+                            "tie": bool(tie is not None and tie.get("destination") == "true"),
+                        })
+                    position += duration
+            measures.append({"number": measure_index + 1, "section": "", "events": events})
+        tracks.append({
+            "id": f"track-{track_position + 1}", "name": name, "program": program,
+            "percussion": percussion, "strings": strings, "measures": measures,
+        })
+    return {"tempo": tempo, "measureCount": len(master_bars), "tracks": tracks}, title, artist, version
+
+
 def page_html(meta: dict) -> str:
     title = meta["title"].replace("&", "&amp;").replace("<", "&lt;")
     artist = meta["artist"].replace("&", "&amp;").replace("<", "&lt;")
@@ -157,21 +282,28 @@ def main() -> int:
         source.relative_to((ROOT / "input").resolve())
     except ValueError:
         raise SystemExit("File sumber harus berada di folder input/")
-    if not source.is_file() or source.suffix.lower() not in {".gp3", ".gp4", ".gp5"}:
-        raise SystemExit("File sumber harus berupa .gp3, .gp4, atau .gp5 yang tersedia di repository")
-    if zipfile.is_zipfile(source):
-        raise SystemExit("File adalah arsip GP7/GPX, bukan GP5 biner. Ekspor ulang melalui Guitar Pro sebagai GP5.")
-
-    song = guitarpro.parse(str(source))
-    title = (args.title or getattr(song, "title", "") or source.stem).strip()
-    artist = (args.artist or getattr(song, "artist", "") or "Artis belum diisi").strip()
+    if not source.is_file() or source.suffix.lower() not in {".gp", ".gp3", ".gp4", ".gp5"}:
+        raise SystemExit("File sumber harus berupa .gp, .gp3, .gp4, atau .gp5 yang tersedia di repository")
+    if source.suffix.lower() == ".gp":
+        if not zipfile.is_zipfile(source):
+            raise SystemExit("File .gp modern harus berupa arsip Guitar Pro yang valid")
+        data, detected_title, detected_artist, format_label = extract_gpif(source)
+    else:
+        if zipfile.is_zipfile(source):
+            raise SystemExit("Arsip GP7/GP8 harus menggunakan ekstensi .gp")
+        song = guitarpro.parse(str(source))
+        data = extract(song)
+        detected_title = getattr(song, "title", "")
+        detected_artist = getattr(song, "artist", "")
+        format_label = "GP5"
+    title = (args.title or detected_title or source.stem).strip()
+    artist = (args.artist or detected_artist or "Artis belum diisi").strip()
     slug = slugify(args.slug or f"{artist}-{title}")
     if not slug:
         raise SystemExit("Slug tidak valid")
     video_id = youtube_id(args.youtube)
-    data = extract(song)
     if not data["tracks"]:
-        raise SystemExit("GP5 tidak berisi track")
+        raise SystemExit("File Guitar Pro tidak berisi track")
 
     meta = {"slug": slug, "title": title, "artist": artist, "youtubeId": video_id}
     data.update(meta)
@@ -184,7 +316,7 @@ def main() -> int:
     entry = {
         "slug": slug, "path": f"tabs/{slug}.html", "title": title, "artist": artist,
         "status": f"{len(instruments)} instrumen · {data['measureCount']} birama",
-        "bars": data["measureCount"], "key": "GP5", "bpmLabel": f"{data['tempo']} BPM",
+        "bars": data["measureCount"], "key": format_label, "bpmLabel": f"{data['tempo']} BPM",
         "instruments": instruments, "searchTerms": ["guitar pro", "otomatis"],
     }
     update_catalog(entry)

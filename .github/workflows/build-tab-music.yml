@@ -56,8 +56,8 @@ jobs:
           GP5_PATH: ${{ inputs.gp5_path }}
         run: |
           case "$GP5_PATH" in
-            input/*.gp3|input/*.gp4|input/*.gp5) ;;
-            *) echo "gp5_path harus berada di input/ dan berekstensi .gp3/.gp4/.gp5"; exit 1 ;;
+            input/*.gp|input/*.gp3|input/*.gp4|input/*.gp5) ;;
+            *) echo "gp5_path harus berada di input/ dan berekstensi .gp/.gp3/.gp4/.gp5"; exit 1 ;;
           esac
           test -f "$GP5_PATH"
 

@@ -74,15 +74,16 @@ async function submit(request, env) {
   const requestedSlug = String(form.get('slug') || '').trim();
   if (!(file instanceof File)) return json({ ok: false, error: 'File Guitar Pro belum dipilih.' }, 400, origin, env);
   if (file.size < 32 || file.size > MAX_FILE_BYTES) return json({ ok: false, error: 'File harus berukuran 32 byte–5 MB.' }, 400, origin, env);
-  const extension = (file.name.match(/\.(gp3|gp4|gp5)$/i) || [])[1];
-  if (!extension) return json({ ok: false, error: 'Ekstensi harus .gp3, .gp4, atau .gp5.' }, 400, origin, env);
+  const extension = (file.name.match(/\.(gp|gp3|gp4|gp5)$/i) || [])[1];
+  if (!extension) return json({ ok: false, error: 'Ekstensi harus .gp, .gp3, .gp4, atau .gp5.' }, 400, origin, env);
   if (!YOUTUBE_RE.test(youtubeUrl)) return json({ ok: false, error: 'URL YouTube tidak valid.' }, 400, origin, env);
 
   const bytes = await file.arrayBuffer();
   const head = new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 64));
-  if (head[0] === 0x50 && head[1] === 0x4b) return json({ ok: false, error: 'File adalah GP7/GPX berbentuk ZIP. Ekspor ulang sebagai GP5.' }, 400, origin, env);
+  if (extension.toLowerCase() === 'gp' && !(head[0] === 0x50 && head[1] === 0x4b)) return json({ ok: false, error: 'File .gp modern tidak valid.' }, 400, origin, env);
+  if (extension.toLowerCase() !== 'gp' && head[0] === 0x50 && head[1] === 0x4b) return json({ ok: false, error: 'File GP7/GP8 harus memakai ekstensi .gp.' }, 400, origin, env);
   const signature = String.fromCharCode(...head);
-  if (!signature.includes('FICHIER GUITAR PRO')) return json({ ok: false, error: 'Signature Guitar Pro 3/4/5 tidak ditemukan.' }, 400, origin, env);
+  if (extension.toLowerCase() !== 'gp' && !signature.includes('FICHIER GUITAR PRO')) return json({ ok: false, error: 'Signature Guitar Pro 3/4/5 tidak ditemukan.' }, 400, origin, env);
 
   const slug = slugify(requestedSlug || `${artist || 'tab'}-${title || file.name.replace(/\.[^.]+$/, '')}`);
   if (!slug) return json({ ok: false, error: 'Slug tidak valid.' }, 400, origin, env);

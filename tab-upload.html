@@ -27,8 +27,8 @@
       <p class="lead">Unggah Guitar Pro dan tempel link YouTube. Sistem akan membuat player dan memasukkannya ke katalog secara otomatis.</p>
       <form id="form">
         <label>File Guitar Pro</label>
-        <label class="drop" id="drop" for="gp5"><strong>Pilih atau seret file ke sini</strong><small>GP3, GP4, atau GP5 biner · maksimal 5 MB</small><span class="file" id="fileName"></span></label>
-        <input id="gp5" name="gp5" type="file" accept=".gp3,.gp4,.gp5" required hidden>
+        <label class="drop" id="drop" for="gp5"><strong>Pilih atau seret file ke sini</strong><small>GP modern, GP3, GP4, atau GP5 · maksimal 5 MB</small><span class="file" id="fileName"></span></label>
+        <input id="gp5" name="gp5" type="file" accept=".gp,.gp3,.gp4,.gp5" required hidden>
         <label for="youtube">Link YouTube</label>
         <input id="youtube" name="youtube_url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." required>
         <div class="two">
@@ -66,7 +66,7 @@
       e.preventDefault();
       const file=fileInput.files[0],api=endpoint.value.trim().replace(/\/$/,'');
       if(!file)return show('Pilih file Guitar Pro terlebih dahulu.','bad');
-      if(!/\.(gp3|gp4|gp5)$/i.test(file.name)||file.size>5*1024*1024)return show('File harus GP3/GP4/GP5 dan maksimal 5 MB.','bad');
+      if(!/\.(gp|gp3|gp4|gp5)$/i.test(file.name)||file.size>5*1024*1024)return show('File harus GP/GP3/GP4/GP5 dan maksimal 5 MB.','bad');
       localStorage.setItem('kc-tab-upload-api',api);
       button.disabled=true;button.textContent='Sedang mengunggah…';show('File sedang dikirim. Jangan tutup halaman ini.');
       try{
