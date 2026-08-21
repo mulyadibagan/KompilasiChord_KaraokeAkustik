@@ -5,7 +5,12 @@
   var tabs = document.getElementById('instrument-tabs');
   var bars = document.getElementById('bars');
   var seek = document.getElementById('seek');
-  var state = { track: 0, tick: 0, running: false, timer: 0, last: performance.now() };
+  var firstMelodyTrack = data.tracks.reduce(function (best, item, index) {
+    if (item.percussion) return best;
+    var count = item.measures.reduce(function (sum, measure) { return sum + measure.events.length; }, 0);
+    return best.index < 0 || count > best.count ? {index:index,count:count} : best;
+  }, {index:-1,count:-1}).index;
+  var state = { track: firstMelodyTrack < 0 ? 0 : firstMelodyTrack, tick: 0, running: false, timer: 0, last: performance.now() };
 
   function escapeHtml(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
@@ -14,7 +19,7 @@
   }
   function track() { return data.tracks[state.track]; }
   function stringLabel(item, index) {
-    if (track().percussion) return 'D' + (index + 1);
+    if (track().percussion) return item && item.name ? item.name : 'Drum ' + (index + 1);
     return item && item.name ? item.name.replace(/\d+$/, '') : 'S' + (index + 1);
   }
   function measureTab(measure) {
@@ -22,9 +27,10 @@
     var grid = strings.map(function () { return Array(16).fill('--'); });
     measure.events.forEach(function (event) {
       var row = Math.min(grid.length - 1, Math.max(0, event.string));
-      grid[row][event.slot] = '<span class="tab-note" data-slot="' + event.slot + '">' + String(event.fret).padStart(2, '-') + '</span>';
+      var noteText = track().percussion ? '●' : String(event.fret).padStart(2, '-');
+      grid[row][event.slot] = '<span class="tab-note" data-slot="' + event.slot + '">' + noteText + '</span>';
       for (var i = 1; i < event.duration && event.slot + i < 16; i++) {
-        if (grid[row][event.slot + i] === '--') grid[row][event.slot + i] = '<span class="tab-hold" data-slot="' + (event.slot + i) + '">~~</span>';
+        if (!track().percussion && grid[row][event.slot + i] === '--') grid[row][event.slot + i] = '<span class="tab-hold" data-slot="' + (event.slot + i) + '">~~</span>';
       }
     });
     return strings.map(function (item, index) {

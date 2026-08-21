@@ -220,10 +220,34 @@ def extract_gpif(source: Path) -> tuple[dict, str, str, str]:
                         })
                     position += duration
             measures.append({"number": measure_index + 1, "section": "", "events": events})
+        if percussion:
+            drum_lanes = [
+                ("Cymbal", {49, 51, 52, 53, 55, 57, 59}),
+                ("Hi-Hat", {42, 44, 46}),
+                ("Tom", {41, 43, 45, 47, 48, 50}),
+                ("Snare", {37, 38, 40}),
+                ("Kick", {35, 36}),
+                ("Perc.", set()),
+            ]
+            strings = [{"number": index + 1, "midi": 0, "name": label} for index, (label, _) in enumerate(drum_lanes)]
+            for measure in measures:
+                for event in measure["events"]:
+                    midi = event["fret"]
+                    event["string"] = next((index for index, (_, notes) in enumerate(drum_lanes[:-1]) if midi in notes), len(drum_lanes) - 1)
+                    event["fret"] = "●"
         tracks.append({
             "id": f"track-{track_position + 1}", "name": name, "program": program,
             "percussion": percussion, "strings": strings, "measures": measures,
         })
+    duplicate_totals = {}
+    for item in tracks:
+        duplicate_totals[item["name"]] = duplicate_totals.get(item["name"], 0) + 1
+    duplicate_seen = {}
+    for item in tracks:
+        if duplicate_totals[item["name"]] > 1:
+            original = item["name"]
+            duplicate_seen[original] = duplicate_seen.get(original, 0) + 1
+            item["name"] = f"{original} {duplicate_seen[original]}"
     return {"tempo": tempo, "measureCount": len(master_bars), "tracks": tracks}, title, artist, version
 
 
@@ -238,16 +262,16 @@ def page_html(meta: dict) -> str:
 <title>Tab Musik — {artist} · {title}</title>
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
-<link rel="stylesheet" href="generated-tab-player.css?v=1">
+<link rel="stylesheet" href="generated-tab-player.css?v=20260821-2">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
 <div class="songline"><div><h1>{title}</h1><p>{artist} · <span id="song-meta">Memuat Guitar Pro…</span></p></div></div>
 <div class="playerbar"><div class="transport"><button id="rewind">↶ Awal</button><button class="play" id="play">▶ Putar</button><button id="stop">■ Stop</button></div><div class="control-center"><label class="seek">Posisi <input id="seek" type="range" value="0"><span id="position-time">Birama 1</span></label></div><label class="switch"><input id="loop" type="checkbox"> Ulang</label></div>
-<div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div></aside>
-<section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Siap.</p><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p><iframe class="youtube-reference" src="https://www.youtube-nocookie.com/embed/{meta['youtubeId']}" title="Video referensi {title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div></div></section></div>
+<div class="workspace"><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Siap.</p></div></div></section>
+<aside class="right-rail"><div class="youtube-panel"><iframe class="youtube-reference" src="https://www.youtube-nocookie.com/embed/{meta['youtubeId']}" title="Video referensi {title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div><div class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div></div></aside></div>
 </section></main>
-<script src="{slug}-data.js?v=1"></script><script src="generated-tab-player.js?v=1"></script>
+<script src="{slug}-data.js?v=20260821-2"></script><script src="generated-tab-player.js?v=20260821-2"></script>
 <script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
 </body></html>'''
 
