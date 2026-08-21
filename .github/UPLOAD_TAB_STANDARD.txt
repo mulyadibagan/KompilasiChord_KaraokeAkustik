@@ -1,0 +1,1 @@
+Uploaded Guitar Pro tabs must use tabs/generated-tab-player.js and tabs/generated-tab-player.css as the shared standard player assets.
