@@ -252,6 +252,24 @@
     if (count) count.textContent = 'Katalog tidak tersedia';
   }
 
+  function openRequestedSong(songs) {
+    var params = new URLSearchParams(window.location.search);
+    var requested = params.get('lagu') || params.get('t') || params.get('song') || params.get('slug');
+    if (!requested) return false;
+
+    var aliases = {
+      'bunga-terakhir': 'romeo-bunga-terakhir',
+      'hati-siapa-tak-luka': 'anie-carera-hati-siapa-tak-luka',
+      'cerita-cinta': 'kahitna-cerita-cinta'
+    };
+    var targetSlug = aliases[requested] || requested;
+    var target = songs.filter(function (song) { return song.slug === targetSlug; })[0];
+    if (!target) return false;
+
+    window.location.replace(songUrl(target));
+    return true;
+  }
+
   if (playerPage) playerControls = buildPlayerHeader();
 
   fetch(catalogUrl, { cache: 'no-cache' })
@@ -262,7 +280,7 @@
     .then(function (catalog) {
       var songs = Array.isArray(catalog.songs) ? catalog.songs : [];
       if (playerControls) playerControls.setSongs(songs);
-      if (libraryPage) initLibrary(songs);
+      if (libraryPage && !openRequestedSong(songs)) initLibrary(songs);
     })
     .catch(function () {
       if (playerControls) playerControls.setError();
