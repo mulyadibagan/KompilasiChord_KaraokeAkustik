@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kompilasichord-tab-upload",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "ALLOWED_ORIGIN": "https://mulyadibagan.github.io",
+    "ALLOWED_ORIGIN_SECONDARY": "https://www.kompilasichord.com",
+    "GITHUB_OWNER": "mulyadibagan",
+    "GITHUB_REPO": "KompilasiChord_KaraokeAkustik",
+    "GITHUB_BRANCH": "master"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}
