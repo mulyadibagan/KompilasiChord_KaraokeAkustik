@@ -320,7 +320,7 @@ def page_html(meta: dict) -> str:
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
 <link rel="stylesheet" href="generated-tab-player.css?v=20260822-7">
-<link rel="stylesheet" href="generated-alphatab-player.css?v=20260822-1">
+<link rel="stylesheet" href="generated-alphatab-player.css?v=20260822-2">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
@@ -330,7 +330,7 @@ def page_html(meta: dict) -> str:
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
 <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
-<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-1"></script>
+<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-2"></script>
 <script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
 </body></html>'''
 
