@@ -320,7 +320,7 @@ def page_html(meta: dict) -> str:
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
 <link rel="stylesheet" href="generated-tab-player.css?v=20260822-7">
-<link rel="stylesheet" href="generated-alphatab-player.css?v=20260822-4">
+<link rel="stylesheet" href="generated-alphatab-player.css?v=20260822-5">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
@@ -331,7 +331,7 @@ def page_html(meta: dict) -> str:
 </section></main>
 <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
 <script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-8"></script>
-<script src="../tab-navigation.js?v=20260822-calm-follow" data-base=".."></script>
+<script src="../tab-navigation.js?v=20260822-sticky-chord" data-base=".."></script>
 </body></html>'''
 
 
