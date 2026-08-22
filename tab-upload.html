@@ -100,7 +100,7 @@
       button.disabled=true;button.textContent='Sedang mengunggah…';show('File sedang dikirim untuk membuat draft. Jangan tutup halaman ini.');
       try{
         const body=new FormData(form);body.delete('endpoint');body.delete('key');
-        const response=await fetch(api,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value}`},body});
+        const response=await fetch(api,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value.trim()}`},body});
         const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));
         if(!response.ok)throw new Error(result.error||`Upload gagal (${response.status}).`);
         draftSlug=result.slug;draftPreviewUrl=result.previewUrl;previewOffset.value=document.querySelector('#youtubeOffset').value||'0';
@@ -118,7 +118,7 @@
     publishButton.addEventListener('click',async()=>{
       if(!draftSlug)return showPublish('Belum ada draft yang siap diterbitkan.','bad');
       publishButton.disabled=true;publishButton.textContent='Sedang menerbitkan…';showPublish('Offset final sedang disimpan dan katalog sedang diperbarui.');
-      try{const response=await fetch(`${serviceRoot()}/publish`,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value}`,'content-type':'application/json'},body:JSON.stringify({slug:draftSlug,youtube_offset:Number(previewOffset.value)})});const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));if(!response.ok)throw new Error(result.error||`Publikasi gagal (${response.status}).`);showPublish(`Publikasi <strong>${draftSlug}</strong> sedang diproses. <a href="${result.actionsUrl}" target="_blank" rel="noopener">Lihat GitHub Actions →</a>`,'ok');publishButton.textContent='Publikasi diproses'}catch(error){showPublish(error.message==='Failed to fetch'?'Tidak dapat menghubungi layanan upload.':error.message,'bad');publishButton.disabled=false;publishButton.textContent='Terbitkan ke katalog'}
+      try{const response=await fetch(`${serviceRoot()}/publish`,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value.trim()}`,'content-type':'application/json'},body:JSON.stringify({slug:draftSlug,youtube_offset:Number(previewOffset.value)})});const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));if(!response.ok)throw new Error(result.error||`Publikasi gagal (${response.status}).`);showPublish(`Publikasi <strong>${draftSlug}</strong> sedang diproses. <a href="${result.actionsUrl}" target="_blank" rel="noopener">Lihat GitHub Actions →</a>`,'ok');publishButton.textContent='Publikasi diproses'}catch(error){showPublish(error.message==='Failed to fetch'?'Tidak dapat menghubungi layanan upload.':error.message,'bad');publishButton.disabled=false;publishButton.textContent='Terbitkan ke katalog'}
     });
   </script>
 </body>
