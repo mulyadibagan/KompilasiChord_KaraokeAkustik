@@ -72,11 +72,14 @@ async function submit(request, env) {
   const title = String(form.get('title') || '').trim();
   const artist = String(form.get('artist') || '').trim();
   const requestedSlug = String(form.get('slug') || '').trim();
+  const youtubeOffsetText = String(form.get('youtube_offset') || '0').trim();
+  const youtubeOffset = Number(youtubeOffsetText);
   if (!(file instanceof File)) return json({ ok: false, error: 'File Guitar Pro belum dipilih.' }, 400, origin, env);
   if (file.size < 32 || file.size > MAX_FILE_BYTES) return json({ ok: false, error: 'File harus berukuran 32 byte–5 MB.' }, 400, origin, env);
   const extension = (file.name.match(/\.(gp|gp3|gp4|gp5)$/i) || [])[1];
   if (!extension) return json({ ok: false, error: 'Ekstensi harus .gp, .gp3, .gp4, atau .gp5.' }, 400, origin, env);
   if (!YOUTUBE_RE.test(youtubeUrl)) return json({ ok: false, error: 'URL YouTube tidak valid.' }, 400, origin, env);
+  if (!Number.isFinite(youtubeOffset) || youtubeOffset < -600 || youtubeOffset > 600) return json({ ok: false, error: 'Offset YouTube harus berupa detik antara -600 dan 600.' }, 400, origin, env);
 
   const bytes = await file.arrayBuffer();
   const head = new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 64));
@@ -105,7 +108,7 @@ async function submit(request, env) {
   const dispatch = await fetch(`${apiRoot}/actions/workflows/build-tab-music.yml/dispatches`, {
     method: 'POST', headers: githubHeaders(env), body: JSON.stringify({
       ref: env.GITHUB_BRANCH,
-      inputs: { gp5_path: path, youtube_url: youtubeUrl, title, artist, slug },
+      inputs: { gp5_path: path, youtube_url: youtubeUrl, youtube_offset: String(youtubeOffset), title, artist, slug },
     }),
   });
   if (!dispatch.ok) return json({ ok: false, error: `File terunggah, tetapi workflow gagal dimulai: ${await githubError(dispatch)}` }, 502, origin, env);

@@ -45,6 +45,9 @@
           <span class="hint">Kunci tidak disimpan di browser dan akan kosong saat halaman dibuka ulang.</span>
           <label for="slug">Slug khusus (opsional)</label>
           <input id="slug" name="slug" pattern="[a-z0-9-]+" placeholder="artis-judul-lagu">
+          <label for="youtubeOffset">Offset YouTube (detik, opsional)</label>
+          <input id="youtubeOffset" name="youtube_offset" type="number" min="-600" max="600" step="0.1" value="0">
+          <span class="hint">Gunakan untuk menggeser awal tab agar tepat dengan audio video.</span>
         </details>
         <div class="actions"><button id="submit" type="submit">Buat Tab Musik</button><span class="hint">Biasanya selesai dalam 1–3 menit.</span></div>
         <div id="status" class="status" role="status" aria-live="polite"></div>

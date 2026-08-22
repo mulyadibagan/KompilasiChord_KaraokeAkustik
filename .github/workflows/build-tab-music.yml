@@ -11,6 +11,11 @@ on:
         description: "URL video YouTube resmi/referensi"
         required: true
         type: string
+      youtube_offset:
+        description: "Offset awal video dalam detik untuk sinkronisasi tab (default 0)"
+        required: false
+        default: "0"
+        type: string
       title:
         description: "Judul lagu (kosong = baca dari GP5)"
         required: false
@@ -66,6 +71,7 @@ jobs:
         env:
           GP5_PATH: ${{ inputs.gp5_path }}
           YOUTUBE_URL: ${{ inputs.youtube_url }}
+          YOUTUBE_OFFSET: ${{ inputs.youtube_offset }}
           TAB_TITLE: ${{ inputs.title }}
           TAB_ARTIST: ${{ inputs.artist }}
           TAB_SLUG: ${{ inputs.slug }}
@@ -73,6 +79,7 @@ jobs:
           python analyzer/build_tab_from_gp5.py \
             --gp5 "$GP5_PATH" \
             --youtube "$YOUTUBE_URL" \
+            --youtube-offset "${YOUTUBE_OFFSET:-0}" \
             --title "$TAB_TITLE" \
             --artist "$TAB_ARTIST" \
             --slug "$TAB_SLUG"

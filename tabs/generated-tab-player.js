@@ -1,98 +1,22 @@
-(function () {
-  'use strict';
-  var data = window.KC_TAB_DATA;
-  if (!data || !data.tracks || !data.tracks.length) return;
-  var tabs = document.getElementById('instrument-tabs');
-  var bars = document.getElementById('bars');
-  var seek = document.getElementById('seek');
-  var firstMelodyTrack = data.tracks.reduce(function (best, item, index) {
-    if (item.percussion) return best;
-    var count = item.measures.reduce(function (sum, measure) { return sum + measure.events.length; }, 0);
-    return best.index < 0 || count > best.count ? {index:index,count:count} : best;
-  }, {index:-1,count:-1}).index;
-  var state = { track: firstMelodyTrack < 0 ? 0 : firstMelodyTrack, tick: 0, running: false, timer: 0, last: performance.now() };
-
-  function escapeHtml(value) {
-    return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
-  function track() { return data.tracks[state.track]; }
-  function stringLabel(item, index) {
-    if (track().percussion) return item && item.name ? item.name : 'Drum ' + (index + 1);
-    return item && item.name ? item.name.replace(/\d+$/, '') : 'S' + (index + 1);
-  }
-  function measureTab(measure) {
-    var strings = track().strings.length ? track().strings : [{name:'Drum'}];
-    var grid = strings.map(function () { return Array(16).fill('--'); });
-    measure.events.forEach(function (event) {
-      var row = Math.min(grid.length - 1, Math.max(0, event.string));
-      var noteText = track().percussion ? '●' : String(event.fret).padStart(2, '-');
-      grid[row][event.slot] = '<span class="tab-note" data-slot="' + event.slot + '">' + noteText + '</span>';
-      for (var i = 1; i < event.duration && event.slot + i < 16; i++) {
-        if (!track().percussion && grid[row][event.slot + i] === '--') grid[row][event.slot + i] = '<span class="tab-hold" data-slot="' + (event.slot + i) + '">~~</span>';
-      }
-    });
-    return strings.map(function (item, index) {
-      return stringLabel(item, index).padEnd(2, ' ') + ' |' + grid[index].join('') + '|';
-    }).join('\n');
-  }
-  function renderTabs() {
-    tabs.innerHTML = data.tracks.map(function (item, index) {
-      return '<button class="view-track" type="button" data-track="' + index + '" aria-selected="' + (index === state.track) + '">♫ ' + escapeHtml(item.name) + '</button>';
-    }).join('');
-  }
-  function renderScore() {
-    var current = track();
-    document.getElementById('score-title').textContent = current.name + ' · Full Lagu';
-    document.getElementById('tuning').textContent = current.percussion ? 'Track perkusi' : 'Tuning ' + current.strings.map(function (s) { return s.name; }).join(' ');
-    bars.innerHTML = current.measures.map(function (measure, index) {
-      return '<article class="bar-card" data-bar="' + index + '"><div class="bar-label"><strong>' + escapeHtml(measure.section || '') + '</strong><span>Birama ' + measure.number + '</span></div><pre>' + measureTab(measure) + '</pre></article>';
-    }).join('');
-    seek.max = Math.max(0, current.measures.length * 16 - 1);
-    seek.value = Math.min(state.tick, Number(seek.max));
-    highlight();
-  }
-  function highlight() {
-    var barIndex = Math.floor(state.tick / 16), slot = state.tick % 16;
-    document.querySelectorAll('.current').forEach(function (el) { el.classList.remove('current'); });
-    document.querySelectorAll('.bar-card').forEach(function (card) {
-      var active = Number(card.dataset.bar) === barIndex;
-      card.classList.toggle('active', active);
-      if (active) {
-        card.style.setProperty('--cursor', (2 + slot * 6) + '%');
-        card.querySelectorAll('[data-slot="' + slot + '"]').forEach(function (el) { el.classList.add('current'); });
-      }
-    });
-    document.getElementById('position').textContent = 'Birama ' + (barIndex + 1) + '/' + track().measures.length + ' · 1/16 ' + (slot + 1);
-    document.getElementById('position-time').textContent = 'Birama ' + (barIndex + 1);
-    seek.value = state.tick;
-  }
-  function frame(now) {
-    if (!state.running) return;
-    var interval = 60000 / Math.max(30, data.tempo) / 4;
-    if (now - state.last >= interval) {
-      state.last = now;
-      state.tick += 1;
-      if (state.tick > Number(seek.max)) {
-        if (document.getElementById('loop').checked) state.tick = 0;
-        else return stop();
-      }
-      highlight();
-    }
-    state.timer = requestAnimationFrame(frame);
-  }
-  function stop() { state.running = false; cancelAnimationFrame(state.timer); document.getElementById('play').textContent = '▶ Putar'; }
-  tabs.addEventListener('click', function (event) {
-    var button = event.target.closest('[data-track]'); if (!button) return;
-    stop(); state.track = Number(button.dataset.track); state.tick = 0; renderTabs(); renderScore();
-  });
-  document.getElementById('play').addEventListener('click', function () {
-    if (state.running) return stop(); state.running = true; state.last = performance.now(); this.textContent = '⏸ Jeda'; state.timer = requestAnimationFrame(frame);
-  });
-  document.getElementById('stop').addEventListener('click', function () { stop(); state.tick = 0; highlight(); });
-  document.getElementById('rewind').addEventListener('click', function () { state.tick = 0; highlight(); });
-  seek.addEventListener('input', function () { state.tick = Number(this.value); highlight(); });
-  document.getElementById('song-meta').textContent = data.tempo + ' BPM · ' + data.measureCount + ' birama · ' + data.tracks.length + ' instrumen';
-  renderTabs(); renderScore();
-})();
+(function(){'use strict';
+var data=window.KC_TAB_DATA;if(!data||!data.tracks||!data.tracks.length)return;
+var tabs=document.getElementById('instrument-tabs'),bars=document.getElementById('bars'),seek=document.getElementById('seek'),play=document.getElementById('play'),status=document.getElementById('status');
+var first=data.tracks.reduce(function(best,item,index){if(item.percussion)return best;var count=item.measures.reduce(function(sum,m){return sum+m.events.length},0);return best.index<0||count>best.count?{index:index,count:count}:best},{index:-1,count:-1}).index;
+var state={track:first<0?0:first,tick:0,running:false,loading:false,timer:0,lastBar:-1},youtubePlayer=null,youtubeReady=false,secondsPerTick=60/Math.max(30,Number(data.tempo)||120)/4,youtubeOffset=Number(data.youtubeOffset)||0;
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function track(){return data.tracks[state.track]}
+function label(item,index){if(track().percussion)return item&&item.name?item.name:'Drum '+(index+1);return item&&item.name?item.name.replace(/\d+$/,''):'S'+(index+1)}
+function measureTab(measure){var strings=track().strings.length?track().strings:[{name:'Drum'}],grid=strings.map(function(){return Array(16).fill('--')});measure.events.forEach(function(event){var row=Math.min(grid.length-1,Math.max(0,event.string)),note=track().percussion?'●':String(event.fret).padStart(2,'-');grid[row][event.slot]='<span class="tab-note" data-slot="'+event.slot+'">'+note+'</span>';for(var i=1;i<event.duration&&event.slot+i<16;i++)if(!track().percussion&&grid[row][event.slot+i]==='--')grid[row][event.slot+i]='<span class="tab-hold" data-slot="'+(event.slot+i)+'">~~</span>'});return strings.map(function(item,index){return label(item,index).padEnd(2,' ')+' |'+grid[index].join('')+'|'}).join('\n')}
+function renderTabs(){tabs.innerHTML=data.tracks.map(function(item,index){return'<button class="view-track" type="button" data-track="'+index+'" aria-selected="'+(index===state.track)+'">♫ '+esc(item.name)+'</button>'}).join('')}
+function renderScore(){var current=track();document.getElementById('score-title').textContent=current.name+' · Full Lagu';document.getElementById('tuning').textContent=current.percussion?'Track perkusi':'Tuning '+current.strings.map(function(s){return s.name}).join(' ');bars.innerHTML=current.measures.map(function(m,index){return'<article class="bar-card" data-bar="'+index+'"><div class="bar-label"><strong>'+esc(m.section||'')+'</strong><span>Birama '+m.number+'</span></div><pre>'+measureTab(m)+'</pre></article>'}).join('');seek.max=Math.max(0,current.measures.length*16-1);state.tick=Math.min(state.tick,Number(seek.max));highlight()}
+function highlight(){var barIndex=Math.floor(state.tick/16),slot=state.tick%16,activeCard=null;document.querySelectorAll('.current').forEach(function(el){el.classList.remove('current')});document.querySelectorAll('.bar-card').forEach(function(card){var active=Number(card.dataset.bar)===barIndex;card.classList.toggle('active',active);if(active){activeCard=card;card.style.setProperty('--cursor',(2+slot*6)+'%');card.querySelectorAll('[data-slot="'+slot+'"]').forEach(function(el){el.classList.add('current')})}});if(activeCard&&window.innerWidth>820&&state.lastBar!==barIndex){var area=document.querySelector('.score-area');area.scrollTo({top:Math.max(0,activeCard.offsetTop-area.clientHeight/3),behavior:'smooth'})}state.lastBar=barIndex;document.getElementById('position').textContent='Birama '+(barIndex+1)+'/'+track().measures.length+' · 1/16 '+(slot+1);document.getElementById('position-time').textContent='Birama '+(barIndex+1);seek.value=state.tick}
+function videoTime(){return Math.max(0,youtubeOffset+state.tick*secondsPerTick)}function sync(){if(youtubeReady&&youtubePlayer)youtubePlayer.seekTo(videoTime(),true)}
+function monitor(){if(!state.running||!youtubeReady||!youtubePlayer)return;var next=Math.max(0,Math.floor((youtubePlayer.getCurrentTime()-youtubeOffset)/secondsPerTick));if(next>Number(seek.max)){if(document.getElementById('loop').checked){state.tick=0;state.lastBar=-1;sync();youtubePlayer.playVideo();highlight()}else{return stopPlayback()}}else if(next!==state.tick){state.tick=next;highlight()}state.timer=requestAnimationFrame(monitor)}
+function markPlaying(){state.loading=false;state.running=true;play.disabled=false;play.textContent='⏸ Jeda';status.textContent='Video YouTube berjalan · tab mengikuti waktu video.';cancelAnimationFrame(state.timer);state.timer=requestAnimationFrame(monitor)}
+function startPlayback(){if(!youtubeReady||!youtubePlayer){status.textContent='Pemutar YouTube sedang disiapkan…';return}state.loading=true;play.disabled=true;play.textContent='Memuat…';sync();youtubePlayer.playVideo()}
+function pausePlayback(){state.running=false;state.loading=false;cancelAnimationFrame(state.timer);if(youtubeReady&&youtubePlayer)youtubePlayer.pauseVideo();play.disabled=false;play.textContent='▶ Lanjut';status.textContent='Dijeda pada birama '+(Math.floor(state.tick/16)+1)+'.'}
+function stopPlayback(){state.running=false;state.loading=false;cancelAnimationFrame(state.timer);state.tick=0;state.lastBar=-1;if(youtubeReady&&youtubePlayer){youtubePlayer.pauseVideo();youtubePlayer.seekTo(Math.max(0,youtubeOffset),true)}play.disabled=!youtubeReady;play.textContent='▶ Putar';status.textContent='Berhenti · siap diputar dari awal.';highlight()}
+function initYouTube(){if(youtubePlayer||!window.YT||!YT.Player)return;youtubePlayer=new YT.Player('youtube-player',{videoId:data.youtubeId,playerVars:{controls:1,playsinline:1,rel:0,start:Math.max(0,Math.floor(youtubeOffset)),origin:location.origin},events:{onReady:function(){youtubeReady=true;play.disabled=false;play.textContent='▶ Putar';status.textContent='Video YouTube siap · tab akan mengikuti waktu video.';sync()},onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)markPlaying();else if(e.data===YT.PlayerState.PAUSED&&state.running)pausePlayback();else if(e.data===YT.PlayerState.ENDED){if(document.getElementById('loop').checked){state.tick=0;sync();youtubePlayer.playVideo()}else stopPlayback()}},onError:function(){state.running=false;state.loading=false;play.disabled=false;play.textContent='▶ Coba lagi';status.textContent='Video YouTube tidak dapat diputar. Gunakan tautan video referensi untuk memeriksanya.'}}})}
+function loadYouTube(){window.onYouTubeIframeAPIReady=initYouTube;if(window.YT&&YT.Player)return initYouTube();var tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';tag.async=true;document.head.appendChild(tag)}
+tabs.addEventListener('click',function(e){var button=e.target.closest('[data-track]');if(!button)return;if(state.running||state.loading)pausePlayback();state.track=Number(button.dataset.track);state.tick=0;state.lastBar=-1;sync();renderTabs();renderScore()});play.addEventListener('click',function(){state.running?pausePlayback():startPlayback()});document.getElementById('stop').addEventListener('click',stopPlayback);document.getElementById('rewind').addEventListener('click',function(){state.tick=0;state.lastBar=-1;sync();highlight();status.textContent='Kembali ke birama pertama.'});seek.addEventListener('input',function(){state.tick=Number(this.value);state.lastBar=-1;sync();highlight();status.textContent='Posisi dipindah ke birama '+(Math.floor(state.tick/16)+1)+'.'});
+document.getElementById('song-meta').textContent=data.tempo+' BPM · '+data.measureCount+' birama · '+data.tracks.length+' instrumen';play.disabled=true;renderTabs();renderScore();loadYouTube()})();
