@@ -138,7 +138,8 @@ const context = new Context();
 
 def main() -> None:
     generated_player = TABS / "generated-tab-player.js"
-    shared = [TABS / "cc0-sampler.js", TABS / "harmony-engine.js", TABS / "tab-mixer-enhancer.js", generated_player]
+    generated_alpha = TABS / "generated-alphatab-player.js"
+    shared = [TABS / "cc0-sampler.js", TABS / "harmony-engine.js", TABS / "tab-mixer-enhancer.js", generated_player, generated_alpha]
     for path in shared:
         run_node_check(path)
 
@@ -158,6 +159,12 @@ def main() -> None:
     ]
     for path in pages:
         source = path.read_text(encoding="utf-8")
+        if "generated-alphatab-player.js" in source:
+            assert 'id="youtube-player"' in source, path
+            assert 'id="alphatab-score"' in source, path
+            assert "@coderline/alphatab@1.8.4" in source, path
+            assert "youtube.com/watch?v=" in source, path
+            continue
         if "generated-tab-player.js" in source:
             assert 'id="youtube-player"' in source, path
             assert "youtube.com/watch?v=" in source, path
@@ -197,10 +204,13 @@ def main() -> None:
     for required in ["border-left:2px solid var(--red)!important", "background:var(--red)!important", "color:#fff!important", "box-shadow:0 0 0 3px #fecdd3,0 2px 7px #9f123966!important"]:
         assert required in generated_css, f"generated notation must match Jakarta Hari Ini: missing {required}"
     generated_pages = [path.read_text(encoding="utf-8") for path in pages if "generated-tab-player.js" in path.read_text(encoding="utf-8")]
-    assert generated_pages and all('id="section-tabs"' in source for source in generated_pages), "generated players must expose Bagian Lagu navigation"
+    assert all('id="section-tabs"' in source for source in generated_pages), "generated players must expose Bagian Lagu navigation"
+    alpha_source = generated_alpha.read_text(encoding="utf-8")
+    for required in ["new alphaTab.AlphaTabApi", "api.load(data.gpFile)", "api.renderTracks", "api.timePosition", "youtubePlayer.getCurrentTime()"]:
+        assert required in alpha_source, f"alphaTab player missing {required}"
 
     mixer = (TABS / "tab-mixer-enhancer.js").read_text(encoding="utf-8")
-    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text(encoding="utf-8") and 'data-playback="synthesis-only"' not in path.read_text(encoding="utf-8") and "generated-tab-player.js" not in path.read_text(encoding="utf-8")}
+    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text(encoding="utf-8") and 'data-playback="synthesis-only"' not in path.read_text(encoding="utf-8") and "generated-tab-player.js" not in path.read_text(encoding="utf-8") and "generated-alphatab-player.js" not in path.read_text(encoding="utf-8")}
     for slug in enhanced_songs:
         assert f"'{slug}'" in mixer, f"missing Full Band profile for {slug}"
     exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text(encoding="utf-8")

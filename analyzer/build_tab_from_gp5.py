@@ -320,15 +320,17 @@ def page_html(meta: dict) -> str:
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
 <link rel="stylesheet" href="generated-tab-player.css?v=20260822-7">
+<link rel="stylesheet" href="generated-alphatab-player.css?v=20260822-1">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
 <div class="songline"><div><h1>{title}</h1><p>{artist} · <span id="song-meta">Memuat Guitar Pro…</span></p></div></div>
 <div class="playerbar"><div class="transport"><button id="rewind">↶ Awal</button><button class="play" id="play">▶ Putar</button><button id="stop">■ Stop</button></div><div class="control-center"><label class="tempo">Tempo asli <input id="tempo" type="range" disabled><strong><span id="bpm">0</span> BPM</strong></label><label class="seek">Posisi <input id="seek" type="range" value="0"><span id="position-time">0:00 / 0:00</span></label></div><div class="options"><label class="switch"><input id="metro" type="checkbox"> Metronom</label><label class="switch"><input id="loop" type="checkbox"> Ulang</label></div></div>
-<div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div><p class="side-title">Bagian Lagu</p><div class="section-tabs" id="section-tabs" aria-label="Bagian lagu"></div></aside><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Pemutar YouTube sedang disiapkan…</p></div></div></section>
+<div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div><p class="side-title">Bagian Lagu</p><div class="section-tabs" id="section-tabs" aria-label="Bagian lagu"></div></aside><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="alphatab-score" id="alphatab-score"><div class="alphatab-loading">Memuat notasi Guitar Pro asli…</div></div><div class="info"><p id="status">Pemutar YouTube sedang disiapkan…</p></div></div></section>
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
-<script src="{slug}-data.js?v=20260822-7"></script><script src="generated-tab-player.js?v=20260822-7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
+<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-1"></script>
 <script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
 </body></html>'''
 
@@ -387,7 +389,7 @@ def main() -> int:
     if not data["tracks"]:
         raise SystemExit("File Guitar Pro tidak berisi track")
 
-    meta = {"slug": slug, "title": title, "artist": artist, "youtubeId": video_id, "youtubeOffset": args.youtube_offset}
+    meta = {"slug": slug, "title": title, "artist": artist, "youtubeId": video_id, "youtubeOffset": args.youtube_offset, "gpFile": f"../input/{source.name}"}
     data["sections"] = derive_sections(data)
     data.update(meta)
     data_path = ROOT / "tabs" / f"{slug}-data.js"
