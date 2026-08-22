@@ -154,12 +154,10 @@ def validate_data(data: dict) -> tuple[int, int, int, int, dict[str, int]]:
     assert meta["guitarTracks"] == 2
     assert meta["guitarChannelOnsetPitchJaccard"] == 0.375979
     assert meta["drumComponents"] == ["hi-hat", "snare", "kick", "cymbal"]
-    assert "htdemucs_6s stem separation" in meta["method"]
-    assert "per-channel Basic Pitch polyphonic note analysis" in meta["method"]
-    assert "DrumScript onset and spectral classification" in meta["method"]
-    assert "no generated fallback" in meta["method"]
-    assert meta["sourceSha256"] == SOURCE_SHA256
-    assert re.fullmatch(r"[0-9a-f]{64}", meta["sourceSha256"])
+    assert "YouTube" in meta["method"] and "diselaraskan" in meta["method"]
+    assert meta["sourceType"] == "youtube"
+    assert re.fullmatch(r"https://www\.youtube\.com/watch\?v=[\w-]{11}", meta["source"])
+    assert meta["sourceChannel"]
 
     sections = data["sections"]
     assert sum(section["length"] for section in sections) == 96
@@ -186,6 +184,11 @@ def check_javascript(source: str) -> None:
 
 def validate_html() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
+    assert '<body class="kc-player-page" data-mode="youtube">' in html
+    for instrument in ("guitar1", "guitar2", "synth", "bass", "drums"):
+        assert html.count(f'data-instrument="{instrument}"') == 1
+    for marker in ("youtube.com/iframe_api", "new YT.Player", "getCurrentTime()", "seekTo(", "anie-carera-hati-siapa-tak-luka-data.js"):
+        assert marker in html, marker
     forbidden = (
         "BASS_VOICING",
         "rhythmSlots",
@@ -202,21 +205,9 @@ def validate_html() -> None:
         assert marker not in html, marker
     for instrument in ("guitar1", "guitar2", "synth", "bass", "drums"):
         assert html.count(f'data-instrument="{instrument}"') == 1
-        assert html.count(f'data-mix="{instrument}"') == 1
-    assert "TRANSCRIPTION.drums" in html
-    assert "5 instrumen terdeteksi · 96 birama" in html
-    assert "dua take gitar yang berbeda, keyboard/synth, bass, dan drum" in html
-    assert "keduanya ditranskripsi terpisah, bukan salinan data yang sama" in html
-    assert "Vokal serta stem piano yang hanya berisi residu tidak ditampilkan" in html
-    assert "tidak ada pola buatan dari chord" in html
-    assert "birama tanpa event tetap kosong" in html
-    assert "anie-carera-hati-siapa-tak-luka-data.js?v=1" in html
-    assert "cc0-sampler.js?v=guitarpro-1" in html
-    assert "harmony-engine.js?v=guitarpro-1" in html
-    assert "{force:true,kinds:['bass'],mode:'anchor'}" in html
-    assert "humanize:false" in html
-    assert "sampleKeys()" in html
-    assert "guitarTrack('guitar1'" in html and "guitarTrack('guitar2'" in html
+    assert "5 instrumen · 96 birama" in html
+    assert "anie-carera-hati-siapa-tak-luka-data.js" in html
+    assert "monitorYouTube" in html and "tab akan mengikuti posisi pemutaran" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     entry = next(song for song in catalog["songs"] if song["slug"] == "anie-carera-hati-siapa-tak-luka")
@@ -241,7 +232,6 @@ def validate_html() -> None:
         ), name
 
     sampler = SAMPLER_PATH.read_text(encoding="utf-8")
-    assert "options.humanize === false ? 0" in sampler
     check_javascript(DATA_PATH.read_text(encoding="utf-8"))
     check_javascript(sampler)
     inline_scripts = [

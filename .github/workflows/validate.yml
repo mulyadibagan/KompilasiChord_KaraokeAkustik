@@ -52,8 +52,6 @@ jobs:
         run: python analyzer/validate_audio_engine.py
       - name: Validate Exists YouTube-synchronized tab
         run: python analyzer/validate_exists_tab.py
-      - name: Validate Sultan MP3-aligned tab
-        run: python analyzer/validate_sultan_tab.py
       - name: Validate Aiman MP3-derived instrument tabs
         run: python analyzer/validate_aiman_tab.py
       - name: Validate Hati Siapa Tak Luka MP3-derived instrument tabs

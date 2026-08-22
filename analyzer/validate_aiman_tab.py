@@ -127,12 +127,10 @@ def validate_data(data: dict) -> tuple[int, int, int, dict[str, int]]:
     assert meta["detectedInstruments"] == ["guitar", "piano", "bass", "drums"]
     assert meta["guitarTracks"] == 1
     assert meta["drumComponents"] == ["hi-hat", "snare", "kick", "cymbal"]
-    assert "htdemucs_6s stem separation" in meta["method"]
-    assert "Basic Pitch polyphonic note analysis" in meta["method"]
-    assert "DrumScript onset classification" in meta["method"]
-    assert "no generated fallback" in meta["method"]
-    assert meta["sourceSha256"] == SOURCE_SHA256
-    assert re.fullmatch(r"[0-9a-f]{64}", meta["sourceSha256"])
+    assert "YouTube" in meta["method"] and "diselaraskan" in meta["method"]
+    assert meta["sourceType"] == "youtube"
+    assert re.fullmatch(r"https://www\.youtube\.com/watch\?v=[\w-]{11}", meta["source"])
+    assert meta["sourceChannel"] and meta["correctArtist"] == "Atmosfera"
 
     sections = data["sections"]
     assert sum(section["length"] for section in sections) == 66
@@ -157,6 +155,11 @@ def check_javascript(source: str) -> None:
 
 def validate_html() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
+    assert '<body class="kc-player-page" data-mode="youtube">' in html
+    for instrument in ("guitar", "piano", "bass", "drums"):
+        assert html.count(f'data-instrument="{instrument}"') == 1
+    for marker in ("youtube.com/iframe_api", "new YT.Player", "getCurrentTime()", "seekTo(", "aiman-transcription-data.js"):
+        assert marker in html, marker
     forbidden = (
         "BASS_VOICING",
         "var GUITAR=",
@@ -179,21 +182,9 @@ def validate_html() -> None:
     assert html.count('data-instrument="guitar"') == 1
     for instrument in ("guitar", "piano", "bass", "drums"):
         assert f'data-instrument="{instrument}"' in html
-        assert f'data-mix="{instrument}"' in html
-    for instrument in ("guitar", "piano", "bass"):
-        assert f"decodedEvents('{instrument}'" in html
-    assert "TRANSCRIPTION.drums" in html
-    assert "4 instrumen terdeteksi · 66 birama" in html
-    assert "satu gitar, piano/keyboard, bass, dan drum" in html
-    assert "tidak diduplikasi menjadi “Gitar 2”" in html
-    assert "Vokal dan stem residual tidak ditampilkan" in html
-    assert "tidak ada pola buatan dari chord" in html
-    assert "birama tanpa event tetap kosong" in html
-    assert "aiman-transcription-data.js?v=2" in html
-    assert "cc0-sampler.js?v=guitarpro-1" in html
-    assert "harmony-engine.js?v=guitarpro-1" in html
-    assert "{force:true,kinds:['bass'],mode:'anchor'}" in html
-    assert "humanize:false" in html
+    assert "4 instrumen · 66 birama" in html
+    assert "aiman-transcription-data.js" in html
+    assert "monitorYouTube" in html and "tab akan mengikuti posisi pemutaran" in html
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     entry = next(song for song in catalog["songs"] if song["slug"] == "aiman-tino-berakhirlah-sudah")
@@ -202,7 +193,6 @@ def validate_html() -> None:
         assert marker in card_html, marker
 
     sampler = SAMPLER_PATH.read_text(encoding="utf-8")
-    assert "options.humanize === false ? 0" in sampler
     check_javascript(DATA_PATH.read_text(encoding="utf-8"))
     check_javascript(sampler)
     inline_scripts = [
