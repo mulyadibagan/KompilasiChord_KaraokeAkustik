@@ -94,13 +94,18 @@ async function submit(request, env) {
   const path = `input/${filename}`;
   const apiRoot = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}`;
   const existing = await fetch(`${apiRoot}/contents/${encodeURI(path)}?ref=${encodeURIComponent(env.GITHUB_BRANCH)}`, { headers: githubHeaders(env) });
-  if (existing.ok) return json({ ok: false, error: `File ${path} sudah ada. Gunakan slug lain.` }, 409, origin, env);
-  if (existing.status !== 404) return json({ ok: false, error: `GitHub gagal memeriksa file: ${await githubError(existing)}` }, 502, origin, env);
+  let existingFile = null;
+  if (existing.ok) existingFile = await existing.json();
+  else if (existing.status !== 404) return json({ ok: false, error: `GitHub gagal memeriksa file: ${await githubError(existing)}` }, 502, origin, env);
 
+  const uploadBody = {
+    message: `${existingFile ? 'Update' : 'Upload'} GP5: ${slug}`,
+    content: base64(bytes),
+    branch: env.GITHUB_BRANCH,
+  };
+  if (existingFile?.sha) uploadBody.sha = existingFile.sha;
   const upload = await fetch(`${apiRoot}/contents/${encodeURI(path)}`, {
-    method: 'PUT', headers: githubHeaders(env), body: JSON.stringify({
-      message: `Upload GP5: ${slug}`, content: base64(bytes), branch: env.GITHUB_BRANCH,
-    }),
+    method: 'PUT', headers: githubHeaders(env), body: JSON.stringify(uploadBody),
   });
   if (!upload.ok) return json({ ok: false, error: `Upload GitHub gagal: ${await githubError(upload)}` }, 502, origin, env);
   const uploaded = await upload.json();
@@ -113,7 +118,7 @@ async function submit(request, env) {
   });
   if (!dispatch.ok) return json({ ok: false, error: `File terunggah, tetapi workflow gagal dimulai: ${await githubError(dispatch)}` }, 502, origin, env);
 
-  console.log(JSON.stringify({ event: 'tab_upload', slug, size: file.size, commit: uploaded.commit?.sha }));
+  console.log(JSON.stringify({ event: existingFile ? 'tab_reupload' : 'tab_upload', slug, size: file.size, commit: uploaded.commit?.sha }));
   return json({
     ok: true, slug, path,
     commitUrl: uploaded.commit?.html_url,
