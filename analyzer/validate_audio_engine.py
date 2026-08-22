@@ -136,7 +136,8 @@ const context = new Context();
 
 
 def main() -> None:
-    shared = [TABS / "cc0-sampler.js", TABS / "harmony-engine.js", TABS / "tab-mixer-enhancer.js"]
+    generated_player = TABS / "generated-tab-player.js"
+    shared = [TABS / "cc0-sampler.js", TABS / "harmony-engine.js", TABS / "tab-mixer-enhancer.js", generated_player]
     for path in shared:
         run_node_check(path)
 
@@ -156,6 +157,10 @@ def main() -> None:
     ]
     for path in pages:
         source = path.read_text()
+        if "generated-tab-player.js" in source:
+            assert 'id="youtube-player"' in source, path
+            assert "youtube.com/watch?v=" in source, path
+            continue
         if 'data-mode="youtube"' in source:
             assert "youtube.com/watch?v=" in source, path
             assert "youtube.com/iframe_api" in source, path
@@ -182,8 +187,12 @@ def main() -> None:
     for required in ["source.loop = true", "function prewarm", "function driveCurve", "function instrumentBus", "lateTolerance"]:
         assert required in sampler, f"sampler missing {required}"
 
+    generated = generated_player.read_text()
+    for required in ["new YT.Player", "getCurrentTime()", "seekTo(", "youtubeOffset", "secondsPerTick"]:
+        assert required in generated, f"generated YouTube player missing {required}"
+
     mixer = (TABS / "tab-mixer-enhancer.js").read_text()
-    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text() and 'data-playback="synthesis-only"' not in path.read_text()}
+    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text() and 'data-playback="synthesis-only"' not in path.read_text() and "generated-tab-player.js" not in path.read_text()}
     for slug in enhanced_songs:
         assert f"'{slug}'" in mixer, f"missing Full Band profile for {slug}"
     exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text()
