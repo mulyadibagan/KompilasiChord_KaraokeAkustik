@@ -189,7 +189,7 @@ def main() -> None:
         assert required in sampler, f"sampler missing {required}"
 
     generated = generated_player.read_text(encoding="utf-8")
-    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale", "renderSections", "sectionStartTick", "data.sections"]:
+    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale", "renderSections", "sectionStartTick", "data.sections", "focusedNote.getBoundingClientRect()"]:
         assert required in generated, f"generated YouTube player missing {required}"
     assert "state.track=Number(button.dataset.track);state.lastBar=-1;renderTabs();renderScore()" in generated, "instrument switch must preserve playback position"
     assert "if(state.running||state.loading)pausePlayback();state.track" not in generated, "instrument switch must not pause YouTube playback"
