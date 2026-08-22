@@ -331,7 +331,7 @@ def page_html(meta: dict) -> str:
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
 <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
-<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-11"></script>
+<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-12"></script>
 <script src="../tab-navigation.js?v=20260822-sticky-chord" data-base=".."></script>
 </body></html>'''
 
