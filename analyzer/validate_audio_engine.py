@@ -188,7 +188,7 @@ def main() -> None:
         assert required in sampler, f"sampler missing {required}"
 
     generated = generated_player.read_text()
-    for required in ["new YT.Player", "getCurrentTime()", "seekTo(", "youtubeOffset", "secondsPerTick"]:
+    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale"]:
         assert required in generated, f"generated YouTube player missing {required}"
 
     mixer = (TABS / "tab-mixer-enhancer.js").read_text()

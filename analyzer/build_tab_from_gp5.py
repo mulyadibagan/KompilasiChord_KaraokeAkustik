@@ -76,6 +76,17 @@ def measure_events(measure) -> list[dict]:
 
 def extract(song) -> dict:
     headers = song.measureHeaders
+    timeline = []
+    elapsed = 0.0
+    base_tempo = max(30, safe_int(getattr(song, "tempo", 120), 120))
+    for header in headers:
+        signature = getattr(header, "timeSignature", None)
+        numerator = max(1, safe_int(getattr(signature, "numerator", 4), 4))
+        denominator = max(1, safe_int(getattr(getattr(signature, "denominator", None), "value", 4), 4))
+        quarter_beats = numerator * 4 / denominator
+        duration = quarter_beats * 60 / base_tempo
+        timeline.append({"start": round(elapsed, 6), "duration": round(duration, 6), "tempo": base_tempo, "timeSignature": f"{numerator}/{denominator}"})
+        elapsed += duration
     tracks = []
     for index, track in enumerate(song.tracks):
         strings = sorted(track.strings, key=lambda item: item.number)
@@ -97,8 +108,10 @@ def extract(song) -> dict:
             "measures": measures,
         })
     return {
-        "tempo": safe_int(getattr(song, "tempo", 120), 120),
+        "tempo": base_tempo,
         "measureCount": len(headers),
+        "timeline": timeline,
+        "scoreDuration": round(elapsed, 6),
         "tracks": tracks,
     }
 
@@ -171,6 +184,22 @@ def extract_gpif(source: Path) -> tuple[dict, str, str, str]:
     notes_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Notes/Note")}
     rhythms_by_id = {safe_int(node.get("id"), -1): node for node in root.findall("./Rhythms/Rhythm")}
     master_bars = root.findall("./MasterBars/MasterBar")
+    tempo_changes = {0: tempo}
+    for automation in root.findall("./MasterTrack/Automations/Automation"):
+        if gpif_text(automation, "Type") == "Tempo":
+            tempo_changes[max(0, safe_int(gpif_text(automation, "Bar"), 0))] = max(30, safe_int(gpif_text(automation, "Value").split()[0], tempo))
+    timeline = []
+    elapsed = 0.0
+    active_tempo = tempo
+    for measure_index, master_bar in enumerate(master_bars):
+        active_tempo = tempo_changes.get(measure_index, active_tempo)
+        numerator, _, denominator = gpif_text(master_bar, "Time", "4/4").partition("/")
+        numerator_value = max(1, safe_int(numerator, 4))
+        denominator_value = max(1, safe_int(denominator, 4))
+        quarter_beats = numerator_value * 4 / denominator_value
+        duration = quarter_beats * 60 / active_tempo
+        timeline.append({"start": round(elapsed, 6), "duration": round(duration, 6), "tempo": active_tempo, "timeSignature": f"{numerator_value}/{denominator_value}"})
+        elapsed += duration
     master_track_ids = gpif_refs(root.find("MasterTrack"), "Tracks") or sorted(tracks_by_id)
 
     tracks = []
@@ -248,7 +277,7 @@ def extract_gpif(source: Path) -> tuple[dict, str, str, str]:
             original = item["name"]
             duplicate_seen[original] = duplicate_seen.get(original, 0) + 1
             item["name"] = f"{original} {duplicate_seen[original]}"
-    return {"tempo": tempo, "measureCount": len(master_bars), "tracks": tracks}, title, artist, version
+    return {"tempo": tempo, "measureCount": len(master_bars), "timeline": timeline, "scoreDuration": round(elapsed, 6), "tracks": tracks}, title, artist, version
 
 
 def page_html(meta: dict) -> str:
@@ -262,16 +291,16 @@ def page_html(meta: dict) -> str:
 <title>Tab Musik — {artist} · {title}</title>
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
-<link rel="stylesheet" href="generated-tab-player.css?v=20260822-1">
+<link rel="stylesheet" href="generated-tab-player.css?v=20260822-2">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
 <div class="songline"><div><h1>{title}</h1><p>{artist} · <span id="song-meta">Memuat Guitar Pro…</span></p></div></div>
-<div class="playerbar"><div class="transport"><button id="rewind">↶ Awal</button><button class="play" id="play">▶ Putar</button><button id="stop">■ Stop</button></div><div class="control-center"><label class="seek">Posisi <input id="seek" type="range" value="0"><span id="position-time">Birama 1</span></label></div><label class="switch"><input id="loop" type="checkbox"> Ulang</label></div>
+<div class="playerbar"><div class="transport"><button id="rewind">↶ Awal</button><button class="play" id="play">▶ Putar</button><button id="stop">■ Stop</button></div><div class="control-center"><label class="tempo">Tempo asli <input id="tempo" type="range" disabled><strong><span id="bpm">0</span> BPM</strong></label><label class="seek">Posisi <input id="seek" type="range" value="0"><span id="position-time">0:00 / 0:00</span></label></div><div class="options"><label class="switch"><input id="metro" type="checkbox"> Metronom</label><label class="switch"><input id="loop" type="checkbox"> Ulang</label></div></div>
 <div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div></aside><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Pemutar YouTube sedang disiapkan…</p></div></div></section>
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
-<script src="{slug}-data.js?v=20260822-1"></script><script src="generated-tab-player.js?v=20260822-1"></script>
+<script src="{slug}-data.js?v=20260822-2"></script><script src="generated-tab-player.js?v=20260822-2"></script>
 <script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
 </body></html>'''
 
