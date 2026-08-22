@@ -82,13 +82,15 @@ jobs:
             --youtube-offset "${YOUTUBE_OFFSET:-0}" \
             --title "$TAB_TITLE" \
             --artist "$TAB_ARTIST" \
-            --slug "$TAB_SLUG"
+            --slug "$TAB_SLUG" \
+            --draft
 
       - name: Validate generated files
         shell: bash
         run: |
           test -s "${{ steps.generate.outputs.page }}"
           test -s "${{ steps.generate.outputs.data }}"
+          test -s "${{ steps.generate.outputs.draft }}"
           grep -F 'window.KC_TAB_DATA' "${{ steps.generate.outputs.data }}"
           python -m py_compile analyzer/build_tab_from_gp5.py
 
@@ -97,10 +99,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- "${{ steps.generate.outputs.page }}" "${{ steps.generate.outputs.data }}" tab-catalog.json
+          git add -- "${{ steps.generate.outputs.page }}" "${{ steps.generate.outputs.data }}" "${{ steps.generate.outputs.draft }}"
           if git diff --cached --quiet; then
             echo "Tidak ada perubahan yang perlu dipublikasikan."
             exit 0
           fi
-          git commit -m "Add generated tab: ${{ steps.generate.outputs.slug }}"
+          git commit -m "Create tab preview: ${{ steps.generate.outputs.slug }}"
           git push origin HEAD:master

@@ -17,6 +17,7 @@ import guitarpro
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "tab-catalog.json"
+DRAFTS = ROOT / "drafts"
 PITCHES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 
 
@@ -330,7 +331,7 @@ def page_html(meta: dict) -> str:
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
 <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
-<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-8"></script>
+<script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-9"></script>
 <script src="../tab-navigation.js?v=20260822-sticky-chord" data-base=".."></script>
 </body></html>'''
 
@@ -359,6 +360,7 @@ def main() -> int:
     parser.add_argument("--title", default="")
     parser.add_argument("--artist", default="")
     parser.add_argument("--slug", default="")
+    parser.add_argument("--draft", action="store_true", help="Buat player preview tanpa memasukkannya ke katalog publik")
     args = parser.parse_args()
 
     source = (ROOT / args.gp5).resolve() if not Path(args.gp5).is_absolute() else Path(args.gp5)
@@ -404,9 +406,15 @@ def main() -> int:
         "bars": data["measureCount"], "key": format_label, "bpmLabel": f"{data['tempo']} BPM",
         "instruments": instruments, "searchTerms": ["guitar pro", "otomatis"],
     }
-    update_catalog(entry)
-    github_output({"slug": slug, "page": page_path.relative_to(ROOT).as_posix(), "data": data_path.relative_to(ROOT).as_posix()})
-    print(f"Generated {page_path.relative_to(ROOT)} with {len(instruments)} tracks and {data['measureCount']} measures")
+    draft_path = DRAFTS / f"{slug}.json"
+    if args.draft:
+        DRAFTS.mkdir(exist_ok=True)
+        draft_path.write_text(json.dumps({"schemaVersion": 1, "entry": entry, "page": page_path.relative_to(ROOT).as_posix(), "data": data_path.relative_to(ROOT).as_posix(), "youtubeOffset": args.youtube_offset}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    else:
+        update_catalog(entry)
+    github_output({"slug": slug, "page": page_path.relative_to(ROOT).as_posix(), "data": data_path.relative_to(ROOT).as_posix(), "draft": draft_path.relative_to(ROOT).as_posix() if args.draft else ""})
+    mode = "draft preview" if args.draft else "published tab"
+    print(f"Generated {mode} {page_path.relative_to(ROOT)} with {len(instruments)} tracks and {data['measureCount']} measures")
     return 0
 
 

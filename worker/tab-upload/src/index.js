@@ -118,6 +118,41 @@ async function submit(request, env) {
     ok: true, slug, path,
     commitUrl: uploaded.commit?.html_url,
     actionsUrl: `https://github.com/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/actions/workflows/build-tab-music.yml`,
+    previewUrl: `https://${env.GITHUB_OWNER}.github.io/${env.GITHUB_REPO}/tabs/${slug}.html?preview=1`,
+    state: 'building-draft',
+  }, 202, origin, env);
+}
+
+async function publish(request, env) {
+  const origin = request.headers.get('origin') || '';
+  if (origin !== env.ALLOWED_ORIGIN && origin !== env.ALLOWED_ORIGIN_SECONDARY) {
+    return json({ ok: false, error: 'Origin tidak diizinkan.' }, 403, origin, env);
+  }
+  if (!authorized(request, env)) return json({ ok: false, error: 'Kunci admin salah.' }, 401, origin, env);
+  let payload;
+  try { payload = await request.json(); } catch { return json({ ok: false, error: 'Data publikasi tidak valid.' }, 400, origin, env); }
+  const slug = String(payload.slug || '').trim();
+  const youtubeOffset = Number(payload.youtube_offset);
+  if (!/^[a-z0-9-]+$/.test(slug)) return json({ ok: false, error: 'Slug draft tidak valid.' }, 400, origin, env);
+  if (!Number.isFinite(youtubeOffset) || youtubeOffset < -600 || youtubeOffset > 600) {
+    return json({ ok: false, error: 'Offset YouTube harus antara -600 dan 600 detik.' }, 400, origin, env);
+  }
+  const apiRoot = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}`;
+  const draft = await fetch(`${apiRoot}/contents/drafts/${encodeURIComponent(slug)}.json?ref=${encodeURIComponent(env.GITHUB_BRANCH)}`, { headers: githubHeaders(env) });
+  if (draft.status === 404) return json({ ok: false, error: 'Draft belum selesai dibuat atau sudah diterbitkan.' }, 409, origin, env);
+  if (!draft.ok) return json({ ok: false, error: `GitHub gagal memeriksa draft: ${await githubError(draft)}` }, 502, origin, env);
+  const dispatch = await fetch(`${apiRoot}/actions/workflows/publish-tab-music.yml/dispatches`, {
+    method: 'POST', headers: githubHeaders(env), body: JSON.stringify({
+      ref: env.GITHUB_BRANCH,
+      inputs: { slug, youtube_offset: String(youtubeOffset) },
+    }),
+  });
+  if (!dispatch.ok) return json({ ok: false, error: `Workflow publikasi gagal dimulai: ${await githubError(dispatch)}` }, 502, origin, env);
+  console.log(JSON.stringify({ event: 'tab_publish', slug, youtubeOffset }));
+  return json({
+    ok: true, slug, state: 'publishing',
+    actionsUrl: `https://github.com/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/actions/workflows/publish-tab-music.yml`,
+    publicUrl: `https://${env.GITHUB_OWNER}.github.io/${env.GITHUB_REPO}/tabs/${slug}.html`,
   }, 202, origin, env);
 }
 
@@ -135,8 +170,8 @@ export default {
     }
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname === '/health') return json({ ok: true }, 200, origin, env);
-    if (request.method !== 'POST' || url.pathname !== '/submit') return json({ ok: false, error: 'Not found.' }, 404, origin, env);
-    try { return await submit(request, env); }
+    if (request.method !== 'POST' || !['/submit', '/publish'].includes(url.pathname)) return json({ ok: false, error: 'Not found.' }, 404, origin, env);
+    try { return url.pathname === '/publish' ? await publish(request, env) : await submit(request, env); }
     catch (error) {
       console.error(JSON.stringify({ event: 'tab_upload_error', message: error instanceof Error ? error.message : String(error) }));
       return json({ ok: false, error: 'Terjadi kesalahan internal.' }, 500, origin, env);

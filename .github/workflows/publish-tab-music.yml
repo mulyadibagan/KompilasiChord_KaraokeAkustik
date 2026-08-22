@@ -1,0 +1,55 @@
+name: Publish approved Tab Music
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Slug draft yang sudah diperiksa"
+        required: true
+        type: string
+      youtube_offset:
+        description: "Offset YouTube final dalam detik"
+        required: true
+        default: "0"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-tab-music
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Publish calibrated draft
+        env:
+          TAB_SLUG: ${{ inputs.slug }}
+          YOUTUBE_OFFSET: ${{ inputs.youtube_offset }}
+        run: python analyzer/publish_tab_draft.py --slug "$TAB_SLUG" --youtube-offset "$YOUTUBE_OFFSET"
+
+      - name: Validate publication
+        run: |
+          python -m py_compile analyzer/publish_tab_draft.py
+          grep -F '"slug": "${{ inputs.slug }}"' tab-catalog.json
+          test ! -e "drafts/${{ inputs.slug }}.json"
+
+      - name: Commit published tab
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- tab-catalog.json "tabs/${{ inputs.slug }}-data.js" "drafts/${{ inputs.slug }}.json"
+          git commit -m "Publish calibrated tab: ${{ inputs.slug }}"
+          git push origin HEAD:master
