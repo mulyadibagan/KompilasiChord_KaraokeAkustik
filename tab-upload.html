@@ -43,7 +43,7 @@
           <span class="hint">Alamat layanan boleh tersimpan di perangkat ini.</span>
           <label for="key">Kunci admin</label>
           <input id="key" type="password" autocomplete="current-password" placeholder="Masukkan kunci admin" required>
-          <span class="hint">Kunci tidak disimpan di browser dan akan kosong saat halaman dibuka ulang.</span>
+          <span class="hint">Kunci disimpan di browser perangkat ini setelah digunakan. Gunakan hanya pada perangkat pribadi.</span>
           <label for="slug">Slug khusus (opsional)</label>
           <input id="slug" name="slug" pattern="[a-z0-9-]+" placeholder="artis-judul-lagu">
           <label for="youtubeOffset">Offset YouTube (detik, opsional)</label>
@@ -76,6 +76,9 @@
     const queryApi=new URLSearchParams(location.search).get('api');
     const defaultApi='https://kompilasichord-tab-upload.yg-webgis-public-data-worker.workers.dev/submit';
     endpoint.value=queryApi||localStorage.getItem('kc-tab-upload-api')||defaultApi;
+    const adminKeyInput=document.querySelector('#key');
+    adminKeyInput.value=localStorage.getItem('kc-tab-upload-admin-key')||'';
+    function adminKey(){const value=adminKeyInput.value.trim();if(value)localStorage.setItem('kc-tab-upload-admin-key',value);return value}
     function show(message,type=''){statusBox.className=`status show ${type}`;statusBox.innerHTML=message}
     function showPublish(message,type=''){publishStatus.className=`status show ${type}`;publishStatus.innerHTML=message}
     function serviceRoot(){return endpoint.value.trim().replace(/\/$/,'').replace(/\/submit$/,'')}
@@ -100,7 +103,7 @@
       button.disabled=true;button.textContent='Sedang mengunggah…';show('File sedang dikirim untuk membuat draft. Jangan tutup halaman ini.');
       try{
         const body=new FormData(form);body.delete('endpoint');body.delete('key');
-        const response=await fetch(api,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value.trim()}`},body});
+        const response=await fetch(api,{method:'POST',headers:{authorization:`Bearer ${adminKey()}`},body});
         const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));
         if(!response.ok)throw new Error(result.error||`Upload gagal (${response.status}).`);
         draftSlug=result.slug;draftPreviewUrl=result.previewUrl;previewOffset.value=document.querySelector('#youtubeOffset').value||'0';
@@ -118,7 +121,7 @@
     publishButton.addEventListener('click',async()=>{
       if(!draftSlug)return showPublish('Belum ada draft yang siap diterbitkan.','bad');
       publishButton.disabled=true;publishButton.textContent='Sedang menerbitkan…';showPublish('Offset final sedang disimpan dan katalog sedang diperbarui.');
-      try{const response=await fetch(`${serviceRoot()}/publish`,{method:'POST',headers:{authorization:`Bearer ${document.querySelector('#key').value.trim()}`,'content-type':'application/json'},body:JSON.stringify({slug:draftSlug,youtube_offset:Number(previewOffset.value)})});const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));if(!response.ok)throw new Error(result.error||`Publikasi gagal (${response.status}).`);showPublish(`Publikasi <strong>${draftSlug}</strong> sedang diproses. <a href="${result.actionsUrl}" target="_blank" rel="noopener">Lihat GitHub Actions →</a>`,'ok');publishButton.textContent='Publikasi diproses'}catch(error){showPublish(error.message==='Failed to fetch'?'Tidak dapat menghubungi layanan upload.':error.message,'bad');publishButton.disabled=false;publishButton.textContent='Terbitkan ke katalog'}
+      try{const response=await fetch(`${serviceRoot()}/publish`,{method:'POST',headers:{authorization:`Bearer ${adminKey()}`,'content-type':'application/json'},body:JSON.stringify({slug:draftSlug,youtube_offset:Number(previewOffset.value)})});const result=await response.json().catch(()=>({error:'Respons layanan tidak valid.'}));if(!response.ok)throw new Error(result.error||`Publikasi gagal (${response.status}).`);showPublish(`Publikasi <strong>${draftSlug}</strong> sedang diproses. <a href="${result.actionsUrl}" target="_blank" rel="noopener">Lihat GitHub Actions →</a>`,'ok');publishButton.textContent='Publikasi diproses'}catch(error){showPublish(error.message==='Failed to fetch'?'Tidak dapat menghubungi layanan upload.':error.message,'bad');publishButton.disabled=false;publishButton.textContent='Terbitkan ke katalog'}
     });
   </script>
 </body>
