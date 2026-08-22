@@ -5,7 +5,7 @@
   var base = script && script.getAttribute('data-base') || '.';
   var isEmbed = new URLSearchParams(window.location.search).get('embed') === '1' || window.self !== window.top;
   if (isEmbed) document.documentElement.classList.add('embed');
-  var catalogUrl = base.replace(/\/$/, '') + '/tab-catalog.json?v=20260822-alpha-max';
+  var catalogUrl = base.replace(/\/$/, '') + '/tab-catalog.json?v=20260822-mobile-follow';
   var catalogPageUrl = withEmbed(base.replace(/\/$/, '') + '/tab-musik.html');
   var homeUrl = 'https://www.kompilasichord.com/';
   var playerPage = document.body.classList.contains('kc-player-page');
@@ -38,7 +38,7 @@
 
   function songUrl(song) {
     var url = base.replace(/\/$/, '') + '/' + song.path;
-    url += (url.indexOf('?') === -1 ? '?' : '&') + 'v=20260822-alpha-max';
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'v=20260822-mobile-follow';
     return withEmbed(url);
   }
 
