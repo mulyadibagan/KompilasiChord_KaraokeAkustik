@@ -190,6 +190,8 @@ def main() -> None:
     generated = generated_player.read_text()
     for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale"]:
         assert required in generated, f"generated YouTube player missing {required}"
+    assert "state.track=Number(button.dataset.track);state.lastBar=-1;renderTabs();renderScore()" in generated, "instrument switch must preserve playback position"
+    assert "if(state.running||state.loading)pausePlayback();state.track" not in generated, "instrument switch must not pause YouTube playback"
 
     mixer = (TABS / "tab-mixer-enhancer.js").read_text()
     enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text() and 'data-playback="synthesis-only"' not in path.read_text() and "generated-tab-player.js" not in path.read_text()}
