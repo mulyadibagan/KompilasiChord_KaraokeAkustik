@@ -331,7 +331,7 @@ def page_html(meta: dict) -> str:
 </section></main>
 <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js" crossorigin="anonymous"></script>
 <script src="{slug}-data.js?v=20260822-8"></script><script src="generated-alphatab-player.js?v=20260822-2"></script>
-<script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
+<script src="../tab-navigation.js?v=20260822-alpha-max" data-base=".."></script>
 </body></html>'''
 
 
