@@ -280,6 +280,34 @@ def extract_gpif(source: Path) -> tuple[dict, str, str, str]:
     return {"tempo": tempo, "measureCount": len(master_bars), "timeline": timeline, "scoreDuration": round(elapsed, 6), "tracks": tracks}, title, artist, version
 
 
+def derive_sections(data: dict) -> list[dict]:
+    count = safe_int(data.get("measureCount"), 0)
+    if count <= 0:
+        return []
+    markers = []
+    tracks = data.get("tracks") or []
+    if tracks:
+        for index, measure in enumerate(tracks[0].get("measures") or []):
+            label = str(measure.get("section") or "").strip()
+            if label and (not markers or markers[-1][1].casefold() != label.casefold()):
+                markers.append((index, label))
+    if markers:
+        return [{"key": f"section-{index + 1}", "label": label, "start": start, "end": markers[index + 1][0] if index + 1 < len(markers) else count} for index, (start, label) in enumerate(markers)]
+
+    timeline = data.get("timeline") or []
+    boundaries = [0]
+    for index in range(1, min(count, len(timeline))):
+        if timeline[index].get("timeSignature") != timeline[index - 1].get("timeSignature"):
+            boundaries.append(index)
+    if len(boundaries) < 3:
+        chunk = 16
+        boundaries = list(range(0, count, chunk))
+    labels = ["Intro", "Verse 1", "Pra-Reff", "Reff", "Interlude", "Verse 2", "Reff Akhir", "Outro"]
+    if len(boundaries) > 1:
+        labels[min(len(boundaries), len(labels)) - 1] = "Outro"
+    return [{"key": f"section-{index + 1}", "label": labels[index] if index < len(labels) else f"Bagian {index + 1}", "start": start, "end": boundaries[index + 1] if index + 1 < len(boundaries) else count} for index, start in enumerate(boundaries)]
+
+
 def page_html(meta: dict) -> str:
     title = meta["title"].replace("&", "&amp;").replace("<", "&lt;")
     artist = meta["artist"].replace("&", "&amp;").replace("<", "&lt;")
@@ -291,16 +319,16 @@ def page_html(meta: dict) -> str:
 <title>Tab Musik — {artist} · {title}</title>
 <link rel="stylesheet" href="../tab-navigation.css?v=20260821-deeplink2">
 <link rel="stylesheet" href="songsterr-score.css?v=20260821-3">
-<link rel="stylesheet" href="generated-tab-player.css?v=20260822-3">
+<link rel="stylesheet" href="generated-tab-player.css?v=20260822-5">
 </head><body class="kc-player-page">
 <header class="topbar"></header>
 <main class="wrap"><section class="card">
 <div class="songline"><div><h1>{title}</h1><p>{artist} · <span id="song-meta">Memuat Guitar Pro…</span></p></div></div>
 <div class="playerbar"><div class="transport"><button id="rewind">↶ Awal</button><button class="play" id="play">▶ Putar</button><button id="stop">■ Stop</button></div><div class="control-center"><label class="tempo">Tempo asli <input id="tempo" type="range" disabled><strong><span id="bpm">0</span> BPM</strong></label><label class="seek">Posisi <input id="seek" type="range" value="0"><span id="position-time">0:00 / 0:00</span></label></div><div class="options"><label class="switch"><input id="metro" type="checkbox"> Metronom</label><label class="switch"><input id="loop" type="checkbox"> Ulang</label></div></div>
-<div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div></aside><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Pemutar YouTube sedang disiapkan…</p></div></div></section>
+<div class="workspace"><aside class="sidebar"><p class="side-title">Instrumen</p><div class="instrument-tabs" id="instrument-tabs"></div><p class="side-title">Bagian Lagu</p><div class="section-tabs" id="section-tabs" aria-label="Bagian lagu"></div></aside><section class="score-area"><div class="score"><div class="score-head"><div><strong id="score-title">Tab</strong><span id="tuning"></span></div><span class="position" id="position">Birama 1</span></div><div class="bars" id="bars"></div><div class="info"><p id="status">Pemutar YouTube sedang disiapkan…</p></div></div></section>
 <div class="youtube-panel"><div class="youtube-shell"><div id="youtube-player" class="youtube-frame" aria-label="Video referensi {title}"></div><p class="source">Video referensi: <a href="https://www.youtube.com/watch?v={meta['youtubeId']}" target="_blank" rel="noopener">YouTube</a></p></div></div></div>
 </section></main>
-<script src="{slug}-data.js?v=20260822-2"></script><script src="generated-tab-player.js?v=20260822-3"></script>
+<script src="{slug}-data.js?v=20260822-5"></script><script src="generated-tab-player.js?v=20260822-5"></script>
 <script src="../tab-navigation.js?v=20260821-deeplink2" data-base=".."></script>
 </body></html>'''
 
@@ -360,6 +388,7 @@ def main() -> int:
         raise SystemExit("File Guitar Pro tidak berisi track")
 
     meta = {"slug": slug, "title": title, "artist": artist, "youtubeId": video_id, "youtubeOffset": args.youtube_offset}
+    data["sections"] = derive_sections(data)
     data.update(meta)
     data_path = ROOT / "tabs" / f"{slug}-data.js"
     page_path = ROOT / "tabs" / f"{slug}.html"

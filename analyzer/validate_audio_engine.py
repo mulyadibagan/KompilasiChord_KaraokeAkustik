@@ -18,7 +18,7 @@ def run_node_check(path: Path) -> None:
 
 
 def check_inline_scripts(path: Path) -> None:
-    scripts = re.findall(r"<script(?:\s[^>]*)?>([\s\S]*?)</script>", path.read_text())
+    scripts = re.findall(r"<script(?:\s[^>]*)?>([\s\S]*?)</script>", path.read_text(encoding="utf-8"))
     for index, script in enumerate(scripts):
         if not script.strip():
             continue
@@ -27,6 +27,7 @@ def check_inline_scripts(path: Path) -> None:
             cwd=ROOT,
             input=script,
             text=True,
+            encoding="utf-8",
             capture_output=True,
         )
         assert result.returncode == 0, f"{path.name} inline script {index}: {result.stderr}"
@@ -141,7 +142,7 @@ def main() -> None:
     for path in shared:
         run_node_check(path)
 
-    catalog = json.loads((ROOT / "tab-catalog.json").read_text())
+    catalog = json.loads((ROOT / "tab-catalog.json").read_text(encoding="utf-8"))
     pages = [ROOT / song["path"] for song in catalog["songs"]]
     assert pages, "audio validation must cover every song listed in tab-catalog.json"
 
@@ -156,7 +157,7 @@ def main() -> None:
         "setTimeout(scheduler,25)",
     ]
     for path in pages:
-        source = path.read_text()
+        source = path.read_text(encoding="utf-8")
         if "generated-tab-player.js" in source:
             assert 'id="youtube-player"' in source, path
             assert "youtube.com/watch?v=" in source, path
@@ -183,21 +184,23 @@ def main() -> None:
             assert text not in source, f"{path.name} still contains {text!r}"
         check_inline_scripts(path)
 
-    sampler = (TABS / "cc0-sampler.js").read_text()
+    sampler = (TABS / "cc0-sampler.js").read_text(encoding="utf-8")
     for required in ["source.loop = true", "function prewarm", "function driveCurve", "function instrumentBus", "lateTolerance"]:
         assert required in sampler, f"sampler missing {required}"
 
-    generated = generated_player.read_text()
-    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale"]:
+    generated = generated_player.read_text(encoding="utf-8")
+    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale", "renderSections", "sectionStartTick", "data.sections"]:
         assert required in generated, f"generated YouTube player missing {required}"
     assert "state.track=Number(button.dataset.track);state.lastBar=-1;renderTabs();renderScore()" in generated, "instrument switch must preserve playback position"
     assert "if(state.running||state.loading)pausePlayback();state.track" not in generated, "instrument switch must not pause YouTube playback"
+    generated_pages = [path.read_text(encoding="utf-8") for path in pages if "generated-tab-player.js" in path.read_text(encoding="utf-8")]
+    assert generated_pages and all('id="section-tabs"' in source for source in generated_pages), "generated players must expose Bagian Lagu navigation"
 
-    mixer = (TABS / "tab-mixer-enhancer.js").read_text()
-    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text() and 'data-playback="synthesis-only"' not in path.read_text() and "generated-tab-player.js" not in path.read_text()}
+    mixer = (TABS / "tab-mixer-enhancer.js").read_text(encoding="utf-8")
+    enhanced_songs = {path.stem for path in pages if 'data-mode="youtube"' not in path.read_text(encoding="utf-8") and 'data-playback="synthesis-only"' not in path.read_text(encoding="utf-8") and "generated-tab-player.js" not in path.read_text(encoding="utf-8")}
     for slug in enhanced_songs:
         assert f"'{slug}'" in mixer, f"missing Full Band profile for {slug}"
-    exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text()
+    exists = (TABS / "exists-dirantai-digelangi-rindu.html").read_text(encoding="utf-8")
     assert "dcEyID3okrM" in exists and "data-mode=\"youtube\"" in exists
     assert ".mp3" not in exists.lower()
 
