@@ -189,10 +189,13 @@ def main() -> None:
         assert required in sampler, f"sampler missing {required}"
 
     generated = generated_player.read_text(encoding="utf-8")
-    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale", "renderSections", "sectionStartTick", "data.sections", "focusedNote.getBoundingClientRect()"]:
+    for required in ["new YT.Player", "getCurrentTime()", "getDuration()", "seekTo(", "youtubeOffset", "timeline", "scoreSecondsForTick", "tickForScoreSeconds", "syncScale", "renderSections", "sectionStartTick", "data.sections", "card.style.setProperty('--cursor',(2+slot*6)+'%')"]:
         assert required in generated, f"generated YouTube player missing {required}"
     assert "state.track=Number(button.dataset.track);state.lastBar=-1;renderTabs();renderScore()" in generated, "instrument switch must preserve playback position"
     assert "if(state.running||state.loading)pausePlayback();state.track" not in generated, "instrument switch must not pause YouTube playback"
+    generated_css = (TABS / "generated-tab-player.css").read_text(encoding="utf-8")
+    for required in ["border-left:2px solid var(--red)!important", "background:var(--red)!important", "color:#fff!important", "box-shadow:0 0 0 3px #fecdd3,0 2px 7px #9f123966!important"]:
+        assert required in generated_css, f"generated notation must match Jakarta Hari Ini: missing {required}"
     generated_pages = [path.read_text(encoding="utf-8") for path in pages if "generated-tab-player.js" in path.read_text(encoding="utf-8")]
     assert generated_pages and all('id="section-tabs"' in source for source in generated_pages), "generated players must expose Bagian Lagu navigation"
 
