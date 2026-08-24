@@ -50,6 +50,7 @@ const $=s=>document.querySelector(s);
 const input=$('#input'), output=$('#output'), checks=$('#checks'), manualKey=$('#manualKey');
 
 const chordToken=/^(?:[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?)?|-[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?)?)(?:-[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*)?$/;
+let transitionWarnings=[];
 
 function unwrap(raw){
   const m=raw.match(/<pre\b[^>]*data-key\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/pre>/i);
@@ -77,20 +78,17 @@ function replaceEllipsisPreserveColumns(line){
   return line.replace(/\.{2,}/g,m=>' '.repeat(m.length));
 }
 
-function normalizeTransitionChordLine(line){
+function normalizeTransitionChordLine(line,lineNumber){
   if(!isLikelyChordLine(line)) return line;
-  let chars=[...line];
-  for(let i=0;i<chars.length-1;i++){
-    if(chars[i]==='-' && i>0 && chars[i-1]!==' ' && chars[i-1]!=='/' && /[A-G0-9#bm]/.test(chars[i-1]) && /[A-G]/.test(chars[i+1]||'')){
-      chars.splice(i,0,' ');
-      // compensate from the first whitespace run after the transition so later chord columns stay fixed.
-      let j=i+2;
-      while(j<chars.length && chars[j]!==' ') j++;
-      if(j<chars.length) chars.splice(j,1);
-      i++;
-    }
-  }
-  return chars.join('');
+  // A-G => A -G. When there is >=2-space gap after the token, consume one
+  // gap space so the next chord remains in its original column.
+  return line.replace(/(^|\s)([A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?)?)-([A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*)(\s*)(?=\S|$)/g,
+    (all,lead,a,b,gap)=>{
+      let newGap=gap;
+      if(gap.length>=2) newGap=gap.slice(1);
+      else if(gap.length===1) transitionWarnings.push(`Baris ${lineNumber}: ${a}-${b} dinormalisasi menjadi ${a} -${b}; jarak ke chord berikut hanya 1 spasi, cek alignment visual.`);
+      return `${lead}${a} -${b}${newGap}`;
+    });
 }
 
 function shiftReffPair(chordLine,lyricLine){
@@ -102,10 +100,10 @@ function shiftReffPair(chordLine,lyricLine){
 }
 
 function formatBody(body){
+  transitionWarnings=[];
   let lines=body.replace(/\r/g,'').split('\n');
   lines=lines.map((line,i)=>normalizeSection(line,i));
 
-  // Intro after substantive song content becomes Interlude.
   let seenSong=false;
   for(let i=0;i<lines.length;i++){
     const t=lines[i].trim();
@@ -113,10 +111,8 @@ function formatBody(body){
     if(seenSong && /^\[Intro\s*:\]$/i.test(t)) lines[i]='[Interlude :]';
   }
 
-  // Preserve columns when removing lyric ellipsis; normalize hyphen transitions only on chord lines.
-  lines=lines.map(line=>isLikelyChordLine(line)?normalizeTransitionChordLine(line):replaceEllipsisPreserveColumns(line));
+  lines=lines.map((line,i)=>isLikelyChordLine(line)?normalizeTransitionChordLine(line,i+1):replaceEllipsisPreserveColumns(line));
 
-  // Reff: shift chord+lyric pairs together by the lyric's common leading indent.
   let inReff=false;
   for(let i=0;i<lines.length;i++){
     if(isSection(lines[i])){inReff=/^\[Reff(?:\s+Overtone)?\s*:\]$/i.test(lines[i].trim());continue;}
@@ -127,7 +123,6 @@ function formatBody(body){
     }
   }
 
-  // trim trailing spaces only; never trim leading alignment spaces.
   return lines.map(x=>x.replace(/\s+$/,'')).join('\n').replace(/\n{3,}/g,'\n\n').trim();
 }
 
@@ -147,6 +142,7 @@ function validate(key,body){
   const badTransition=body.split('\n').filter(isLikelyChordLine).some(l=>/[A-G](?:#|b|m|\d)*(?:\/[A-G](?:#|b)?)?-[A-G]/.test(l));
   items.push([!badTransition,'✓ Chord transisi kompatibel transposer (A -G)']);
   items.push([true,'✓ Leading spaces alignment tidak di-trim global']);
+  transitionWarnings.forEach(w=>items.push([false,`⚠ ${w}`]));
   checks.innerHTML=items.map(([ok,text])=>`<div class="${ok?'ok':'warn'}">${text}</div>`).join('');
 }
 
