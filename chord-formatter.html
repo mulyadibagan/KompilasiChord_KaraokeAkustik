@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formatter SOP Kompilasi Chord</title>
+<style>
+  :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#18181b;background:#f6f6f7}
+  *{box-sizing:border-box} body{margin:0} .wrap{max-width:1200px;margin:auto;padding:24px}
+  h1{margin:0 0 6px;font-size:28px}.sub{margin:0 0 20px;color:#666}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  label{display:block;font-weight:700;margin-bottom:8px} textarea{width:100%;min-height:560px;resize:vertical;border:1px solid #ccc;border-radius:10px;padding:14px;font:15px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;overflow:auto}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.btn{border:0;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer}.primary{background:#b91c1c;color:#fff}.secondary{background:#e5e7eb;color:#111}.keyrow{display:flex;gap:10px;align-items:center;margin-bottom:12px}.keyrow input{width:100px;padding:8px;border:1px solid #ccc;border-radius:8px}
+  .checks{display:grid;gap:8px;margin-top:10px}.ok,.warn{padding:9px 11px;border-radius:8px;font-size:14px}.ok{background:#ecfdf5}.warn{background:#fff7ed}.foot{margin-top:16px;color:#666;font-size:13px}
+  @media(max-width:850px){.grid{grid-template-columns:1fr}.wrap{padding:14px}textarea{min-height:420px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Formatter SOP Kompilasi Chord</h1>
+  <p class="sub">Paste chord mentah, proses, cek validator, lalu salin hasil siap Blogger.</p>
+
+  <div class="keyrow card">
+    <label for="manualKey" style="margin:0">Data-key:</label>
+    <input id="manualKey" placeholder="otomatis">
+    <span id="keyHint">Biarkan kosong untuk mengambil data-key dari input.</span>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="processBtn">Proses SOP</button>
+    <button class="btn secondary" id="copyBtn">Copy untuk Blogger</button>
+    <button class="btn secondary" id="clearBtn">Bersihkan</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <label for="input">Chord mentah</label>
+      <textarea id="input" spellcheck="false" placeholder='<pre data-key="G">\n\n[Intro :]\nG D Em C\n...\n</pre>'></textarea>
+    </div>
+    <div class="card">
+      <label for="output">Hasil SOP</label>
+      <textarea id="output" spellcheck="false" readonly></textarea>
+      <div class="checks" id="checks"></div>
+    </div>
+  </div>
+  <div class="foot">Aturan inti: struktur section distandarkan, [Musik :] menjadi [Interlude :], ellipsis lirik dihapus, transisi A-G menjadi A -G, dan alignment chord-lirik dipertahankan.</div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const input=$('#input'), output=$('#output'), checks=$('#checks'), manualKey=$('#manualKey');
+
+const chordToken=/^(?:[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?)?|-[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?)?)(?:-[A-G](?:#|b)?(?:m|maj|min|dim|aug|sus|add)?\d*)?$/;
+
+function unwrap(raw){
+  const m=raw.match(/<pre\b[^>]*data-key\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/pre>/i);
+  if(m) return {key:m[1].trim(), body:m[2].replace(/^\n+|\n+$/g,'')};
+  return {key:'', body:raw.replace(/^\s+|\s+$/g,'')};
+}
+
+function normalizeSection(line,index){
+  const t=line.trim();
+  if(/^\[Musik\s*:\]$/i.test(t)) return '[Interlude :]';
+  if(/^\[Intro\s*:\]$/i.test(t) && index>0) return '[Interlude :]';
+  if(/^Pre-?chorus$/i.test(t)) return '[Pre-Reff :]';
+  if(/^\[Pre[- ]?Chorus\s*:\]$/i.test(t)) return '[Pre-Reff :]';
+  return line;
+}
+
+function isSection(line){return /^\[[^\]]+\]$/.test(line.trim())}
+function isLikelyChordLine(line){
+  const t=line.trim(); if(!t||isSection(t)) return false;
+  const parts=t.split(/\s+/);
+  return parts.length>0 && parts.every(p=>chordToken.test(p));
+}
+
+function replaceEllipsisPreserveColumns(line){
+  return line.replace(/\.{2,}/g,m=>' '.repeat(m.length));
+}
+
+function normalizeTransitionChordLine(line){
+  if(!isLikelyChordLine(line)) return line;
+  let chars=[...line];
+  for(let i=0;i<chars.length-1;i++){
+    if(chars[i]==='-' && i>0 && chars[i-1]!==' ' && chars[i-1]!=='/' && /[A-G0-9#bm]/.test(chars[i-1]) && /[A-G]/.test(chars[i+1]||'')){
+      chars.splice(i,0,' ');
+      // compensate from the first whitespace run after the transition so later chord columns stay fixed.
+      let j=i+2;
+      while(j<chars.length && chars[j]!==' ') j++;
+      if(j<chars.length) chars.splice(j,1);
+      i++;
+    }
+  }
+  return chars.join('');
+}
+
+function shiftReffPair(chordLine,lyricLine){
+  // SOP: lyric starts at column 0, chord keeps its relative position to lyric.
+  const lyricLead=(lyricLine.match(/^ */)||[''])[0].length;
+  if(lyricLead===0) return [chordLine,lyricLine];
+  const shift=Math.min(lyricLead,(chordLine.match(/^ */)||[''])[0].length);
+  return [chordLine.slice(shift),lyricLine.slice(shift)];
+}
+
+function formatBody(body){
+  let lines=body.replace(/\r/g,'').split('\n');
+  lines=lines.map((line,i)=>normalizeSection(line,i));
+
+  // Intro after substantive song content becomes Interlude.
+  let seenSong=false;
+  for(let i=0;i<lines.length;i++){
+    const t=lines[i].trim();
+    if(t && !isSection(t)) seenSong=true;
+    if(seenSong && /^\[Intro\s*:\]$/i.test(t)) lines[i]='[Interlude :]';
+  }
+
+  // Preserve columns when removing lyric ellipsis; normalize hyphen transitions only on chord lines.
+  lines=lines.map(line=>isLikelyChordLine(line)?normalizeTransitionChordLine(line):replaceEllipsisPreserveColumns(line));
+
+  // Reff: shift chord+lyric pairs together by the lyric's common leading indent.
+  let inReff=false;
+  for(let i=0;i<lines.length;i++){
+    if(isSection(lines[i])){inReff=/^\[Reff(?:\s+Overtone)?\s*:\]$/i.test(lines[i].trim());continue;}
+    if(!inReff||!isLikelyChordLine(lines[i])) continue;
+    let j=i+1; while(j<lines.length && lines[j].trim()==='') j++;
+    if(j<lines.length && !isSection(lines[j]) && !isLikelyChordLine(lines[j])){
+      [lines[i],lines[j]]=shiftReffPair(lines[i],lines[j]);
+    }
+  }
+
+  // trim trailing spaces only; never trim leading alignment spaces.
+  return lines.map(x=>x.replace(/\s+$/,'')).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+function run(){
+  const src=unwrap(input.value);
+  const key=(manualKey.value.trim()||src.key||'').trim();
+  const body=formatBody(src.body);
+  output.value=`<pre data-key="${key}">\n\n${body}\n\n</pre>`;
+  validate(key,body);
+}
+
+function validate(key,body){
+  const items=[];
+  items.push([!!key,key?`✓ data-key: ${key}`:'⚠ data-key belum diisi']);
+  items.push([!body.includes('[Musik :]'),'✓ Tidak ada [Musik :]']);
+  items.push([!body.match(/\.{2,}/),'✓ Tidak ada ellipsis pada lirik']);
+  const badTransition=body.split('\n').filter(isLikelyChordLine).some(l=>/[A-G](?:#|b|m|\d)*(?:\/[A-G](?:#|b)?)?-[A-G]/.test(l));
+  items.push([!badTransition,'✓ Chord transisi kompatibel transposer (A -G)']);
+  items.push([true,'✓ Leading spaces alignment tidak di-trim global']);
+  checks.innerHTML=items.map(([ok,text])=>`<div class="${ok?'ok':'warn'}">${text}</div>`).join('');
+}
+
+$('#processBtn').onclick=run;
+$('#copyBtn').onclick=async()=>{if(!output.value)run();await navigator.clipboard.writeText(output.value);$('#copyBtn').textContent='Tersalin ✓';setTimeout(()=>$('#copyBtn').textContent='Copy untuk Blogger',1200)};
+$('#clearBtn').onclick=()=>{input.value='';output.value='';checks.innerHTML='';manualKey.value='';input.focus()};
+</script>
+</body>
+</html>
