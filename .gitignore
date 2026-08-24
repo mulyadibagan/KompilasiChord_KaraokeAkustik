@@ -8,3 +8,4 @@
 !audio/exists-hq-preview/*.mp3
 !audio/exists-karaoke-hq/*.mp3
 __pycache__/
+worker/chord-formatter/.wrangler/

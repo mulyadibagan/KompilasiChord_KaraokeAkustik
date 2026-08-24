@@ -1,4 +1,5 @@
-const SESSION_SECONDS = 60 * 60 * 12;
+const SESSION_SECONDS = 60 * 60 * 24 * 365;
+const SESSION_COOKIE = 'kc_formatter';
 
 function html(body, status = 200, headers = {}) {
   return new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...headers } });
@@ -33,7 +34,7 @@ async function makeSession(user, secret) {
 
 async function readSession(request, env) {
   const cookie = request.headers.get('cookie') || '';
-  const m = cookie.match(/(?:^|;\s*)kc_formatter=([^;]+)/);
+  const m = cookie.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`));
   if (!m || !env.SESSION_SECRET) return null;
   const [payload, sig] = m[1].split('.');
   if (!payload || !sig) return null;
@@ -48,6 +49,10 @@ async function readSession(request, env) {
     if (!data.u || !data.exp || data.exp < Math.floor(Date.now() / 1000)) return null;
     return data;
   } catch { return null; }
+}
+
+function sessionCookie(token, maxAge = SESSION_SECONDS) {
+  return `${SESSION_COOKIE}=${token}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`;
 }
 
 async function safeEqual(a, b) {
@@ -86,11 +91,16 @@ export default {
       if (!env.FORMATTER_PASSWORD || !env.SESSION_SECRET) return html(LOGIN.replace('{{ERROR}}', '<div class="err">Server login belum dikonfigurasi.</div>'), 503);
       if (!(await safeEqual(username, expectedUser)) || !(await safeEqual(password, env.FORMATTER_PASSWORD))) return html(LOGIN.replace('{{ERROR}}', '<div class="err">Username atau password salah.</div>'), 401);
       const token = await makeSession(expectedUser, env.SESSION_SECRET);
-      return redirect('/', { 'set-cookie': `kc_formatter=${token}; Path=/; Max-Age=${SESSION_SECONDS}; HttpOnly; Secure; SameSite=Lax` });
+      return redirect('/', { 'set-cookie': sessionCookie(token) });
     }
-    if (request.method === 'POST' && url.pathname === '/logout') return redirect('/', { 'set-cookie': 'kc_formatter=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax' });
+    if (request.method === 'POST' && url.pathname === '/logout') {
+      return redirect('/', { 'set-cookie': sessionCookie('', 0) });
+    }
     const session = await readSession(request, env);
     if (!session) return html(LOGIN.replace('{{ERROR}}', ''));
-    return html(APP);
+    // Sliding one-year session: every authenticated page load replaces both the
+    // signed expiry and the persistent cookie expiry.
+    const refreshedToken = await makeSession(session.u, env.SESSION_SECRET);
+    return html(APP, 200, { 'set-cookie': sessionCookie(refreshedToken) });
   }
 };

@@ -7,7 +7,9 @@ Cloudflare Worker untuk Formatter SOP Kompilasi Chord dengan login username + pa
 - Username default berasal dari `FORMATTER_USER` di `wrangler.jsonc`.
 - Password **tidak disimpan di GitHub** dan wajib disimpan sebagai Worker secret `FORMATTER_PASSWORD`.
 - Session signing key **tidak disimpan di GitHub** dan wajib disimpan sebagai Worker secret `SESSION_SECRET`.
-- Session berlaku 12 jam, menggunakan cookie `HttpOnly`, `Secure`, dan `SameSite=Lax`.
+- Session persisten berlaku 1 tahun dan diperpanjang otomatis pada setiap akses
+  terautentikasi. Cookie menggunakan `HttpOnly`, `Secure`, dan `SameSite=Lax`.
+- Logout menghapus cookie session dan langsung mengunci formatter kembali.
 - Halaman formatter GitHub Pages publik telah dinonaktifkan.
 
 ## Deploy pertama
